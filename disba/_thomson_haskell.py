@@ -8,7 +8,6 @@ __all__ = [
 
 
 twopi = 2.0 * numpy.pi
-gr = 0.61803398874989479
 
 
 class ThomsonHaskell:
@@ -192,28 +191,104 @@ def fast_delta_matrix(w, k, alpha, beta, rho, d):
     return numpy.real(X[1] + s[-1] * X[3] - r[-1] * (X[3] + s[-1] * X[4]))
 
 
-@jitted("f8(f8, f8, f8, f8[:], f8[:], f8[:], f8[:], i4)")
-def golden_section_search(t, c1, c2, d, a, b, rho, ifunc):
-    """Refine root once it has been bracketted."""
+@jitted("f8(f8, f8, f8, f8, f8, f8[:], f8[:], f8[:], f8[:], i4)")
+def nevill(t, c1, c2, del1, del2, a, b, rho, d, ifunc):
+    """
+    Hybrid method for refining root once it has been bracketted between c1 and c2.
+
+    Note
+    ----
+    Adapted from Fortran program SRFDIS (COMPUTER PROGRAMS IN SEISMOLOGY).
+
+    """
+    x = numpy.zeros(20, dtype=numpy.float64)
+    y = numpy.zeros(20, dtype=numpy.float64)
+
+    # Initial guess
     omega = twopi / t
+    c3 = 0.5 * (c1 + c2)
+    del3 = fast_delta_matrix(omega, omega / c3, a, b, rho, d)
+    nev = 1
+    nctrl = 1
 
-    dc = gr * (c2 - c1)
-    c3 = c2 - dc
-    c4 = c1 + dc
-    while numpy.abs(c3 - c4) > 1.0e-6 * c1:
-        del3 = fast_delta_matrix(omega, omega / c3, a, b, rho, d)
-        del4 = fast_delta_matrix(omega, omega / c4, a, b, rho, d)
+    while True:
+        nctrl += 1
+        if nctrl >= 100:
+            break
 
-        if numpy.abs(del3) < numpy.abs(del4):
-            c2 = c4
+        # Make sure new estimate is inside the previous values.
+        # If not, perform interval halving
+        if c3 < min(c1, c2) or c3 > max(c1, c2):
+            nev = 0
+            c3 = 0.5 * (c1 + c2)
+            del3 = fast_delta_matrix(omega, omega / c3, a, b, rho, d)
+
+        s13 = del1 - del3
+        s32 = del3 - del2
+
+        # Define new bounds according to the sign of the period equation
+        if numpy.sign(del3) * numpy.sign(del1) < 0.0:
+            c2 = c3
+            del2 = del3
         else:
             c1 = c3
+            del1 = del3
 
-        dc = gr * (c2 - c1)
-        c3 = c2 - dc
-        c4 = c1 + dc
+        # Check for convergence
+        if numpy.abs(c1 - c2) <= 1.0e-6 * c1:
+            break
 
-    return 0.5 * (c1 + c2)
+        # If the slopes are not the same between c1, c2 and c3
+        # Do not use neville iteration
+        if numpy.sign(s13) != numpy.sign(s32):
+            nev = 0
+
+        # If the period equation differs by more than a factor of 10
+        # Use interval halving to avoid poor behavior of polynomial fit
+        ss1 = numpy.abs(del1)
+        s1 = 0.01 * ss1
+        ss2 = numpy.abs(del2)
+        s2 = 0.01 * ss2
+        if s1 > ss2 or s2 > ss1 or nev == 0:
+            c3 = 0.5 * (c1 + c2)
+            del3 = fast_delta_matrix(omega, omega / c3, a, b, rho, d)
+            nev = 1
+            m = 1
+        else:
+            if nev == 2:
+                x[m-1] = c3
+                y[m-1] = del3
+            else:
+                x[0] = c1
+                y[0] = del1
+                x[1] = c2
+                y[1] = del2
+                m = 1
+
+            # Perform Neville iteration
+            flag = 1
+            for kk in range(m):
+                j = m - kk
+                denom = y[m] - y[j]
+                if numpy.abs(denom) < 1.0e-10 * numpy.abs(y[m]):
+                    flag = 0
+                    break
+                else:
+                    x[j-1] = (-y[j-1] * x[j] + y[m] * x[j-1]) / denom
+
+            if flag:
+                c3 = x[0]
+                del3 = fast_delta_matrix(omega, omega / c3, a, b, rho, d)
+                nev = 2
+                m += 1
+                m = min(m, 10)
+            else:
+                c3 = 0.5 * (c1 + c2)
+                del3 = fast_delta_matrix(omega, omega / c3, a, b, rho, d)
+                nev = 1
+                m = 1
+    
+    return c3
 
 
 @jitted(
@@ -248,7 +323,7 @@ def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, a, b, rho, d, ifunc):
             del2 = fast_delta_matrix(omega, wvno, a, b, rho, d)
 
             if numpy.sign(del1) != numpy.sign(del2):
-                c1 = golden_section_search(t1, c1, c2, d, a, b, rho, ifunc)
+                c1 = nevill(t1, c1, c2, del1, del2, a, b, rho, d, ifunc)
                 iret = -1 if c1 > betmx else 1
                 break
 
