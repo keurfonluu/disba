@@ -1,12 +1,12 @@
 from .__about__ import __version__
 
-from ._common import DispersionCurve
+from ._dispersion import DispersionCurve, PhaseDispersion, GroupDispersion
 from ._srfdis import srfdis
-from ._thomson_haskell import ThomsonHaskell
 
 __all__ = [
     "srfdis",
     "DispersionCurve",
-    "ThomsonHaskell",
+    "PhaseDispersion",
+    "GroupDispersion",
     "__version__",
 ]

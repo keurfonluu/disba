@@ -1,13 +1,4 @@
-from collections import namedtuple
-
 from numba import jit
-
-__all__ = [
-    "DispersionCurve",
-]
-
-
-DispersionCurve = namedtuple("DispersionCurve", ("period", "velocity", "mode", "type"),)
 
 
 def jitted(*args, **kwargs):
