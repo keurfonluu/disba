@@ -397,14 +397,14 @@ def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, iwave):
 
             if numpy.sign(del1) != numpy.sign(del2):
                 c1 = nevill(t1, c1, c2, del1, del2, d, a, b, rho, iwave)
-                iret = -1 if c1 > betmx else 1
+                iret = c1 > betmx
                 break
 
             c1 = c2
             del1 = del2
 
-            if betmx + dc <= c1 < cm:
-                iret = -1
+            iret = betmx + dc <= c1 < cm
+            if iret:
                 break
 
     return c1, del1st, iret
@@ -488,7 +488,7 @@ def srfdis(t, d, a, b, rho, mode, iwave, dc):
                 t[k], c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, iwave
             )
 
-            if iret == -1 and iq > 0:
+            if iret and iq > 0:
                 for i in range(k, kmax):
                     cg[i] = 0.0
 
