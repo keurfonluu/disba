@@ -12,7 +12,13 @@ __all__ = [
 ]
 
 
-DispersionCurve = namedtuple("DispersionCurve", ("period", "velocity", "mode", "type"))
+DispersionCurve = namedtuple("DispersionCurve", ("period", "velocity", "mode", "wave", "type"))
+
+
+iwave = {
+    "love": 1,
+    "rayleigh": 2,
+}
 
 
 class PhaseDispersion(BaseDispersion):
@@ -35,7 +41,7 @@ class PhaseDispersion(BaseDispersion):
         """
         super().__init__(thickness, velocity_p, velocity_s, density)
 
-    def __call__(self, t, mode=0, dc=0.005):
+    def __call__(self, t, mode=0, wave="rayleigh", dc=0.005):
         """
         Calculate phase velocities for input period axis.
 
@@ -45,6 +51,8 @@ class PhaseDispersion(BaseDispersion):
             Periods (in s).
         mode : int, optional, default 0
             Mode number (0 if fundamental).
+        wave : str {'love', 'rayleigh'}, optional, default 'rayleigh'
+            Wave type.
         dc : scalar, optional, default 0.005
             Phase velocity increment for searching root.
 
@@ -58,6 +66,7 @@ class PhaseDispersion(BaseDispersion):
         This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
 
         """
+        wave = iwave[wave]
         c = srfdis(
             t,
             self._thickness,
@@ -65,6 +74,7 @@ class PhaseDispersion(BaseDispersion):
             self._velocity_s,
             self._density,
             mode + 1,
+            wave,
             dc,
         )
 
@@ -72,7 +82,7 @@ class PhaseDispersion(BaseDispersion):
         t = t[idx]
         c = c[idx]
 
-        return DispersionCurve(t, c, mode, "phase")
+        return DispersionCurve(t, c, mode, wave, "phase")
 
 
 class GroupDispersion(BaseDispersion):
@@ -95,7 +105,7 @@ class GroupDispersion(BaseDispersion):
         """
         super().__init__(thickness, velocity_p, velocity_s, density)
 
-    def __call__(self, t, mode=0, dc=0.005, dt=0.005):
+    def __call__(self, t, mode=0, wave="rayleigh", dc=0.005, dt=0.005):
         """
         Calculate group velocities for input period axis.
 
@@ -105,6 +115,8 @@ class GroupDispersion(BaseDispersion):
             Periods (in s).
         mode : int, optional, default 0
             Mode number (0 if fundamental).
+        wave : str {'love', 'rayleigh'}, optional, default 'rayleigh'
+            Wave type.
         dc : scalar, optional, default 0.005
             Phase velocity increment for searching root.
         dt : scalar, optional, default 0.005
@@ -120,6 +132,8 @@ class GroupDispersion(BaseDispersion):
         This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
 
         """
+        wave = iwave[wave]
+
         t1 = t / (1.0 + dt)
         c = srfdis(
             t1,
@@ -128,6 +142,7 @@ class GroupDispersion(BaseDispersion):
             self._velocity_s,
             self._density,
             mode + 1,
+            wave,
             dc,
         )
 
@@ -144,10 +159,11 @@ class GroupDispersion(BaseDispersion):
             self._velocity_s,
             self._density,
             mode + 1,
+            wave,
             dc,
         )
         t1 = 1.0 / t1
         t2 = 1.0 / t2
         c = (t1 - t2) / (t1 / c - t2 / c2)
 
-        return DispersionCurve(t, c, mode, "group")
+        return DispersionCurve(t, c, mode, wave, "group")
