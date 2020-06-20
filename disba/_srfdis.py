@@ -381,8 +381,8 @@ def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, iwave):
     # Bracket solution
     omega = twopi / t1
     del1 = dltar(omega / c1, omega, d, a, b, rho, iwave)
-    del1st = del1 if ifirst == 1 else del1st
-    idir = -1.0 if ifirst != 1 and numpy.sign(del1st) * numpy.sign(del1) < 0.0 else 1.0
+    del1st = del1 if ifirst else del1st
+    idir = -1.0 if not ifirst and numpy.sign(del1st) * numpy.sign(del1) < 0.0 else 1.0
 
     # idir indicates the direction of the search for the true phase velocity from the initial estimate
     while True:
@@ -469,7 +469,7 @@ def srfdis(t, d, a, b, rho, mode, iwave, dc):
         del1st = 0.0
         for k in range(ibeg, iend):
             # Get initial phase velocity estimate to begin search
-            ifirst = int(k == ibeg)
+            ifirst = k == ibeg
             if ifirst and iq == 0:
                 clow = cc
                 c1 = cc
