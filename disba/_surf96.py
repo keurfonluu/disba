@@ -60,10 +60,15 @@ def dnka(wvno2, gam, gammk, rho, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz):
     ca[3, 2] = gamm1 * cpy - gammk * cqx
     ca[3, 3] = ca[1, 1]
     ca[3, 4] = ca[0, 1]
-    
-    ca[4, 0] = -(2.0 * gmgmk * gm1sq * a0pq + gmgmk * gmgmk * xz + gm1sq * gm1sq * wy) * rho2
+
+    ca[4, 0] = (
+        -(2.0 * gmgmk * gm1sq * a0pq + gmgmk * gmgmk * xz + gm1sq * gm1sq * wy) * rho2
+    )
     ca[4, 1] = ca[3, 0]
-    ca[4, 2] = -(gammk * gamm1 * twgm1 * a0pq + gam * gammk * gammk * xz + gamm1 * gm1sq * wy) * rho
+    ca[4, 2] = (
+        -(gammk * gamm1 * twgm1 * a0pq + gam * gammk * gammk * xz + gamm1 * gm1sq * wy)
+        * rho
+    )
     ca[4, 3] = ca[1, 0]
     ca[4, 4] = ca[0, 0]
 
@@ -167,7 +172,7 @@ def dltar1(wvno, omega, d, a, b, rho):
     e1 = rho1 * rb
     e2 = 1.0 / (beta1 * beta1)
 
-    for m in range(len(d)-2, -1, -1):
+    for m in range(len(d) - 2, -1, -1):
         beta1 = b[m]
         rho1 = rho[m]
         xmu = rho1 * beta1 * beta1
@@ -176,7 +181,7 @@ def dltar1(wvno, omega, d, a, b, rho):
         wvnom = numpy.abs(wvno - xkb)
         rb = numpy.sqrt(wvnop * wvnom)
         q = d[m] * rb
-        
+
         if wvno < xkb:
             sinq = numpy.sin(q)
             y = sinq / rb
@@ -211,7 +216,7 @@ def dltar4(wvno, omega, d, a, b, rho):
     """Rayleigh wave period equation."""
     e = numpy.zeros(5, dtype=numpy.float64)
     ee = numpy.zeros(5, dtype=numpy.float64)
-    
+
     omega = max(omega, 1.0e-4)
     wvno2 = wvno * wvno
     xka = omega / a[-1]
@@ -236,7 +241,7 @@ def dltar4(wvno, omega, d, a, b, rho):
     e[4] = wvno2 - ra * rb
 
     # Matrix multiplication from bottom layer upward
-    for m in range(len(d)-2, -1, -1):
+    for m in range(len(d) - 2, -1, -1):
         xka = omega / a[m]
         xkb = omega / b[m]
         t = b[m] / omega
@@ -256,7 +261,9 @@ def dltar4(wvno, omega, d, a, b, rho):
         # beta = b[m]
 
         # Evaluate cosP, cosQ...
-        _, _, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz = var(p, q, ra, rb, wvno, xka, xkb, dpth)
+        _, _, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz = var(
+            p, q, ra, rb, wvno, xka, xkb, dpth
+        )
 
         # Evaluate Dunkin's matrix
         ca = dnka(wvno2, gam, gammk, rho1, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz)
@@ -277,9 +284,9 @@ def dltar4(wvno, omega, d, a, b, rho):
 def fast_delta(wvno, omega, d, alpha, beta, rho):
     """
     Fast delta matrix.
-    
+
     After Buchen and Ben-Hador (1996).
-    
+
     """
     # Convert to meters
     k = wvno / 1.0e3
@@ -457,8 +464,8 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
             m = 1
         else:
             if nev == 2:
-                x[m-1] = c3
-                y[m-1] = del3
+                x[m - 1] = c3
+                y[m - 1] = del3
             else:
                 x[0] = c1
                 y[0] = del1
@@ -475,7 +482,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
                     flag = 0
                     break
                 else:
-                    x[j-1] = (-y[j-1] * x[j] + y[m] * x[j-1]) / denom
+                    x[j - 1] = (-y[j - 1] * x[j] + y[m] * x[j - 1]) / denom
 
             if flag:
                 c3 = x[0]
@@ -488,7 +495,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
                 del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
                 nev = 1
                 m = 1
-    
+
     return c3
 
 
@@ -560,7 +567,8 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
     # Find the extremal velocities to assist in starting search
     betmx = -1.0e20
     betmn = 1.0e20
-    for i in range(len(b)):
+    nl = len(b)
+    for i in range(nl):
         if b[i] > 0.01 and b[i] < betmn:
             betmn = b[i]
             jmn = i

@@ -1,7 +1,5 @@
 from collections import namedtuple
 
-import numpy
-
 from ._base import BaseDispersion
 from ._surf96 import surf96
 
@@ -12,24 +10,21 @@ __all__ = [
 ]
 
 
-DispersionCurve = namedtuple("DispersionCurve", ("period", "velocity", "mode", "wave", "type"))
+DispersionCurve = namedtuple(
+    "DispersionCurve", ("period", "velocity", "mode", "wave", "type")
+)
 
 
 ifunc = {
-    "dunkin": {
-        "love": 1,
-        "rayleigh": 2,
-    },
-    "fast-delta": {
-        "love": 1,
-        "rayleigh": 3,
-    },
+    "dunkin": {"love": 1, "rayleigh": 2},
+    "fast-delta": {"love": 1, "rayleigh": 3},
 }
 
 
 class PhaseDispersion(BaseDispersion):
-
-    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005):
+    def __init__(
+        self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005
+    ):
         """
         Phase velocity dispersion class.
 
@@ -49,7 +44,7 @@ class PhaseDispersion(BaseDispersion):
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
         dc : scalar, optional, default 0.005
             Phase velocity increment for root finding.
-        
+
         """
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
 
@@ -70,7 +65,7 @@ class PhaseDispersion(BaseDispersion):
         -------
         namedtuple
             Dispersion curve as a namedtuple (period, velocity, mode, type).
-        
+
         Note
         ----
         This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
@@ -95,8 +90,16 @@ class PhaseDispersion(BaseDispersion):
 
 
 class GroupDispersion(BaseDispersion):
-
-    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005, dt=0.005):
+    def __init__(
+        self,
+        thickness,
+        velocity_p,
+        velocity_s,
+        density,
+        algorithm="dunkin",
+        dc=0.005,
+        dt=0.005,
+    ):
         """
         Group velocity dispersion class.
 
@@ -118,7 +121,7 @@ class GroupDispersion(BaseDispersion):
             Phase velocity increment for root finding.
         dt : scalar, optional, default 0.005
             Frequency increment (%) for calculating group velocity.
-        
+
         """
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
         self._dt = dt
@@ -135,12 +138,12 @@ class GroupDispersion(BaseDispersion):
             Mode number (0 if fundamental).
         wave : str {'love', 'rayleigh'}, optional, default 'rayleigh'
             Wave type.
-        
+
         Returns
         -------
         namedtuple
             Dispersion curve as a namedtuple (period, velocity, mode, type).
-        
+
         Note
         ----
         This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
@@ -182,4 +185,5 @@ class GroupDispersion(BaseDispersion):
 
     @property
     def dt(self):
+        """Return frequency increment (%) for calculating group velocity."""
         return self._dt
