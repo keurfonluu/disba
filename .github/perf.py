@@ -32,7 +32,7 @@ config = {
         ],
         "labels": ["pysurf96", "disba-dunkin", "disba-fast-delta"],
         "title": "Rayleigh-wave",
-        "filename": "perf_rayleigh.png",
+        "filename": "perf_rayleigh.svg",
     },
     "love": {
         "kernels": [
@@ -41,7 +41,7 @@ config = {
         ],
         "labels": ["pysurf96", "disba"],
         "title": "Love-wave",
-        "filename": "perf_love.png",
+        "filename": "perf_love.svg",
     },
 }
 periods = numpy.logspace(0.0, 1.0, 60)

@@ -13,7 +13,7 @@
 
 **`disba`**'s speed is comparable to _surf96_ compiled with [**`f2py`**](https://numpy.org/devdocs/f2py/index.html) for Rayleigh-wave but significantly faster for Love-wave with increasing number of layers. **`disba`** also implements the _fast delta matrix_ algorithm for Rayleigh-wave which, albeit ironically slower, is more robust and handles reversion of phase velocity.
 
-| <img src="https://github.com/keurfonluu/disba/blob/master/.github/perf_rayleigh.png"> | <img src="https://github.com/keurfonluu/disba/blob/master/.github/perf_love.png"> |
+| <img src="https://github.com/keurfonluu/disba/blob/master/.github/perf_rayleigh.svg"> | <img src="https://github.com/keurfonluu/disba/blob/master/.github/perf_love.svg"> |
 | :-----------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
 
 ## Features
@@ -59,5 +59,5 @@ cpr = [pd(t, mode=i, wave="rayleigh") for i in range(20)]
 cpl = [pd(t, mode=i, wave="love") for i in range(20)]
 ```
 
-| <img src="https://github.com/keurfonluu/disba/blob/master/.github/sample_rayleigh.png"> | <img src="https://github.com/keurfonluu/disba/blob/master/.github/sample_love.png"> |
+| <img src="https://github.com/keurfonluu/disba/blob/master/.github/sample_rayleigh.svg"> | <img src="https://github.com/keurfonluu/disba/blob/master/.github/sample_love.svg"> |
 | :-------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |

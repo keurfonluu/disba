@@ -30,4 +30,4 @@ for wave in ["rayleigh", "love"]:
     plt.xlim(0.0, 10.0)
     plt.ylim(0.45, 1.0)
 
-    fig.savefig(f"sample_{wave}.png", dpi=100, transparent=True, bbox_inches="tight")
+    fig.savefig(f"sample_{wave}.svg", transparent=True, bbox_inches="tight")
