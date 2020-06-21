@@ -29,7 +29,7 @@ ifunc = {
 
 class PhaseDispersion(BaseDispersion):
 
-    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm="dunkin"):
+    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005):
         """
         Phase velocity dispersion class.
 
@@ -47,11 +47,13 @@ class PhaseDispersion(BaseDispersion):
             Algorithm to use for computation of Rayleigh-wave dispersion:
              - 'dunkin': Dunkin's matrix (adapted from surf96),
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
+        dc : scalar, optional, default 0.005
+            Phase velocity increment for root finding.
         
         """
-        super().__init__(thickness, velocity_p, velocity_s, density, algorithm)
+        super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
 
-    def __call__(self, t, mode=0, wave="rayleigh", dc=0.005):
+    def __call__(self, t, mode=0, wave="rayleigh"):
         """
         Calculate phase velocities for input period axis.
 
@@ -63,8 +65,6 @@ class PhaseDispersion(BaseDispersion):
             Mode number (0 if fundamental).
         wave : str {'love', 'rayleigh'}, optional, default 'rayleigh'
             Wave type.
-        dc : scalar, optional, default 0.005
-            Phase velocity increment for searching root.
 
         Returns
         -------
@@ -84,7 +84,7 @@ class PhaseDispersion(BaseDispersion):
             self._density,
             mode + 1,
             ifunc[self._algorithm][wave],
-            dc,
+            self._dc,
         )
 
         idx = c > 0.0
@@ -96,7 +96,7 @@ class PhaseDispersion(BaseDispersion):
 
 class GroupDispersion(BaseDispersion):
 
-    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm="dunkin"):
+    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005, dt=0.005):
         """
         Group velocity dispersion class.
 
@@ -114,11 +114,16 @@ class GroupDispersion(BaseDispersion):
             Algorithm to use for computation of Rayleigh-wave dispersion:
              - 'dunkin': Dunkin's matrix (adapted from surf96),
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
+        dc : scalar, optional, default 0.005
+            Phase velocity increment for root finding.
+        dt : scalar, optional, default 0.005
+            Frequency increment (%) for calculating group velocity.
         
         """
-        super().__init__(thickness, velocity_p, velocity_s, density, algorithm)
+        super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
+        self._dt = dt
 
-    def __call__(self, t, mode=0, wave="rayleigh", dc=0.005, dt=0.005):
+    def __call__(self, t, mode=0, wave="rayleigh"):
         """
         Calculate group velocities for input period axis.
 
@@ -130,10 +135,6 @@ class GroupDispersion(BaseDispersion):
             Mode number (0 if fundamental).
         wave : str {'love', 'rayleigh'}, optional, default 'rayleigh'
             Wave type.
-        dc : scalar, optional, default 0.005
-            Phase velocity increment for searching root.
-        dt : scalar, optional, default 0.005
-            Frequency increment (%) for calculating group velocity.
         
         Returns
         -------
@@ -145,7 +146,7 @@ class GroupDispersion(BaseDispersion):
         This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
 
         """
-        t1 = t / (1.0 + dt)
+        t1 = t / (1.0 + self._dt)
         c = surf96(
             t1,
             self._thickness,
@@ -154,7 +155,7 @@ class GroupDispersion(BaseDispersion):
             self._density,
             mode + 1,
             ifunc[self._algorithm][wave],
-            dc,
+            self._dc,
         )
 
         idx = c > 0.0
@@ -162,7 +163,7 @@ class GroupDispersion(BaseDispersion):
         c = c[idx]
 
         t1 = t1[idx]
-        t2 = t / (1.0 - dt)
+        t2 = t / (1.0 - self._dt)
         c2 = surf96(
             t2,
             self._thickness,
@@ -171,10 +172,14 @@ class GroupDispersion(BaseDispersion):
             self._density,
             mode + 1,
             ifunc[self._algorithm][wave],
-            dc,
+            self._dc,
         )
         t1 = 1.0 / t1
         t2 = 1.0 / t2
         c = (t1 - t2) / (t1 / c - t2 / c2)
 
         return DispersionCurve(t, c, mode, wave, "group")
+
+    @property
+    def dt(self):
+        return self._dt
