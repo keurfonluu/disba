@@ -1,6 +1,6 @@
 # disba
 
-[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/keurfonluu/disba/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/keurfonluu/disba)](https://github.com/keurfonluu/disba/blob/master/LICENSE)
 [![Stars](https://img.shields.io/github/stars/keurfonluu/disba?logo=github)](https://github.com/keurfonluu/toughio)
 [![Pyversions](https://img.shields.io/pypi/pyversions/disba.svg?style=flat)](https://pypi.org/pypi/toughio/)
 [![Version](https://img.shields.io/pypi/v/disba.svg?style=flat)](https://pypi.org/project/toughio)
