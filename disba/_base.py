@@ -5,11 +5,12 @@ import numpy
 
 class BaseDispersion(ABC):
 
-    def __init__(self, thickness, velocity_p, velocity_s, density):
+    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm):
         self._thickness = numpy.asarray(thickness)
         self._velocity_p = numpy.asarray(velocity_p)
         self._velocity_s = numpy.asarray(velocity_s)
         self._density = numpy.asarray(density)
+        self._algorithm = algorithm
 
     @property
     def thickness(self):
@@ -26,3 +27,7 @@ class BaseDispersion(ABC):
     @property
     def density(self):
         return self._density
+
+    @property
+    def algorithm(self):
+        return self._algorithm

@@ -274,16 +274,133 @@ def dltar4(wvno, omega, d, a, b, rho):
 
 
 @jitted
-def dltar(wvno, omega, d, a, b, rho, iwave):
-    """Select Rayleigh or Love wave period equation."""
-    if iwave == 1:
-        return dltar1(wvno, omega, d, a, b, rho)
-    else:
-        return dltar4(wvno, omega, d, a, b, rho)
+def fast_delta(wvno, omega, d, alpha, beta, rho):
+    """
+    Fast delta matrix.
+    
+    After Buchen and Ben-Hador (1996).
+    
+    """
+    # Convert to meters
+    k = wvno / 1.0e3
+    alpha = alpha * 1.0e3
+    beta = beta * 1.0e3
+    rho = rho * 1.0e3
+    d = d * 1.0e3
+
+    # Initialize arrays
+    nl = len(alpha)
+
+    mu = numpy.zeros(nl)
+    gam = numpy.zeros(nl)
+    t = numpy.zeros(nl)
+
+    r = numpy.zeros(nl, dtype=numpy.complex_)
+    s = numpy.zeros(nl, dtype=numpy.complex_)
+    Ca = numpy.ones(nl, dtype=numpy.complex_)
+    Cb = numpy.ones(nl, dtype=numpy.complex_)
+    Sa = numpy.zeros(nl, dtype=numpy.complex_)
+    Sb = numpy.zeros(nl, dtype=numpy.complex_)
+
+    eps = numpy.zeros(nl - 1, dtype=numpy.complex_)
+    eta = numpy.zeros(nl - 1, dtype=numpy.complex_)
+    a = numpy.zeros(nl - 1, dtype=numpy.complex_)
+    ap = numpy.zeros(nl - 1, dtype=numpy.complex_)
+    b = numpy.zeros(nl - 1, dtype=numpy.complex_)
+    bp = numpy.zeros(nl - 1, dtype=numpy.complex_)
+
+    X = numpy.zeros(5, dtype=numpy.complex_)
+
+    # Phase velocity
+    c = omega / k
+    c2 = c * c
+
+    # Other variables
+    for i in range(nl):
+        mu[i] = rho[i] * beta[i] ** 2
+        gam[i] = beta[i] ** 2 / c2
+        t[i] = 2.0 - c2 / beta[i] ** 2
+
+    for i in range(nl - 1):
+        eps[i] = rho[i + 1] / rho[i]
+        eta[i] = 2.0 * (gam[i] - eps[i] * gam[i + 1])
+        a[i] = eps[i] + eta[i]
+        ap[i] = a[i] - 1.0
+        b[i] = 1.0 - eta[i]
+        bp[i] = b[i] - 1.0
+
+    # Layer eigenfunctions
+    for i in range(nl):
+        if c < alpha[i]:
+            r[i] = numpy.sqrt(1.0 - c2 / alpha[i] ** 2)
+            Ca[i] = numpy.cosh(k * r[i] * d[i])
+            Sa[i] = numpy.sinh(k * r[i] * d[i])
+        elif c > alpha[i]:
+            r[i] = numpy.sqrt(c2 / alpha[i] ** 2 - 1.0) * 1j
+            Ca[i] = numpy.cos(k * r[i].imag * d[i])
+            Sa[i] = numpy.sin(k * r[i].imag * d[i]) * 1j
+
+        if c < beta[i]:
+            s[i] = numpy.sqrt(1.0 - c2 / beta[i] ** 2)
+            Cb[i] = numpy.cosh(k * s[i] * d[i])
+            Sb[i] = numpy.sinh(k * s[i] * d[i])
+        elif c > beta[i]:
+            s[i] = numpy.sqrt(c2 / beta[i] ** 2 - 1.0) * 1j
+            Cb[i] = numpy.cos(k * s[i].imag * d[i])
+            Sb[i] = numpy.sin(k * s[i].imag * d[i]) * 1j
+
+    # Rayleigh-wave fast Delta matrix
+    X[0] = 2.0 * t[0]
+    X[1] = -t[0] * t[0]
+    X[4] = -4.0
+    X *= mu[0] * mu[0]
+
+    for i in range(nl - 1):
+        p1 = Cb[i] * X[1] + s[i] * Sb[i] * X[2]
+        p2 = Cb[i] * X[3] + s[i] * Sb[i] * X[4]
+        if c == beta[i]:
+            p3 = k * d[i] * X[1] + Cb[i] * X[2]
+            p4 = k * d[i] * X[3] + Cb[i] * X[4]
+        else:
+            p3 = Sb[i] * X[1] / s[i] + Cb[i] * X[2]
+            p4 = Sb[i] * X[3] / s[i] + Cb[i] * X[4]
+
+        q1 = Ca[i] * p1 - r[i] * Sa[i] * p2
+        q3 = Ca[i] * p3 - r[i] * Sa[i] * p4
+        if c == alpha[i]:
+            q2 = -k * d[i] * p3 + Ca[i] * p4
+            q4 = -k * d[i] * p1 + Ca[i] * p2
+        else:
+            q2 = -Sa[i] * p3 / r[i] + Ca[i] * p4
+            q4 = -Sa[i] * p1 / r[i] + Ca[i] * p2
+
+        y1 = ap[i] * X[0] + a[i] * q1
+        y2 = a[i] * X[0] + ap[i] * q2
+        z1 = b[i] * X[0] + bp[i] * q1
+        z2 = bp[i] * X[0] + b[i] * q2
+
+        X[0] = bp[i] * y1 + b[i] * y2
+        X[1] = a[i] * y1 + ap[i] * y2
+        X[2] = eps[i] * q3
+        X[3] = eps[i] * q4
+        X[4] = bp[i] * z1 + b[i] * z2
+
+    return numpy.real(X[1] + s[-1] * X[3] - r[-1] * (X[3] + s[-1] * X[4]))
 
 
 @jitted
-def nevill(t, c1, c2, del1, del2, d, a, b, rho, iwave):
+def dltar(wvno, omega, d, a, b, rho, ifunc):
+    """Select Rayleigh or Love wave period equation."""
+    if ifunc == 1:
+        return dltar1(wvno, omega, d, a, b, rho)
+    elif ifunc == 2:
+        return dltar4(wvno, omega, d, a, b, rho)
+    else:
+        return fast_delta(wvno, omega, d, a, b, rho)
+
+
+@jitted
+def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
     """Hybrid method for refining root once it has been bracketted."""
     x = numpy.zeros(20, dtype=numpy.float64)
     y = numpy.zeros(20, dtype=numpy.float64)
@@ -291,7 +408,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, iwave):
     # Initial guess
     omega = twopi / t
     c3 = 0.5 * (c1 + c2)
-    del3 = dltar(omega / c3, omega, d, a, b, rho, iwave)
+    del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
     nev = 1
     nctrl = 1
 
@@ -305,7 +422,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, iwave):
         if c3 < min(c1, c2) or c3 > max(c1, c2):
             nev = 0
             c3 = 0.5 * (c1 + c2)
-            del3 = dltar(omega / c3, omega, d, a, b, rho, iwave)
+            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
 
         s13 = del1 - del3
         s32 = del3 - del2
@@ -335,7 +452,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, iwave):
         s2 = 0.01 * ss2
         if s1 > ss2 or s2 > ss1 or nev == 0:
             c3 = 0.5 * (c1 + c2)
-            del3 = dltar(omega / c3, omega, d, a, b, rho, iwave)
+            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
             nev = 1
             m = 1
         else:
@@ -362,13 +479,13 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, iwave):
 
             if flag:
                 c3 = x[0]
-                del3 = dltar(omega / c3, omega, d, a, b, rho, iwave)
+                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
                 nev = 2
                 m += 1
                 m = min(m, 10)
             else:
                 c3 = 0.5 * (c1 + c2)
-                del3 = dltar(omega / c3, omega, d, a, b, rho, iwave)
+                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
                 nev = 1
                 m = 1
     
@@ -376,11 +493,11 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, iwave):
 
 
 @jitted
-def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, iwave):
+def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc):
     """Bracket dispersion curve and then refine it."""
     # Bracket solution
     omega = twopi / t1
-    del1 = dltar(omega / c1, omega, d, a, b, rho, iwave)
+    del1 = dltar(omega / c1, omega, d, a, b, rho, ifunc)
     del1st = del1 if ifirst else del1st
     idir = -1.0 if not ifirst and numpy.sign(del1st) * numpy.sign(del1) < 0.0 else 1.0
 
@@ -393,10 +510,10 @@ def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, iwave):
             c1 = clow
         else:
             omega = twopi / t1
-            del2 = dltar(omega / c2, omega, d, a, b, rho, iwave)
+            del2 = dltar(omega / c2, omega, d, a, b, rho, ifunc)
 
             if numpy.sign(del1) != numpy.sign(del2):
-                c1 = nevill(t1, c1, c2, del1, del2, d, a, b, rho, iwave)
+                c1 = nevill(t1, c1, c2, del1, del2, d, a, b, rho, ifunc)
                 iret = c1 > betmx
                 break
 
@@ -433,7 +550,7 @@ def gtsolh(a, b):
 
 
 @jitted
-def srfdis(t, d, a, b, rho, mode, iwave, dc):
+def srfdis(t, d, a, b, rho, mode, ifunc, dc):
     """Get phase velocity dispersion curve."""
     # Initialize arrays
     kmax = len(t)
@@ -485,7 +602,7 @@ def srfdis(t, d, a, b, rho, mode, iwave, dc):
 
             # Bracket root and refine it
             c1, del1st, iret = getsol(
-                t[k], c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, iwave
+                t[k], c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc
             )
 
             if iret and iq > 0:

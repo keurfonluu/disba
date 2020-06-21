@@ -15,15 +15,21 @@ __all__ = [
 DispersionCurve = namedtuple("DispersionCurve", ("period", "velocity", "mode", "wave", "type"))
 
 
-iwave = {
-    "love": 1,
-    "rayleigh": 2,
+ifunc = {
+    "dunkin": {
+        "love": 1,
+        "rayleigh": 2,
+    },
+    "fast-delta": {
+        "love": 1,
+        "rayleigh": 3,
+    },
 }
 
 
 class PhaseDispersion(BaseDispersion):
 
-    def __init__(self, thickness, velocity_p, velocity_s, density):
+    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm="dunkin"):
         """
         Phase velocity dispersion class.
 
@@ -37,9 +43,13 @@ class PhaseDispersion(BaseDispersion):
             Layer S-wave velocity (in km/s).
         density : array_like
             Layer density (in g/cm3).
+        algorithm : str {'dunkin', 'fast-delta'}, optional, default 'dunkin'
+            Algorithm to use for computation of Rayleigh-wave dispersion:
+             - 'dunkin': Dunkin's matrix (adapted from SRFDIS),
+             - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
         
         """
-        super().__init__(thickness, velocity_p, velocity_s, density)
+        super().__init__(thickness, velocity_p, velocity_s, density, algorithm)
 
     def __call__(self, t, mode=0, wave="rayleigh", dc=0.005):
         """
@@ -66,7 +76,6 @@ class PhaseDispersion(BaseDispersion):
         This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
 
         """
-        wave = iwave[wave]
         c = srfdis(
             t,
             self._thickness,
@@ -74,7 +83,7 @@ class PhaseDispersion(BaseDispersion):
             self._velocity_s,
             self._density,
             mode + 1,
-            wave,
+            ifunc[self._algorithm][wave],
             dc,
         )
 
@@ -87,7 +96,7 @@ class PhaseDispersion(BaseDispersion):
 
 class GroupDispersion(BaseDispersion):
 
-    def __init__(self, thickness, velocity_p, velocity_s, density):
+    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm="dunkin"):
         """
         Group velocity dispersion class.
 
@@ -101,9 +110,13 @@ class GroupDispersion(BaseDispersion):
             Layer S-wave velocity (in km/s).
         density : array_like
             Layer density (in g/cm3).
+        algorithm : str {'dunkin', 'fast-delta'}, optional, default 'dunkin'
+            Algorithm to use for computation of Rayleigh-wave dispersion:
+             - 'dunkin': Dunkin's matrix (adapted from SRFDIS),
+             - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
         
         """
-        super().__init__(thickness, velocity_p, velocity_s, density)
+        super().__init__(thickness, velocity_p, velocity_s, density, algorithm)
 
     def __call__(self, t, mode=0, wave="rayleigh", dc=0.005, dt=0.005):
         """
@@ -132,8 +145,6 @@ class GroupDispersion(BaseDispersion):
         This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
 
         """
-        wave = iwave[wave]
-
         t1 = t / (1.0 + dt)
         c = srfdis(
             t1,
@@ -142,7 +153,7 @@ class GroupDispersion(BaseDispersion):
             self._velocity_s,
             self._density,
             mode + 1,
-            wave,
+            ifunc[self._algorithm][wave],
             dc,
         )
 
@@ -159,7 +170,7 @@ class GroupDispersion(BaseDispersion):
             self._velocity_s,
             self._density,
             mode + 1,
-            wave,
+            ifunc[self._algorithm][wave],
             dc,
         )
         t1 = 1.0 / t1
