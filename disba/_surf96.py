@@ -1,5 +1,5 @@
 """
-This module is a Numba implementation of the Fortran program SRFDIS.
+This module is a Numba implementation of the Fortran program surf96.
 
 ..
 
@@ -21,7 +21,7 @@ import numpy
 from ._common import jitted
 
 __all__ = [
-    "srfdis",
+    "surf96",
 ]
 
 
@@ -550,7 +550,7 @@ def gtsolh(a, b):
 
 
 @jitted
-def srfdis(t, d, a, b, rho, mode, ifunc, dc):
+def surf96(t, d, a, b, rho, mode, ifunc, dc):
     """Get phase velocity dispersion curve."""
     # Initialize arrays
     kmax = len(t)

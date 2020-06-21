@@ -3,7 +3,7 @@ from collections import namedtuple
 import numpy
 
 from ._base import BaseDispersion
-from ._srfdis import srfdis
+from ._surf96 import surf96
 
 __all__ = [
     "DispersionCurve",
@@ -45,7 +45,7 @@ class PhaseDispersion(BaseDispersion):
             Layer density (in g/cm3).
         algorithm : str {'dunkin', 'fast-delta'}, optional, default 'dunkin'
             Algorithm to use for computation of Rayleigh-wave dispersion:
-             - 'dunkin': Dunkin's matrix (adapted from SRFDIS),
+             - 'dunkin': Dunkin's matrix (adapted from surf96),
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
         
         """
@@ -76,7 +76,7 @@ class PhaseDispersion(BaseDispersion):
         This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
 
         """
-        c = srfdis(
+        c = surf96(
             t,
             self._thickness,
             self._velocity_p,
@@ -112,7 +112,7 @@ class GroupDispersion(BaseDispersion):
             Layer density (in g/cm3).
         algorithm : str {'dunkin', 'fast-delta'}, optional, default 'dunkin'
             Algorithm to use for computation of Rayleigh-wave dispersion:
-             - 'dunkin': Dunkin's matrix (adapted from SRFDIS),
+             - 'dunkin': Dunkin's matrix (adapted from surf96),
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
         
         """
@@ -146,7 +146,7 @@ class GroupDispersion(BaseDispersion):
 
         """
         t1 = t / (1.0 + dt)
-        c = srfdis(
+        c = surf96(
             t1,
             self._thickness,
             self._velocity_p,
@@ -163,7 +163,7 @@ class GroupDispersion(BaseDispersion):
 
         t1 = t1[idx]
         t2 = t / (1.0 - dt)
-        c2 = srfdis(
+        c2 = surf96(
             t2,
             self._thickness,
             self._velocity_p,
