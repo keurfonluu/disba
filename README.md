@@ -1,10 +1,10 @@
 # disba
 
 [![License](https://img.shields.io/github/license/keurfonluu/disba)](https://github.com/keurfonluu/disba/blob/master/LICENSE)
-[![Stars](https://img.shields.io/github/stars/keurfonluu/disba?logo=github)](https://github.com/keurfonluu/toughio)
-[![Pyversions](https://img.shields.io/pypi/pyversions/disba.svg?style=flat)](https://pypi.org/pypi/toughio/)
-[![Version](https://img.shields.io/pypi/v/disba.svg?style=flat)](https://pypi.org/project/toughio)
-[![Downloads](https://pepy.tech/badge/disba)](https://pepy.tech/project/toughio)
+[![Stars](https://img.shields.io/github/stars/keurfonluu/disba?logo=github)](https://github.com/keurfonluu/disba)
+[![Pyversions](https://img.shields.io/pypi/pyversions/disba.svg?style=flat)](https://pypi.org/pypi/disba/)
+[![Version](https://img.shields.io/pypi/v/disba.svg?style=flat)](https://pypi.org/project/disba)
+[![Downloads](https://pepy.tech/badge/disba)](https://pepy.tech/project/disba)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat)](https://github.com/psf/black)
 [![Codacy Badge](https://img.shields.io/codacy/grade/1d2218bb7d0e4e0fb2dec26fa32fe92e.svg?style=flat)](https://www.codacy.com/manual/keurfonluu/disba?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=keurfonluu/disba&amp;utm_campaign=Badge_Grade)
 [![Codecov](https://img.shields.io/codecov/c/github/keurfonluu/disba.svg?style=flat)](https://codecov.io/gh/keurfonluu/disba)
