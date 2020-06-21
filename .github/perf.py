@@ -1,7 +1,7 @@
 import numpy
 import perfplot
 
-from disba import PhaseDispersion, srfdis
+from disba import PhaseDispersion
 from pysurf96 import surf96
 
 
