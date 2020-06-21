@@ -288,13 +288,6 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
     After Buchen and Ben-Hador (1996).
 
     """
-    # Convert to meters
-    k = wvno / 1.0e3
-    alpha = alpha * 1.0e3
-    beta = beta * 1.0e3
-    rho = rho * 1.0e3
-    d = d * 1.0e3
-
     # Initialize arrays
     nl = len(alpha)
 
@@ -319,7 +312,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
     X = numpy.zeros(5, dtype=numpy.complex_)
 
     # Phase velocity
-    c = omega / k
+    c = omega / wvno
     c2 = c * c
 
     # Other variables
@@ -340,21 +333,21 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
     for i in range(nl):
         if c < alpha[i]:
             r[i] = numpy.sqrt(1.0 - c2 / alpha[i] ** 2)
-            Ca[i] = numpy.cosh(k * r[i] * d[i])
-            Sa[i] = numpy.sinh(k * r[i] * d[i])
+            Ca[i] = numpy.cosh(wvno * r[i] * d[i])
+            Sa[i] = numpy.sinh(wvno * r[i] * d[i])
         elif c > alpha[i]:
             r[i] = numpy.sqrt(c2 / alpha[i] ** 2 - 1.0) * 1j
-            Ca[i] = numpy.cos(k * r[i].imag * d[i])
-            Sa[i] = numpy.sin(k * r[i].imag * d[i]) * 1j
+            Ca[i] = numpy.cos(wvno * r[i].imag * d[i])
+            Sa[i] = numpy.sin(wvno * r[i].imag * d[i]) * 1j
 
         if c < beta[i]:
             s[i] = numpy.sqrt(1.0 - c2 / beta[i] ** 2)
-            Cb[i] = numpy.cosh(k * s[i] * d[i])
-            Sb[i] = numpy.sinh(k * s[i] * d[i])
+            Cb[i] = numpy.cosh(wvno * s[i] * d[i])
+            Sb[i] = numpy.sinh(wvno * s[i] * d[i])
         elif c > beta[i]:
             s[i] = numpy.sqrt(c2 / beta[i] ** 2 - 1.0) * 1j
-            Cb[i] = numpy.cos(k * s[i].imag * d[i])
-            Sb[i] = numpy.sin(k * s[i].imag * d[i]) * 1j
+            Cb[i] = numpy.cos(wvno * s[i].imag * d[i])
+            Sb[i] = numpy.sin(wvno * s[i].imag * d[i]) * 1j
 
     # Rayleigh-wave fast Delta matrix
     X[0] = 2.0 * t[0]
@@ -366,8 +359,8 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
         p1 = Cb[i] * X[1] + s[i] * Sb[i] * X[2]
         p2 = Cb[i] * X[3] + s[i] * Sb[i] * X[4]
         if c == beta[i]:
-            p3 = k * d[i] * X[1] + Cb[i] * X[2]
-            p4 = k * d[i] * X[3] + Cb[i] * X[4]
+            p3 = wvno * d[i] * X[1] + Cb[i] * X[2]
+            p4 = wvno * d[i] * X[3] + Cb[i] * X[4]
         else:
             p3 = Sb[i] * X[1] / s[i] + Cb[i] * X[2]
             p4 = Sb[i] * X[3] / s[i] + Cb[i] * X[4]
@@ -375,8 +368,8 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
         q1 = Ca[i] * p1 - r[i] * Sa[i] * p2
         q3 = Ca[i] * p3 - r[i] * Sa[i] * p4
         if c == alpha[i]:
-            q2 = -k * d[i] * p3 + Ca[i] * p4
-            q4 = -k * d[i] * p1 + Ca[i] * p2
+            q2 = -wvno * d[i] * p3 + Ca[i] * p4
+            q4 = -wvno * d[i] * p1 + Ca[i] * p2
         else:
             q2 = -Sa[i] * p3 / r[i] + Ca[i] * p4
             q4 = -Sa[i] * p1 / r[i] + Ca[i] * p2
