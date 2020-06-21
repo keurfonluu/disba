@@ -8,7 +8,7 @@ def jitted(*args, **kwargs):
             "nopython": True,
             "nogil": True,
             "fastmath": True,
-            "boundscheck": False,
+            # "boundscheck": False,
             "cache": True,
         }
     )
