@@ -10,7 +10,7 @@ import disba
 @task
 def build(c):
     shutil.rmtree("dist", ignore_errors=True)
-    c.run("python setup.py sdist bdist_wheel")
+    c.run("python -m pep517.build --source --binary .")
 
 
 @task
