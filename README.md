@@ -11,7 +11,7 @@
 
 **`disba`** is a computationally efficient Python library for the modeling of surface wave dispersion curves that implements [_surf96_](http://www.eas.slu.edu/eqc/eqccps.html)'s code in Python compiled [_just-in-time_](https://en.wikipedia.org/wiki/Just-in-time_compilation) with [**`numba`**](https://numba.pydata.org/). Such implementation alleviates the usual prerequisite for a Fortran compiler needed by other libraries also based on _surf96_ (e.g. [**`pysurf96`**](https://github.com/miili/pysurf96) and [**`srfpython`**](https://github.com/obsmax/srfpython)) which often leads to further setup troubleshooting, especially on Windows platform.
 
-**`disba`**'s speed is comparable to _surf96_ compiled with [**`f2py`**](https://numpy.org/devdocs/f2py/index.html) for Rayleigh-wave but significantly faster for Love-wave with increasing number of layers. **`disba`** also implements the _fast delta matrix_ algorithm for Rayleigh-wave which, albeit ironically slower, is more robust and handles reversion of phase velocity.
+**`disba`**'s speed is comparable to _surf96_ compiled with [**`f2py`**](https://numpy.org/devdocs/f2py/index.html) for Rayleigh-wave but significantly faster for Love-wave with increasing number of layers. **`disba`** also implements the _fast delta matrix_ algorithm for Rayleigh-wave which, albeit ironically slower, is more robust and handles reversion of phase velocity caused by low velocity zones.
 
 | <img src="https://github.com/keurfonluu/disba/blob/master/.github/perf_rayleigh.svg"> | <img src="https://github.com/keurfonluu/disba/blob/master/.github/perf_love.svg"> |
 | :-----------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
@@ -46,15 +46,22 @@ The following example computes the Rayleigh- and Love- waves phase velocity disp
 import numpy
 from disba import PhaseDispersion
 
+# Velocity model
+# thickness, Vp, Vs, density
+# km, km/s, km/s, g/cm3
 velocity_model = numpy.array([
     [0.5, 1.0, 0.5, 1.8],
     [0.3, 2.0, 1.0, 1.8],
     [10.0, 1.0, 0.5, 1.8],
 ])
 pd = PhaseDispersion(*velocity_model.T, algorithm="fast-delta", dc=0.001)
+
+# Periods must be sorted starting with low periods
 f = numpy.linspace(0.1, 10.0, 100)
 t = 1.0 / f[::-1]
 
+# Compute the 20 first Rayleigh- and Love- waves modal dispersion curves
+# Fundamental mode corresponds to mode 0
 cpr = [pd(t, mode=i, wave="rayleigh") for i in range(20)]
 cpl = [pd(t, mode=i, wave="love") for i in range(20)]
 ```
