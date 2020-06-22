@@ -1,5 +1,8 @@
 """
-This module is a Numba implementation of the Fortran program surf96.
+Numba implementation of the Fortran program surf96.
+
+This module is not a one-to-one translation from Fortran to Python.
+The code has been adapted and optimized for Numba.
 
 ..
 
@@ -356,7 +359,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
                 scale[i] = 1
                 Cb[i] /= Ca[i]
                 Sb[i] /= Ca[i]
-                
+
         elif c > beta[i]:
             Cb[i] = numpy.cos(wvno * s[i].imag * d[i])
             Sb[i] = numpy.sin(wvno * s[i].imag * d[i]) * 1j
