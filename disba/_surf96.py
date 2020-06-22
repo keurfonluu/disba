@@ -374,15 +374,14 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
     for i in range(nl - 1):
         p1 = Cb[i] * X[1] + s[i] * Sb[i] * X[2]
         p2 = Cb[i] * X[3] + s[i] * Sb[i] * X[4]
+        p3 = Cb[i] * X[2]
+        p4 = Cb[i] * X[4]
         if c == beta[i]:
-            p3 = Cb[i] * X[2]
-            p4 = Cb[i] * X[4]
-            if scale[i] == 0:
-                p3 += wvno * d[i] * X[1]
-                p4 += wvno * d[i] * X[3]
+            p3 += wvno * d[i] * X[1]
+            p4 += wvno * d[i] * X[3]
         else:
-            p3 = Sb[i] * X[1] / s[i] + Cb[i] * X[2]
-            p4 = Sb[i] * X[3] / s[i] + Cb[i] * X[4]
+            p3 += Sb[i] * X[1] / s[i]
+            p4 += Sb[i] * X[3] / s[i]
 
         if scale[i] == 1:
             q1 = p1 - r[i] * p2
@@ -390,8 +389,8 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
             q2 = p4
             q4 = p2
             if c != alpha[i]:
-                q2 -= -p3 / r[i]
-                q4 -= -p1 / r[i]
+                q2 -= p3 / r[i]
+                q4 -= p1 / r[i]
         else:
             q1 = Ca[i] * p1 - r[i] * Sa[i] * p2
             q3 = Ca[i] * p3 - r[i] * Sa[i] * p4
