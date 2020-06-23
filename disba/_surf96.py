@@ -164,7 +164,7 @@ def var(p, q, ra, rb, wvno, xka, xkb, dpth):
 
 
 @jitted
-def dltar1(wvno, omega, d, a, b, rho):
+def dltar1(wvno, omega, d, a, b, rho, llw):
     """Love wave period equation."""
     beta1 = b[-1]
     rho1 = rho[-1]
@@ -175,7 +175,7 @@ def dltar1(wvno, omega, d, a, b, rho):
     e1 = rho1 * rb
     e2 = 1.0 / (beta1 * beta1)
 
-    for m in range(len(d) - 2, -1, -1):
+    for m in range(len(d) - 2, llw, -1):
         beta1 = b[m]
         rho1 = rho[m]
         xmu = rho1 * beta1 * beta1
@@ -215,7 +215,7 @@ def dltar1(wvno, omega, d, a, b, rho):
 
 
 @jitted
-def dltar4(wvno, omega, d, a, b, rho):
+def dltar4(wvno, omega, d, a, b, rho, llw):
     """Rayleigh wave period equation."""
     e = numpy.zeros(5, dtype=numpy.float64)
     ee = numpy.zeros(5, dtype=numpy.float64)
@@ -244,7 +244,7 @@ def dltar4(wvno, omega, d, a, b, rho):
     e[4] = wvno2 - ra * rb
 
     # Matrix multiplication from bottom layer upward
-    for m in range(len(d) - 2, -1, -1):
+    for m in range(len(d) - 2, llw, -1):
         xka = omega / a[m]
         xkb = omega / b[m]
         t = b[m] / omega
@@ -261,7 +261,6 @@ def dltar4(wvno, omega, d, a, b, rho):
         rho1 = rho[m]
         p = ra * dpth
         q = rb * dpth
-        # beta = b[m]
 
         # Evaluate cosP, cosQ...
         _, _, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz = var(
@@ -280,7 +279,23 @@ def dltar4(wvno, omega, d, a, b, rho):
         for i in range(5):
             e[i] = ee[i]
 
-    return e[0]
+    if llw == 0:
+        xka = omega / a[0]
+        wvnop = wvno + xka
+        wvnom = numpy.abs(wvno - xka)
+        ra = numpy.sqrt(wvnop * wvnom)
+        dpth = d[0]
+        rho1 = rho[0]
+        p = ra * dpth
+        w, cosp, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz = var(
+            p, q, ra, 1.0e-5, wvno, xka, xkb, dpth
+        )
+        w0 = -rho1 * w
+        dlt = cosp * e[0] + w0 * e[1]
+    else:
+        dlt = e[0]
+
+    return dlt
 
 
 @jitted
@@ -424,18 +439,18 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
 
 
 @jitted
-def dltar(wvno, omega, d, a, b, rho, ifunc):
+def dltar(wvno, omega, d, a, b, rho, ifunc, llw):
     """Select Rayleigh or Love wave period equation."""
     if ifunc == 1:
-        return dltar1(wvno, omega, d, a, b, rho)
+        return dltar1(wvno, omega, d, a, b, rho, llw)
     elif ifunc == 2:
-        return dltar4(wvno, omega, d, a, b, rho)
+        return dltar4(wvno, omega, d, a, b, rho, llw)
     else:
         return fast_delta(wvno, omega, d, a, b, rho)
 
 
 @jitted
-def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
+def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw):
     """Hybrid method for refining root once it has been bracketted."""
     x = numpy.zeros(20, dtype=numpy.float64)
     y = numpy.zeros(20, dtype=numpy.float64)
@@ -443,7 +458,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
     # Initial guess
     omega = twopi / t
     c3 = 0.5 * (c1 + c2)
-    del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
+    del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
     nev = 1
     nctrl = 1
 
@@ -457,7 +472,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
         if c3 < min(c1, c2) or c3 > max(c1, c2):
             nev = 0
             c3 = 0.5 * (c1 + c2)
-            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
+            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
 
         s13 = del1 - del3
         s32 = del3 - del2
@@ -487,7 +502,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
         s2 = 0.01 * ss2
         if s1 > ss2 or s2 > ss1 or nev == 0:
             c3 = 0.5 * (c1 + c2)
-            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
+            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
             nev = 1
             m = 1
         else:
@@ -514,13 +529,13 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
 
             if flag:
                 c3 = x[0]
-                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
+                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
                 nev = 2
                 m += 1
                 m = min(m, 10)
             else:
                 c3 = 0.5 * (c1 + c2)
-                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc)
+                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
                 nev = 1
                 m = 1
 
@@ -528,11 +543,11 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc):
 
 
 @jitted
-def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc):
+def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw):
     """Bracket dispersion curve and then refine it."""
     # Bracket solution
     omega = twopi / t1
-    del1 = dltar(omega / c1, omega, d, a, b, rho, ifunc)
+    del1 = dltar(omega / c1, omega, d, a, b, rho, ifunc, llw)
     del1st = del1 if ifirst else del1st
     idir = -1.0 if not ifirst and numpy.sign(del1st) * numpy.sign(del1) < 0.0 else 1.0
 
@@ -545,10 +560,10 @@ def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc):
             c1 = clow
         else:
             omega = twopi / t1
-            del2 = dltar(omega / c2, omega, d, a, b, rho, ifunc)
+            del2 = dltar(omega / c2, omega, d, a, b, rho, ifunc, llw)
 
             if numpy.sign(del1) != numpy.sign(del2):
-                c1 = nevill(t1, c1, c2, del1, del2, d, a, b, rho, ifunc)
+                c1 = nevill(t1, c1, c2, del1, del2, d, a, b, rho, ifunc, llw)
                 iret = c1 > betmx
                 break
 
@@ -591,6 +606,9 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
     kmax = len(t)
     c = numpy.zeros(kmax, dtype=numpy.float64)
     cg = numpy.zeros(kmax, dtype=numpy.float64)
+
+    # Check for water layer
+    llw = 0 if b[0] <= 0.0 else -1
 
     # Find the extremal velocities to assist in starting search
     betmx = -1.0e20
@@ -638,7 +656,7 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
 
             # Bracket root and refine it
             c1, del1st, iret = getsol(
-                t[k], c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc
+                t[k], c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw,
             )
 
             if iret and iq > 0:
