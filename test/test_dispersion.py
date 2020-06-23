@@ -1,8 +1,8 @@
 import numpy
 import pytest
 
-import helpers
 import disba
+import helpers
 
 
 @pytest.mark.parametrize(
@@ -22,7 +22,7 @@ def test_phase(mode, wave, algorithm, cref):
 
     pd = disba.PhaseDispersion(*velocity_model, algorithm=algorithm)
     cp = pd(t, mode, wave)
-    
+
     assert numpy.allclose(cref, cp.velocity.sum(), atol=0.001)
 
 
