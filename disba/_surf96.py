@@ -287,11 +287,10 @@ def dltar4(wvno, omega, d, a, b, rho, llw):
         dpth = d[0]
         rho1 = rho[0]
         p = ra * dpth
-        w, cosp, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz = var(
+        w, cosp, _, _, _, _, _, _, _, _, _, _ = var(
             p, q, ra, 1.0e-5, wvno, xka, xkb, dpth
         )
-        w0 = -rho1 * w
-        dlt = cosp * e[0] + w0 * e[1]
+        dlt = cosp * e[0] - rho1 * w * e[1]
     else:
         dlt = e[0]
 
