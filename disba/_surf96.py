@@ -615,7 +615,7 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
 
     one = 1.0e-2
     onea = 1.5
-    for iq in range(mode):
+    for iq in range(mode + 1):
         ibeg = 0
         iend = kmax
 
@@ -645,7 +645,7 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
                 for i in range(k, kmax):
                     cg[i] = 0.0
 
-                if iq == mode - 1:
+                if iq == mode:
                     return cg
                 else:
                     c1 = 0.0
