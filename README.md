@@ -22,7 +22,8 @@ Forward modeling:
 
 -   Compute Rayleigh-wave dispersion curves using _Dunkin's matrix_ or _fast delta matrix_ algorithms,
 -   Compute Love-wave dispersion curves using _Thomson-Haskell_ method,
--   Support phase and group dispersion velocity.
+-   Support phase and group dispersion velocity,
+-   Support single top water layer.
 
 ## Installation
 
