@@ -383,11 +383,11 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
             Cb[i] = numpy.cos(wvno * s[i].imag * d[i])
             Sb[i] = numpy.sin(wvno * s[i].imag * d[i]) * 1j
 
-    # Rayleigh-wave fast delta matrix
     if llw == 0:
         Cb[0] = 1.0
         Sb[0] = 0.0
 
+    # Rayleigh-wave fast delta matrix
     X[0] = 2.0 * t[0]
     X[1] = -t[0] * t[0]
     X[4] = -4.0
@@ -626,13 +626,15 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
         if b[i] > 0.01 and b[i] < betmn:
             betmn = b[i]
             jmn = i
-        elif b[i] < 0.01 and a[i] > betmn:
+            jsol = False
+        elif b[i] < 0.01 and a[i] < betmn:
             betmn = a[i]
             jmn = i
+            jsol = True
         betmx = max(betmx, b[i])
 
     # Solid layer solve halfspace period equation
-    cc = gtsolh(a[jmn], b[jmn])
+    cc = betmn if jsol else gtsolh(a[jmn], b[jmn])
 
     # Back off a bit to get a starting value at a lower phase velocity
     cc *= 0.9
