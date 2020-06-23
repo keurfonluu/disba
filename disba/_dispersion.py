@@ -77,7 +77,7 @@ class PhaseDispersion(BaseDispersion):
             self._velocity_p,
             self._velocity_s,
             self._density,
-            mode + 1,
+            mode,
             ifunc[self._algorithm][wave],
             self._dc,
         )
@@ -156,7 +156,7 @@ class GroupDispersion(BaseDispersion):
             self._velocity_p,
             self._velocity_s,
             self._density,
-            mode + 1,
+            mode,
             ifunc[self._algorithm][wave],
             self._dc,
         )
@@ -173,13 +173,15 @@ class GroupDispersion(BaseDispersion):
             self._velocity_p,
             self._velocity_s,
             self._density,
-            mode + 1,
+            mode,
             ifunc[self._algorithm][wave],
             self._dc,
         )
-        t1 = 1.0 / t1
-        t2 = 1.0 / t2
-        c = (t1 - t2) / (t1 / c - t2 / c2)
+
+        idx = c2 > 0.0
+        t1 = 1.0 / t1[idx]
+        t2 = 1.0 / t2[idx]
+        c = (t1 - t2) / (t1 / c[idx] - t2 / c2[idx])
 
         return DispersionCurve(t, c, mode, wave, "group")
 
