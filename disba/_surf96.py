@@ -299,13 +299,18 @@ def dltar4(wvno, omega, d, a, b, rho, llw):
 
 
 @jitted
-def fast_delta(wvno, omega, d, alpha, beta, rho):
+def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
     """
     Fast delta matrix.
 
     After Buchen and Ben-Hador (1996).
 
     """
+    # Handle water layer
+    if llw == 0:
+        beta = beta * 1.0
+        beta[0] = 1.0e-8
+
     # Initialize arrays
     nl = len(alpha)
 
@@ -380,6 +385,10 @@ def fast_delta(wvno, omega, d, alpha, beta, rho):
             Sb[i] = numpy.sin(wvno * s[i].imag * d[i]) * 1j
 
     # Rayleigh-wave fast delta matrix
+    if llw == 0:
+        Cb[0] = 1.0
+        Sb[0] = 0.0
+
     X[0] = 2.0 * t[0]
     X[1] = -t[0] * t[0]
     X[4] = -4.0
@@ -446,7 +455,7 @@ def dltar(wvno, omega, d, a, b, rho, ifunc, llw):
     elif ifunc == 2:
         return dltar4(wvno, omega, d, a, b, rho, llw)
     else:
-        return fast_delta(wvno, omega, d, a, b, rho)
+        return fast_delta(wvno, omega, d, a, b, rho, llw)
 
 
 @jitted
