@@ -23,7 +23,13 @@ ifunc = {
 
 class PhaseDispersion(BaseDispersion):
     def __init__(
-        self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005
+        self,
+        thickness,
+        velocity_p,
+        velocity_s,
+        density,
+        algorithm="dunkin",
+        dc=0.005,
     ):
         """
         Phase velocity dispersion class.
@@ -64,7 +70,7 @@ class PhaseDispersion(BaseDispersion):
         Returns
         -------
         namedtuple
-            Dispersion curve as a namedtuple (period, velocity, mode, type).
+            Dispersion curve as a namedtuple (period, velocity, mode, wave, type).
 
         Note
         ----
@@ -124,6 +130,7 @@ class GroupDispersion(BaseDispersion):
 
         """
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
+        
         self._dt = dt
 
     def __call__(self, t, mode=0, wave="rayleigh"):
@@ -142,7 +149,7 @@ class GroupDispersion(BaseDispersion):
         Returns
         -------
         namedtuple
-            Dispersion curve as a namedtuple (period, velocity, mode, type).
+            Dispersion curve as a namedtuple (period, velocity, mode, wave, type).
 
         Note
         ----
@@ -179,6 +186,7 @@ class GroupDispersion(BaseDispersion):
         )
 
         idx = c2 > 0.0
+        t = t[idx]
         t1 = 1.0 / t1[idx]
         t2 = 1.0 / t2[idx]
         c = (t1 - t2) / (t1 / c[idx] - t2 / c2[idx])
