@@ -3,7 +3,6 @@ from collections import namedtuple
 import numpy
 
 from ._base import BaseSensitivity
-from ._common import jitted
 from ._dispersion import GroupDispersion, PhaseDispersion
 
 __all__ = [
