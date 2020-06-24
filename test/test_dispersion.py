@@ -41,8 +41,8 @@ def test_group(mode, wave, algorithm, cref):
     velocity_model = helpers.velocity_model(5)
     t = numpy.logspace(0.0, 1.0, 20)
 
-    pd = disba.GroupDispersion(*velocity_model, algorithm=algorithm)
-    cg = pd(t, mode, wave)
+    gd = disba.GroupDispersion(*velocity_model, algorithm=algorithm)
+    cg = gd(t, mode, wave)
 
     assert numpy.allclose(cref, cg.velocity.sum(), atol=0.001)
 

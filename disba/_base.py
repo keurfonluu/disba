@@ -3,9 +3,9 @@ from abc import ABC
 import numpy
 
 
-class BaseDispersion(ABC):
+class Base(ABC):
     def __init__(self, thickness, velocity_p, velocity_s, density, algorithm, dc):
-        """Base class for surface wave dispersion."""
+        """Base class."""
         self._thickness = numpy.asarray(thickness)
         self._velocity_p = numpy.asarray(velocity_p)
         self._velocity_s = numpy.asarray(velocity_s)
@@ -42,3 +42,22 @@ class BaseDispersion(ABC):
     def dc(self):
         """Return phase velocity increment for root finding."""
         return self._dc
+
+
+class BaseDispersion(Base):
+    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm, dc):
+        """Base class for surface wave dispersion."""
+        super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
+
+
+class BaseSensitivity(Base):
+    def __init__(self, thickness, velocity_p, velocity_s, density, algorithm, dc, dp):
+        """Base class for sensitivity kernel."""
+        super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
+
+        self._dp = dp
+
+    @property
+    def dp(self):
+        """Return parameter increment (%) for numerical partial derivatives."""
+        return self._dp
