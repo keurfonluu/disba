@@ -23,13 +23,7 @@ ifunc = {
 
 class PhaseDispersion(BaseDispersion):
     def __init__(
-        self,
-        thickness,
-        velocity_p,
-        velocity_s,
-        density,
-        algorithm="dunkin",
-        dc=0.005,
+        self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005,
     ):
         """
         Phase velocity dispersion class.
@@ -130,7 +124,7 @@ class GroupDispersion(BaseDispersion):
 
         """
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
-        
+
         self._dt = dt
 
     def __call__(self, t, mode=0, wave="rayleigh"):
