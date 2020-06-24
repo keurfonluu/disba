@@ -21,7 +21,7 @@ import helpers
 def test_phase(wave, parameter, kref, atol):
     velocity_model = helpers.velocity_model(5)
 
-    ps = disba.PhaseSensitivity(*velocity_model)
+    ps = disba.PhaseSensitivity(*velocity_model, dp=0.005)
     kp = ps(10.0, 0, wave, parameter)
 
     assert numpy.allclose(kref, kp.kernel.sum(), atol=atol)
@@ -43,7 +43,7 @@ def test_phase(wave, parameter, kref, atol):
 def test_group(wave, parameter, kref, atol):
     velocity_model = helpers.velocity_model(5)
 
-    gs = disba.GroupSensitivity(*velocity_model)
+    gs = disba.GroupSensitivity(*velocity_model, dt=0.005, dp=0.005)
     kg = gs(10.0, 0, wave, parameter)
 
     assert numpy.allclose(kref, kg.kernel.sum(), atol=atol)

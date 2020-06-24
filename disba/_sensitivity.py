@@ -110,8 +110,8 @@ class GroupSensitivity(BaseSensitivity):
         density,
         algorithm="dunkin",
         dc=0.005,
-        dt=0.005,
-        dp=0.005,
+        dt=0.025,
+        dp=0.025,
     ):
         """
         Phase velocity sensitivity kernel class.
@@ -132,9 +132,9 @@ class GroupSensitivity(BaseSensitivity):
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
         dc : scalar, optional, default 0.005
             Phase velocity increment for root finding.
-        dt : scalar, optional, default 0.005
+        dt : scalar, optional, default 0.025
             Frequency increment (%) for calculating group velocity.
-        dp : scalar, optional, default 0.005
+        dp : scalar, optional, default 0.025
             Parameter increment (%) for numerical partial derivatives.
 
         """

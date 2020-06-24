@@ -104,7 +104,7 @@ class GroupDispersion(BaseDispersion):
         density,
         algorithm="dunkin",
         dc=0.005,
-        dt=0.005,
+        dt=0.025,
     ):
         """
         Group velocity dispersion class.
@@ -125,7 +125,7 @@ class GroupDispersion(BaseDispersion):
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
         dc : scalar, optional, default 0.005
             Phase velocity increment for root finding.
-        dt : scalar, optional, default 0.005
+        dt : scalar, optional, default 0.025
             Frequency increment (%) for calculating group velocity.
 
         """
