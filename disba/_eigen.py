@@ -82,7 +82,7 @@ class EigenFunction(Base):
             self._dc,
         )
 
-        depth = self._thickness.cumsum()
+        depth = self._thickness.cumsum() - self._thickness[0]
         if wave == "love":
             uu, tt = egn.T
             wegn = LoveEigen(depth, uu, tt, t, mode)
