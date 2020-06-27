@@ -27,7 +27,7 @@ class PhaseSensitivity(BaseSensitivity):
         density,
         algorithm="dunkin",
         dc=0.005,
-        dp=0.005,
+        dp=0.025,
     ):
         """
         Phase velocity sensitivity kernel class.
@@ -48,7 +48,7 @@ class PhaseSensitivity(BaseSensitivity):
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
         dc : scalar, optional, default 0.005
             Phase velocity increment for root finding.
-        dp : scalar, optional, default 0.005
+        dp : scalar, optional, default 0.025
             Parameter increment (%) for numerical partial derivatives.
 
         """
@@ -90,7 +90,14 @@ class PhaseSensitivity(BaseSensitivity):
         c1, kernel = surfker(pd, period, mode, wave, parameter, self._dp)
 
         return SensitivityKernel(
-            self._thickness.cumsum(), kernel, t, c1, mode, wave, "phase", parameter,
+            self._thickness.cumsum() - self._thickness[0],
+            kernel,
+            t,
+            c1,
+            mode,
+            wave,
+            "phase",
+            parameter,
         )
 
 
@@ -172,7 +179,14 @@ class GroupSensitivity(BaseSensitivity):
         c1, kernel = surfker(gd, period, mode, wave, parameter, self._dp)
 
         return SensitivityKernel(
-            self._thickness.cumsum(), kernel, t, c1, mode, wave, "group", parameter,
+            self._thickness.cumsum() - self._thickness[0],
+            kernel,
+            t,
+            c1,
+            mode,
+            wave,
+            "group",
+            parameter,
         )
 
     @property
@@ -190,9 +204,9 @@ def surfker(dispersion, period, mode, wave, parameter, dp):
     nl = len(dispersion._thickness)
     kernel = numpy.zeros(nl)
 
-    # Love-waves are not sensitive to compressional waves
+    # Love-waves are not sensitive to compressional wave velocities
     if not (parameter == "velocity_p" and wave == "love"):
-        # Ignore some layers depending on inputs
+        # Ignore top and/or bottom layers depending on inputs
         cond = parameter == "velocity_s" or wave == "love"
         ibeg = int(dispersion._velocity_s[0] <= 0.0 and cond)
         iend = nl - 1 if parameter == "thickness" else nl

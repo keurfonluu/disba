@@ -1,6 +1,7 @@
 from collections import namedtuple
 
 from ._base import BaseDispersion
+from ._common import ifunc
 from ._surf96 import surf96
 
 __all__ = [
@@ -13,12 +14,6 @@ __all__ = [
 DispersionCurve = namedtuple(
     "DispersionCurve", ("period", "velocity", "mode", "wave", "type")
 )
-
-
-ifunc = {
-    "dunkin": {"love": 1, "rayleigh": 2},
-    "fast-delta": {"love": 1, "rayleigh": 3},
-}
 
 
 class PhaseDispersion(BaseDispersion):
