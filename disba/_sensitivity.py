@@ -27,7 +27,7 @@ class PhaseSensitivity(BaseSensitivity):
         density,
         algorithm="dunkin",
         dc=0.005,
-        dp=0.005,
+        dp=0.025,
     ):
         """
         Phase velocity sensitivity kernel class.
@@ -48,7 +48,7 @@ class PhaseSensitivity(BaseSensitivity):
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
         dc : scalar, optional, default 0.005
             Phase velocity increment for root finding.
-        dp : scalar, optional, default 0.005
+        dp : scalar, optional, default 0.025
             Parameter increment (%) for numerical partial derivatives.
 
         """
