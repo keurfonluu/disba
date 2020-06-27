@@ -6,7 +6,7 @@
 [![Version](https://img.shields.io/pypi/v/disba.svg?style=flat)](https://pypi.org/project/disba)
 [![Downloads](https://pepy.tech/badge/disba)](https://pepy.tech/project/disba)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat)](https://github.com/psf/black)
-[![Codacy Badge](https://img.shields.io/codacy/grade/1d2218bb7d0e4e0fb2dec26fa32fe92e.svg?style=flat)](https://www.codacy.com/manual/keurfonluu/disba?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=keurfonluu/disba&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://img.shields.io/codacy/grade/1d2218bb7d0e4e0fb2dec26fa32fe92e.svg?style=flat)](https://www.codacy.com/manual/keurfonluu/disba?utm_source=github.com&utm_medium=referral&utm_content=keurfonluu/disba&utm_campaign=Badge_Grade)
 [![Codecov](https://img.shields.io/codecov/c/github/keurfonluu/disba.svg?style=flat)](https://codecov.io/gh/keurfonluu/disba)
 
 **`disba`** is a computationally efficient Python library for the modeling of surface wave dispersion that implements a subset of codes from [Computer Programs in Seismology (CPS)](http://www.eas.slu.edu/eqc/eqccps.html) in Python compiled [_just-in-time_](https://en.wikipedia.org/wiki/Just-in-time_compilation) with [**`numba`**](https://numba.pydata.org/). Such implementation alleviates the usual prerequisite for a Fortran compiler needed by other libraries also based on CPS (e.g. [**`pysurf96`**](https://github.com/miili/pysurf96), [**`srfpython`**](https://github.com/obsmax/srfpython) and [**`PyLayeredModel`**](https://github.com/harrymd/PyLayeredModel)) which often leads to further installation troubleshooting, especially on Windows platform.
@@ -99,7 +99,7 @@ eigl = eigf(20.0, mode=0, wave="love")
 ```
 
 | <img src="https://github.com/keurfonluu/disba/blob/master/.github/eigen_rayleigh.svg"> | <img src="https://github.com/keurfonluu/disba/blob/master/.github/eigen_love.svg"> |
-| :-------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+| :------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: |
 
 And sensitivity kernels:
 
