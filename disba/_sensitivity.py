@@ -90,7 +90,14 @@ class PhaseSensitivity(BaseSensitivity):
         c1, kernel = surfker(pd, period, mode, wave, parameter, self._dp)
 
         return SensitivityKernel(
-            self._thickness.cumsum() - self._thickness[0], kernel, t, c1, mode, wave, "phase", parameter,
+            self._thickness.cumsum() - self._thickness[0],
+            kernel,
+            t,
+            c1,
+            mode,
+            wave,
+            "phase",
+            parameter,
         )
 
 
@@ -172,7 +179,14 @@ class GroupSensitivity(BaseSensitivity):
         c1, kernel = surfker(gd, period, mode, wave, parameter, self._dp)
 
         return SensitivityKernel(
-            self._thickness.cumsum() - self._thickness[0], kernel, t, c1, mode, wave, "group", parameter,
+            self._thickness.cumsum() - self._thickness[0],
+            kernel,
+            t,
+            c1,
+            mode,
+            wave,
+            "group",
+            parameter,
         )
 
     @property
