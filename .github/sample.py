@@ -80,7 +80,7 @@ for wave in ["rayleigh", "love"]:
 
 
 # Sensitivity kernel
-ps = PhaseSensitivity(*velocity_model.T, dp=0.025)
+ps = PhaseSensitivity(*velocity_model.T)
 labels = {
     "thickness": "$\\partial c / \\partial d$",
     "velocity_p": "$\\partial c / \\partial \\alpha$",
