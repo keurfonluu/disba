@@ -1,10 +1,10 @@
 from collections import namedtuple
 
+import numpy
+
 from ._base import Base
 from ._common import ifunc
 from ._swegn96 import swegn96
-
-import numpy
 
 __all__ = [
     "LoveEigen",
@@ -15,7 +15,9 @@ __all__ = [
 
 LoveEigen = namedtuple("LoveEigen", ("depth", "uu", "tt", "period", "mode"))
 
-RayleighEigen = namedtuple("RayleighEigen", ("depth", "ur", "uz", "tz", "tr", "period", "mode"))
+RayleighEigen = namedtuple(
+    "RayleighEigen", ("depth", "ur", "uz", "tz", "tr", "period", "mode")
+)
 
 
 class EigenFunction(Base):
@@ -68,7 +70,7 @@ class EigenFunction(Base):
         """
         if numpy.ndim(t) > 0:
             raise ValueError("Period t must be scalar.")
-        
+
         egn = swegn96(
             t,
             self._thickness,
@@ -77,7 +79,7 @@ class EigenFunction(Base):
             self._density,
             mode,
             ifunc[self._algorithm][wave],
-            self._dc
+            self._dc,
         )
 
         depth = self._thickness.cumsum()

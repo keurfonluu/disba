@@ -49,7 +49,9 @@ def evalg(m, d, a, b, rho, wvno, om):
 
     # Half space
     if b[m] > 0.01:
-        gbr[0] = rho[m] * rho[m] * om2 * om2 * (-gam * gam * ra * rb + wvno2 * gamm1 * gamm1)
+        gbr[0] = (
+            rho[m] * rho[m] * om2 * om2 * (-gam * gam * ra * rb + wvno2 * gamm1 * gamm1)
+        )
         gbr[1] = -rho[m] * wvno2 * ra * om2
         gbr[2] = -rho[m] * (-gam * ra * rb + wvno2 * gamm1) * om2 * wvno
         gbr[3] = rho[m] * wvno2 * rb * om2
@@ -79,7 +81,12 @@ def evalg(m, d, a, b, rho, wvno, om):
 
 @jitted
 def varl(m, omega, wvno, dpth, b, rho):
-    """Find variables cosQ, sinQ... for Love-wave."""
+    """
+    Find variables cosQ, sinQ...
+
+    for Love-wave.
+
+    """
     # Define the horizontal wavenumber for the S-wave
     xkb = omega / b[m]
 
@@ -116,7 +123,12 @@ def varl(m, omega, wvno, dpth, b, rho):
 
 @jitted
 def varsv(p, q, rp, rsv, d, iwat):
-    """Find variables cosP, cosQ, sinP, sinQ... for Rayleigh-wave."""
+    """
+    Find variables cosP, cosQ, sinP, sinQ...
+
+    for Rayleigh-wave.
+
+    """
     pr = numpy.real(p)
     pi = numpy.imag(p)
     qr = numpy.real(q)
@@ -133,11 +145,7 @@ def varsv(p, q, rp, rsv, d, iwat):
         cosp = numpy.real(epp + pfac * epm)
         sinp = epp - pfac * epm
         rsinp = numpy.real(rp * sinp)
-        sinpr = (
-            d
-            if numpy.abs(pr) < 1.0e-5 and numpy.abs(rp) < 1.0e-5
-            else sinp / rp
-        )
+        sinpr = d if numpy.abs(pr) < 1.0e-5 and numpy.abs(rp) < 1.0e-5 else sinp / rp
 
         cosq = 1.0
         rsinq = 0.0
@@ -153,11 +161,7 @@ def varsv(p, q, rp, rsv, d, iwat):
         cosp = numpy.real(epp + pfac * epm)
         sinp = epp - pfac * epm
         rsinp = numpy.real(rp * sinp)
-        sinpr = (
-            d
-            if numpy.abs(pr) < 1.0e-5 and numpy.abs(rp) < 1.0e-5
-            else sinp / rp
-        )
+        sinpr = d if numpy.abs(pr) < 1.0e-5 and numpy.abs(rp) < 1.0e-5 else sinp / rp
 
         eqp = 0.5 * (numpy.cos(qi) + numpy.sin(qi) * 1j)
         eqm = numpy.conj(eqp)
@@ -165,11 +169,7 @@ def varsv(p, q, rp, rsv, d, iwat):
         cosq = numpy.real(eqp + svfac * eqm)
         sinq = eqp - svfac * eqm
         rsinq = numpy.real(rsv * sinq)
-        sinqr = (
-            d
-            if numpy.abs(qr) < 1.0e-5 and numpy.abs(rsv) < 1.0e-5
-            else sinq / rsv
-        )
+        sinqr = d if numpy.abs(qr) < 1.0e-5 and numpy.abs(rsv) < 1.0e-5 else sinq / rsv
 
     return cosp, cosq, rsinp, rsinq, sinpr, sinqr, pex, svex
 
@@ -194,8 +194,10 @@ def hskl(m, b, mu, cosq, y, z):
 
 
 @jitted
-def hska(omega, wvno, b, rho, cosp, rsinp, sinpr, tcossv, trsinsv, tsinsvr, pex, svex, iwat):
-    "Thomson-Haskell's matrix for Rayleigh-wave."
+def hska(
+    omega, wvno, b, rho, cosp, rsinp, sinpr, tcossv, trsinsv, tsinsvr, pex, svex, iwat
+):
+    """Thomson-Haskell's matrix for Rayleigh-wave."""
     aa = numpy.zeros((4, 4), dtype=numpy.complex_)
     wvno2 = wvno * wvno
     om2 = omega * omega
@@ -266,7 +268,7 @@ def dnka(omega, wvno, b, rho, cosp, rsinp, sinpr, cossv, rsinsv, sinsvr, ex, exa
         cqx = cossv * rsinp
         xy = rsinp * sinsvr
         xz = rsinp * rsinsv
-        wy = sinpr * sinsvr  
+        wy = sinpr * sinsvr
         wz = sinpr * rsinsv
 
         # Elastic layer
@@ -306,7 +308,7 @@ def dnka(omega, wvno, b, rho, cosp, rsinp, sinpr, cossv, rsinsv, sinsvr, ex, exa
         ca[1, 3] = -wz
         ca[1, 4] = ca[0, 3]
 
-        temp = (0.5 + 0.0 * 1j) *a0cgg1 * gg1 + gam2 * gxz2 + gamm2 * g1wy2
+        temp = (0.5 + 0.0 * 1j) * a0cgg1 * gg1 + gam2 * gxz2 + gamm2 * g1wy2
         ca[2, 0] = -(2.0 + 0.0 * 1j) * temp * rho * om2 / wvno
         ca[2, 1] = -wvno * (gam * cqxw2 - gamm1 * cpy) * (2.0 + 0.0 * 1j)
         ca[2, 3] = -2.0 * ca[1, 2]
@@ -357,14 +359,14 @@ def shup(omega, wvno, d, a, b, rho):
     # Kludge for fluid core
     if b[-1] > 0.01:
         dpth = 0.0
-        rb, mu, cosq, _, _, _, eexl = varl(mmax-1, omega, wvno, dpth, b, rho)
+        rb, mu, cosq, _, _, _, eexl = varl(mmax - 1, omega, wvno, dpth, b, rho)
         uu[-1] = 0.0
         tt[-1] = -mu * rb
     else:
         uu[-1] = 0.0
         tt[-1] = 1.0
 
-    for i in range(mmax-2, -1, -1):
+    for i in range(mmax - 2, -1, -1):
         if b[i] > 0.01:
             dpth = d[i]
             rb, mu, cosq, _, y, z, eexl = varl(i, omega, wvno, dpth, b, rho)
@@ -393,7 +395,7 @@ def shup(omega, wvno, d, a, b, rho):
 def svup(omega, wvno, d, a, b, rho):
     """
     Find the values of the Dunkin vectors for Rayleigh-wave.
-    
+
     Values are calculated at each layer boundaries from bottom layer upward.
 
     """
@@ -424,7 +426,21 @@ def svup(omega, wvno, d, a, b, rho):
         cosp, cossv, rsinp, rsinsv, sinpr, sinsvr, pex, svex = varsv(
             p, q, rp, rsv, d[m], iwat
         )
-        ca = dnka(omega, wvno, b[m], rho[m], cosp, rsinp, sinpr, cossv, rsinsv, sinsvr, pex, pex + svex, iwat)
+        ca = dnka(
+            omega,
+            wvno,
+            b[m],
+            rho[m],
+            cosp,
+            rsinp,
+            sinpr,
+            cossv,
+            rsinsv,
+            sinsvr,
+            pex,
+            pex + svex,
+            iwat,
+        )
 
         for i in range(5):
             cr = 0.0
@@ -445,7 +461,7 @@ def svup(omega, wvno, d, a, b, rho):
 def svdown(omega, wvno, d, a, b, rho):
     """
     Find the values of the Haskell vectors for Rayleigh-wave.
-    
+
     Values are calculated at each layer boundaries from top layer downward.
 
     """
@@ -474,7 +490,21 @@ def svdown(omega, wvno, d, a, b, rho):
         cosp, cossv, rsinp, rsinsv, sinpr, sinsvr, pex, svex = varsv(
             p, q, rp, rsv, d[m], iwat
         )
-        aa = hska(omega, wvno, b[m], rho[m], cosp, rsinp, sinpr, cossv, rsinsv, sinsvr, pex, svex, iwat)
+        aa = hska(
+            omega,
+            wvno,
+            b[m],
+            rho[m],
+            cosp,
+            rsinp,
+            sinpr,
+            cossv,
+            rsinsv,
+            sinsvr,
+            pex,
+            svex,
+            iwat,
+        )
 
         for i in range(4):
             cc = 0.0
@@ -496,7 +526,7 @@ def svdown(omega, wvno, d, a, b, rho):
 def shfunc(omega, wvno, d, a, b, rho):
     """
     Compute eigenfunctions for Love-wave.
-    
+
     This evaluates the eigenfunctions by calling sub up.
 
     """
@@ -538,7 +568,7 @@ def shfunc(omega, wvno, d, a, b, rho):
 def svfunc(omega, wvno, d, a, b, rho):
     """
     Compute eigenfunctions for Rayleigh-wave.
-    
+
     This combines the Haskell vector from sub down and Dunkin vector from sub up.
 
     """

@@ -1,9 +1,7 @@
 from .__about__ import __version__
-
 from ._dispersion import DispersionCurve, GroupDispersion, PhaseDispersion
-from ._eigen import LoveEigen, RayleighEigen, EigenFunction
+from ._eigen import EigenFunction, LoveEigen, RayleighEigen
 from ._sensitivity import GroupSensitivity, PhaseSensitivity, SensitivityKernel
-
 from ._surf96 import surf96
 from ._swegn96 import swegn96
 
