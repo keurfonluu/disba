@@ -97,7 +97,7 @@ for wave in ["rayleigh", "love"]:
     plt.title(f"{wave.capitalize()}-wave")
     plt.xlabel("Sensitivity kernel")
     plt.ylabel("Depth [km]")
-    plt.xlim(-0.04, 0.04)
+    plt.xlim(-0.02, 0.02)
     plt.ylim(0.0, 80.0)
     plt.gca().invert_yaxis()
     plt.legend(loc=4, frameon=False)
