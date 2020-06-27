@@ -106,8 +106,8 @@ And sensitivity kernels:
 ```python
 from disba import PhaseSensitivity
 
-parameters = ["thickness", "velocity_p", "velocity_s", "density"]
 ps = PhaseSensitivity(*velocity_model.T)
+parameters = ["thickness", "velocity_p", "velocity_s", "density"]
 skr = [ps(20.0, mode=0, wave="rayleigh", parameter=parameter) for parameter in parameters]
 skl = [ps(20.0, mode=0, wave="love", parameter=parameter) for parameter in parameters]
 
