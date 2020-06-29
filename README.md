@@ -20,15 +20,14 @@
 
 Forward modeling:
 
--   Compute Rayleigh-wave dispersion curves using _Dunkin's matrix_ or _fast delta matrix_ algorithms,
--   Compute Love-wave dispersion curves using _Thomson-Haskell_ method,
--   Support phase and group dispersion velocity,
--   Support single top water layer.
+-   Compute Rayleigh-wave phase or group dispersion curves using _Dunkin's matrix_ or _fast delta matrix_ algorithms,
+-   Compute Love-wave phase or group dispersion curves using _Thomson-Haskell_ method,
+-   Compute Rayleigh-wave ellipticity.
 
 Eigenfunctions and sensitivity kernels:
 
--   Compute Rayleigh- and Love- waves eigenfunctions,
--   Compute Rayleigh- and Love- waves phase or group sensitivity kernels with respect to layer thickness, P- and S- waves velocity, and density.
+-   Compute Rayleigh- and Love- wave eigenfunctions,
+-   Compute Rayleigh- and Love- wave phase or group sensitivity kernels with respect to layer thickness, P- and S- wave velocities, and density.
 
 ## Installation
 
@@ -46,7 +45,7 @@ pip install . --user
 
 ## Usage
 
-The following example computes the Rayleigh- and Love- waves phase velocity dispersion curves for the 3 first modes.
+The following example computes the Rayleigh- and Love- wave phase velocity dispersion curves for the 3 first modes.
 
 ```python
 import numpy
@@ -70,13 +69,13 @@ velocity_model = numpy.array([
 # Periods must be sorted starting with low periods
 t = numpy.logspace(0.0, 3.0, 100)
 
-# Compute the 3 first Rayleigh- and Love- waves modal dispersion curves
+# Compute the 3 first Rayleigh- and Love- wave modal dispersion curves
 # Fundamental mode corresponds to mode 0
 pd = PhaseDispersion(*velocity_model.T)
 cpr = [pd(t, mode=i, wave="rayleigh") for i in range(3)]
 cpl = [pd(t, mode=i, wave="love") for i in range(3)]
 
-# Returns a namedtuple (period, velocity, mode, wave, type)
+# pd returns a namedtuple (period, velocity, mode, wave, type)
 ```
 
 | <img src="https://github.com/keurfonluu/disba/blob/master/.github/sample_rayleigh.svg"> | <img src="https://github.com/keurfonluu/disba/blob/master/.github/sample_love.svg"> |
@@ -84,7 +83,7 @@ cpl = [pd(t, mode=i, wave="love") for i in range(3)]
 
 Likewise, `GroupDispersion` can be used for group velocity.
 
-**`disba`**'s API is consistent between all its classes which are initialized and called in the same fashion. Eigenfunctions are calculated as follow:
+**`disba`**'s API is consistent across all its classes which are initialized and called in the same fashion. Thus, eigenfunctions are calculated as follow:
 
 ```python
 from disba import EigenFunction
@@ -93,9 +92,9 @@ eigf = EigenFunction(*velocity_model.T)
 eigr = eigf(20.0, mode=0, wave="rayleigh")
 eigl = eigf(20.0, mode=0, wave="love")
 
-# Returns a namedtuple
-#  - (depth, ur, uz, tz, tr, period, mode) for Rayleigh-waves
-#  - (depth, uu, tt, period, mode) for Love-waves
+# eigf returns a namedtuple
+#  - (depth, ur, uz, tz, tr, period, mode) for Rayleigh-wave
+#  - (depth, uu, tt, period, mode) for Love-wave
 ```
 
 | <img src="https://github.com/keurfonluu/disba/blob/master/.github/eigen_rayleigh.svg"> | <img src="https://github.com/keurfonluu/disba/blob/master/.github/eigen_love.svg"> |
@@ -111,7 +110,7 @@ parameters = ["thickness", "velocity_p", "velocity_s", "density"]
 skr = [ps(20.0, mode=0, wave="rayleigh", parameter=parameter) for parameter in parameters]
 skl = [ps(20.0, mode=0, wave="love", parameter=parameter) for parameter in parameters]
 
-# Returns a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter)
+# ps returns a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter)
 ```
 
 | <img src="https://github.com/keurfonluu/disba/blob/master/.github/kernel_rayleigh.svg"> | <img src="https://github.com/keurfonluu/disba/blob/master/.github/kernel_love.svg"> |
