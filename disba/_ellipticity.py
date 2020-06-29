@@ -11,7 +11,7 @@ __all__ = [
 ]
 
 
-RayleighEllipticity = namedtuple("RayleighEllipticity", ("period", "ellipticity", "mode"))
+RayleighEllipticity = namedtuple("RayleighEllipticity", ("period", "ellipticity"))
 
 
 class Ellipticity(Base):
@@ -41,7 +41,7 @@ class Ellipticity(Base):
         """
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
 
-    def __call__(self, t, mode=0):
+    def __call__(self, t):
         """
         Compute Rayleigh-wave ellipticity for input period axis.
 
@@ -49,13 +49,11 @@ class Ellipticity(Base):
         ----------
         t : array_like
             Periods (in s).
-        mode : int, optional, default 0
-            Mode number (0 if fundamental).
 
         Returns
         -------
         namedtuple
-            Rayleigh-wave ellipticity as a namedtuple (period, ellipticity, mode).
+            Rayleigh-wave ellipticity as a namedtuple (period, ellipticity).
 
         """
         eigf = EigenFunction(
@@ -67,7 +65,7 @@ class Ellipticity(Base):
             self._dc,
         )
 
-        eigs = [eigf(tt, mode, wave="rayleigh") for tt in t]
+        eigs = [eigf(tt, mode=0, wave="rayleigh") for tt in t]
         ell = [eig.ur[0] / eig.uz[0] for eig in eigs]
 
-        return RayleighEllipticity(t, numpy.array(ell), mode)
+        return RayleighEllipticity(t, numpy.array(ell))
