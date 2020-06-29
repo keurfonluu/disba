@@ -1,7 +1,7 @@
 import numpy
 
-import helpers
 import disba
+import helpers
 
 
 def test_ellipticity():
