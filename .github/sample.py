@@ -92,12 +92,12 @@ for wave in ["rayleigh", "love"]:
 
     for parameter in ["thickness", "velocity_p", "velocity_s", "density"]:
         sk = ps(20.0, mode=0, wave=wave, parameter=parameter)
-        plt.plot(sk.kernel, sk.depth, linewidth=1, label=labels[parameter])
+        plt.plot(sk.kernel * 1.0e2, sk.depth, linewidth=1, label=labels[parameter])
 
     plt.title(f"{wave.capitalize()}-wave")
-    plt.xlabel("Sensitivity kernel")
+    plt.xlabel("Sensitivity kernel ($\\times 10^{-2}$)")
     plt.ylabel("Depth [km]")
-    plt.xlim(-0.02, 0.02)
+    plt.xlim(-2.0, 2.0)
     plt.ylim(0.0, 80.0)
     plt.gca().invert_yaxis()
     plt.legend(loc=4, frameon=False)
