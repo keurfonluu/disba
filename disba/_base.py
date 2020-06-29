@@ -46,7 +46,7 @@ class Base(ABC):
 
 class BaseDispersion(Base):
     def __init__(self, thickness, velocity_p, velocity_s, density, algorithm, dc):
-        """Base class for surface wave dispersion."""
+        """Base class for dispersion."""
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
 
 
