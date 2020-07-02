@@ -22,6 +22,7 @@ The code has been adapted and optimized for Numba.
 import numpy
 
 from ._common import jitted
+from ._exception import DispersionError
 
 __all__ = [
     "surf96",
@@ -669,15 +670,18 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
                 t[k], c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw,
             )
 
-            if iret and iq > 0:
-                for i in range(k, kmax):
-                    cg[i] = 0.0
+            if iret:
+                if iq > 0:
+                    for i in range(k, kmax):
+                        cg[i] = 0.0
 
-                if iq == mode:
-                    return cg
+                    if iq == mode:
+                        return cg
+                    else:
+                        c1 = 0.0
+                        break
                 else:
-                    c1 = 0.0
-                    break
+                    raise DispersionError("failed to find root for fundamental mode")
 
             c[k] = c1
             cg[k] = c[k]
