@@ -609,7 +609,7 @@ def gtsolh(a, b):
 
 
 @jitted
-def surf96(t, d, a, b, rho, mode, ifunc, dc):
+def getc(t, d, a, b, rho, mode, ifunc, dc):
     """Get phase velocity dispersion curve."""
     # Initialize arrays
     kmax = len(t)
@@ -688,3 +688,74 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
             c1 = 0.0
 
     return cg
+
+
+@jitted
+def surf96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, dc=0.005, dt=0.025):
+    """
+    Get phase or group velocity dispersion curve.
+
+    Parameters
+    ----------
+    t : array_like
+        Periods (in s).
+    d : array_like
+        Layer thickness (in km).
+    a : array_like
+        Layer P-wave velocity (in km/s).
+    b : array_like
+        Layer S-wave velocity (in km/s).
+    rho : array_like
+        Layer density (in g/cm3).
+    mode : int, optional, default 0
+        Mode number (0 if fundamental).
+    itype : int, optional, default 0
+        Velocity type:
+         - 0: phase velocity,
+         - 1: group velocity.
+    ifunc : int, optional, default 2
+        Select wave type and algorithm for period equation:
+         - 1: Love-wave (Thomson-Haskell method),
+         - 2: Rayleigh-wave (Dunkin's matrix),
+         - 3: Rayleigh-wave (fast delta matrix).
+    dc : scalar, optional, default 0.005
+        Phase velocity increment for root finding.
+    dt : scalar, optional, default 0.025
+        Frequency increment (%) for calculating group velocity.
+
+    Returns
+    -------
+    array_like
+        Phase or group dispersion velocity.
+
+    """
+    nt = len(t)
+    t1 = numpy.empty(nt, dtype=numpy.float64)
+    t2 = numpy.empty(nt, dtype=numpy.float64)
+
+    if itype == 1:
+        fac = 1.0 + dt
+        for i in range(nt):
+            t1[i] = t[i] / fac
+    else:
+        for i in range(nt):
+            t1[i] = t[i]
+
+    c1 = getc(t1, d, a, b, rho, mode, ifunc, dc)
+
+    if itype == 1:
+        fac = 1.0 - dt
+        for i in range(nt):
+            t2[i] = t[i] / fac
+        
+        c2 = getc(t2, d, a, b, rho, mode, ifunc, dc)
+
+        for i in range(nt):
+            if c2[i] > 0.0:
+                t1i = 1.0 / t1[i]
+                t2i = 1.0 / t2[i]
+                c1[i] = (t1i - t2i) / (t1i / c1[i] - t2i / c2[i])
+            else:
+                c1[i] = 0.0
+
+    return c1

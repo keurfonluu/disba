@@ -645,7 +645,7 @@ def swegn96(t, d, a, b, rho, mode, ifunc, dc):
     # Compute eigenvalue (phase velocity)
     period = numpy.empty(1, dtype=numpy.float64)
     period[0] = t
-    c = surf96(period, d, a, b, rho, mode, ifunc, dc)
+    c = surf96(period, d, a, b, rho, mode, 0, ifunc, dc)
     omega = 2.0 * numpy.pi / t
     wvno = omega / c[0]
 
