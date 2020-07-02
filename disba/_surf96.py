@@ -681,9 +681,7 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
                         c1 = 0.0
                         break
                 else:
-                    raise DispersionError(
-                        "failed to find root for fundamental mode"
-                    )
+                    raise DispersionError("failed to find root for fundamental mode")
 
             c[k] = c1
             cg[k] = c[k]

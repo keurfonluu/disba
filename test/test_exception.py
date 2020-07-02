@@ -1,16 +1,12 @@
 import numpy
 import pytest
 
-from disba import PhaseDispersion, DispersionError
+from disba import DispersionError, PhaseDispersion
 
 
 def test_exception():
     velocity_model = numpy.array(
-        [
-            [0.5, 1.0, 0.5, 2.00],
-            [0.3, 2.0, 1.0, 2.00],
-            [1.0, 1.0, 0.5, 2.00],
-        ]
+        [[0.5, 1.0, 0.5, 2.00], [0.3, 2.0, 1.0, 2.00], [1.0, 1.0, 0.5, 2.00]]
     )
     f = numpy.linspace(0.1, 10.0, 60)
     t = 1.0 / f[::-1]
