@@ -639,7 +639,37 @@ def svfunc(omega, wvno, d, a, b, rho):
 
 @jitted
 def swegn96(t, d, a, b, rho, mode, ifunc, dc):
-    """Get eigenfunctions for a given period and mode."""
+    """
+    Get eigenfunctions for a given period and mode.
+    
+    Parameters
+    ----------
+    t : scalar
+        Period (in s).
+    d : array_like
+        Layer thickness (in km).
+    a : array_like
+        Layer P-wave velocity (in km/s).
+    b : array_like
+        Layer S-wave velocity (in km/s).
+    rho : array_like
+        Layer density (in g/cm3).
+    mode : int, optional, default 0
+        Mode number (0 if fundamental).
+    ifunc : int, optional, default 2
+        Select wave type and algorithm for period equation:
+         - 1: Love-wave (Thomson-Haskell method),
+         - 2: Rayleigh-wave (Dunkin's matrix),
+         - 3: Rayleigh-wave (fast delta matrix).
+    dc : scalar, optional, default 0.005
+        Phase velocity increment for root finding.
+
+    Returns
+    -------
+    array_like
+        Eigenfunctions.
+
+    """
     mmax = len(d)
 
     # Compute eigenvalue (phase velocity)
@@ -658,7 +688,7 @@ def swegn96(t, d, a, b, rho, mode, ifunc, dc):
             egn[i, 0] = uu[i]
             egn[i, 1] = tt[i]
 
-    elif ifunc == 2 or ifunc == 3:
+    else:
         ur, uz, tz, tr = svfunc(omega, wvno, d, a, b, rho)
 
         egn = numpy.empty((mmax, 4), dtype=numpy.float64)
