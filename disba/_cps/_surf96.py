@@ -312,26 +312,26 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
         beta[0] = 1.0e-8
 
     # Initialize arrays
-    nl = len(alpha)
+    mmax = len(d)
 
-    mu = numpy.zeros(nl)
-    gam = numpy.zeros(nl)
-    t = numpy.zeros(nl)
+    mu = numpy.zeros(mmax)
+    gam = numpy.zeros(mmax)
+    t = numpy.zeros(mmax)
 
-    r = numpy.zeros(nl, dtype=numpy.complex_)
-    s = numpy.zeros(nl, dtype=numpy.complex_)
-    Ca = numpy.ones(nl - 1, dtype=numpy.complex_)
-    Cb = numpy.ones(nl - 1, dtype=numpy.complex_)
-    Sa = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    Sb = numpy.zeros(nl - 1, dtype=numpy.complex_)
+    r = numpy.zeros(mmax, dtype=numpy.complex_)
+    s = numpy.zeros(mmax, dtype=numpy.complex_)
+    Ca = numpy.ones(mmax - 1, dtype=numpy.complex_)
+    Cb = numpy.ones(mmax - 1, dtype=numpy.complex_)
+    Sa = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    Sb = numpy.zeros(mmax - 1, dtype=numpy.complex_)
 
-    eps = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    eta = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    a = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    ap = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    b = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    bp = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    scale = numpy.zeros(nl - 1, dtype=numpy.int32)
+    eps = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    eta = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    a = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    ap = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    b = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    bp = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    scale = numpy.zeros(mmax - 1, dtype=numpy.int32)
 
     X = numpy.zeros(5, dtype=numpy.complex_)
 
@@ -340,7 +340,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
     c2 = c * c
 
     # Layer eigenfunctions and other variables
-    for i in range(nl):
+    for i in range(mmax):
         mu[i] = rho[i] * beta[i] ** 2
         gam[i] = beta[i] ** 2 / c2
         t[i] = 2.0 - c2 / beta[i] ** 2
@@ -355,7 +355,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
         elif c > beta[i]:
             s[i] = numpy.sqrt(c2 / beta[i] ** 2 - 1.0) * 1j
 
-    for i in range(nl - 1):
+    for i in range(mmax - 1):
         eps[i] = rho[i + 1] / rho[i]
         eta[i] = 2.0 * (gam[i] - eps[i] * gam[i + 1])
         a[i] = eps[i] + eta[i]
@@ -395,7 +395,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
     X *= mu[0] * mu[0]
     normc(X)
 
-    for i in range(nl - 1):
+    for i in range(mmax - 1):
         p1 = Cb[i] * X[1] + s[i] * Sb[i] * X[2]
         p2 = Cb[i] * X[3] + s[i] * Sb[i] * X[4]
         p3 = Cb[i] * X[2]
@@ -622,8 +622,8 @@ def getc(t, d, a, b, rho, mode, ifunc, dc):
     # Find the extremal velocities to assist in starting search
     betmx = -1.0e20
     betmn = 1.0e20
-    nl = len(b)
-    for i in range(nl):
+    mmax = len(d)
+    for i in range(mmax):
         if b[i] > 0.01 and b[i] < betmn:
             betmn = b[i]
             jmn = i
