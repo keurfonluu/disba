@@ -1,7 +1,7 @@
 import numpy
 
-from ._surf96 import surf96
 from .._common import jitted
+from ._surf96 import surf96
 
 __all__ = [
     "srfker96",

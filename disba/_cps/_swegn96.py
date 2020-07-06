@@ -23,9 +23,9 @@ Only the computation of eigenfunctions is implemented.
 
 import numpy
 
+from .._common import jitted
 from ._common import normc
 from ._surf96 import surf96
-from .._common import jitted
 
 __all__ = [
     "swegn96",
