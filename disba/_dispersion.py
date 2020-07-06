@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from ._base import BaseDispersion
 from ._common import ifunc
-from ._surf96 import surf96
+from ._cps import surf96
 
 __all__ = [
     "DispersionCurve",
@@ -73,6 +73,7 @@ class PhaseDispersion(BaseDispersion):
             self._velocity_s,
             self._density,
             mode,
+            0,
             ifunc[self._algorithm][wave],
             self._dc,
         )
@@ -145,40 +146,22 @@ class GroupDispersion(BaseDispersion):
         This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
 
         """
-        t1 = t / (1.0 + self._dt)
         c = surf96(
-            t1,
+            t,
             self._thickness,
             self._velocity_p,
             self._velocity_s,
             self._density,
             mode,
+            1,
             ifunc[self._algorithm][wave],
             self._dc,
+            self._dt,
         )
 
         idx = c > 0.0
         t = t[idx]
         c = c[idx]
-
-        t1 = t1[idx]
-        t2 = t / (1.0 - self._dt)
-        c2 = surf96(
-            t2,
-            self._thickness,
-            self._velocity_p,
-            self._velocity_s,
-            self._density,
-            mode,
-            ifunc[self._algorithm][wave],
-            self._dc,
-        )
-
-        idx = c2 > 0.0
-        t = t[idx]
-        t1 = 1.0 / t1[idx]
-        t2 = 1.0 / t2[idx]
-        c = (t1 - t2) / (t1 / c[idx] - t2 / c2[idx])
 
         return DispersionCurve(t, c, mode, wave, "group")
 

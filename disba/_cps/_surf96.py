@@ -21,8 +21,9 @@ The code has been adapted and optimized for Numba.
 
 import numpy
 
-from ._common import jitted
-from ._exception import DispersionError
+from .._common import jitted
+from .._exception import DispersionError
+from ._common import normc
 
 __all__ = [
     "surf96",
@@ -83,20 +84,6 @@ def dnka(wvno2, gam, gammk, rho, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz):
     ca[2, 4] = t * ca[0, 2]
 
     return ca
-
-
-@jitted
-def normc(ee):
-    """Normalize Haskell or Dunkin vectors."""
-    t1 = 0.0
-    for i in range(5):
-        t1 = max(t1, numpy.abs(ee[i]))
-
-    if t1 < 1.0e-40:
-        t1 = 1.0
-
-    for i in range(5):
-        ee[i] /= t1
 
 
 @jitted
@@ -276,7 +263,7 @@ def dltar4(wvno, omega, d, a, b, rho, llw):
             for j in range(5):
                 ee[i] += e[j] * ca[j, i]
 
-        normc(ee)
+        ee, _ = normc(ee, 5)
         for i in range(5):
             e[i] = ee[i]
 
@@ -312,26 +299,26 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
         beta[0] = 1.0e-8
 
     # Initialize arrays
-    nl = len(alpha)
+    mmax = len(d)
 
-    mu = numpy.zeros(nl)
-    gam = numpy.zeros(nl)
-    t = numpy.zeros(nl)
+    mu = numpy.zeros(mmax)
+    gam = numpy.zeros(mmax)
+    t = numpy.zeros(mmax)
 
-    r = numpy.zeros(nl, dtype=numpy.complex_)
-    s = numpy.zeros(nl, dtype=numpy.complex_)
-    Ca = numpy.ones(nl - 1, dtype=numpy.complex_)
-    Cb = numpy.ones(nl - 1, dtype=numpy.complex_)
-    Sa = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    Sb = numpy.zeros(nl - 1, dtype=numpy.complex_)
+    r = numpy.zeros(mmax, dtype=numpy.complex_)
+    s = numpy.zeros(mmax, dtype=numpy.complex_)
+    Ca = numpy.ones(mmax - 1, dtype=numpy.complex_)
+    Cb = numpy.ones(mmax - 1, dtype=numpy.complex_)
+    Sa = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    Sb = numpy.zeros(mmax - 1, dtype=numpy.complex_)
 
-    eps = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    eta = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    a = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    ap = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    b = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    bp = numpy.zeros(nl - 1, dtype=numpy.complex_)
-    scale = numpy.zeros(nl - 1, dtype=numpy.int32)
+    eps = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    eta = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    a = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    ap = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    b = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    bp = numpy.zeros(mmax - 1, dtype=numpy.complex_)
+    scale = numpy.zeros(mmax - 1, dtype=numpy.int32)
 
     X = numpy.zeros(5, dtype=numpy.complex_)
 
@@ -340,7 +327,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
     c2 = c * c
 
     # Layer eigenfunctions and other variables
-    for i in range(nl):
+    for i in range(mmax):
         mu[i] = rho[i] * beta[i] ** 2
         gam[i] = beta[i] ** 2 / c2
         t[i] = 2.0 - c2 / beta[i] ** 2
@@ -355,7 +342,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
         elif c > beta[i]:
             s[i] = numpy.sqrt(c2 / beta[i] ** 2 - 1.0) * 1j
 
-    for i in range(nl - 1):
+    for i in range(mmax - 1):
         eps[i] = rho[i + 1] / rho[i]
         eta[i] = 2.0 * (gam[i] - eps[i] * gam[i + 1])
         a[i] = eps[i] + eta[i]
@@ -393,9 +380,9 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
     X[1] = -t[0] * t[0]
     X[4] = -4.0
     X *= mu[0] * mu[0]
-    normc(X)
+    X, _ = normc(X, 5)
 
-    for i in range(nl - 1):
+    for i in range(mmax - 1):
         p1 = Cb[i] * X[1] + s[i] * Sb[i] * X[2]
         p2 = Cb[i] * X[3] + s[i] * Sb[i] * X[4]
         p3 = Cb[i] * X[2]
@@ -442,7 +429,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
         X[2] = eps[i] * q3
         X[3] = eps[i] * q4
         X[4] = bp[i] * z1 + b[i] * z2
-        normc(X)
+        X, _ = normc(X, 5)
 
     return numpy.real(X[1] + s[-1] * X[3] - r[-1] * (X[3] + s[-1] * X[4]))
 
@@ -609,7 +596,7 @@ def gtsolh(a, b):
 
 
 @jitted
-def surf96(t, d, a, b, rho, mode, ifunc, dc):
+def getc(t, d, a, b, rho, mode, ifunc, dc):
     """Get phase velocity dispersion curve."""
     # Initialize arrays
     kmax = len(t)
@@ -622,8 +609,8 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
     # Find the extremal velocities to assist in starting search
     betmx = -1.0e20
     betmn = 1.0e20
-    nl = len(b)
-    for i in range(nl):
+    mmax = len(d)
+    for i in range(mmax):
         if b[i] > 0.01 and b[i] < betmn:
             betmn = b[i]
             jmn = i
@@ -688,3 +675,74 @@ def surf96(t, d, a, b, rho, mode, ifunc, dc):
             c1 = 0.0
 
     return cg
+
+
+@jitted
+def surf96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, dc=0.005, dt=0.025):
+    """
+    Get phase or group velocity dispersion curve.
+
+    Parameters
+    ----------
+    t : array_like
+        Periods (in s).
+    d : array_like
+        Layer thickness (in km).
+    a : array_like
+        Layer P-wave velocity (in km/s).
+    b : array_like
+        Layer S-wave velocity (in km/s).
+    rho : array_like
+        Layer density (in g/cm3).
+    mode : int, optional, default 0
+        Mode number (0 if fundamental).
+    itype : int, optional, default 0
+        Velocity type:
+         - 0: phase velocity,
+         - 1: group velocity.
+    ifunc : int, optional, default 2
+        Select wave type and algorithm for period equation:
+         - 1: Love-wave (Thomson-Haskell method),
+         - 2: Rayleigh-wave (Dunkin's matrix),
+         - 3: Rayleigh-wave (fast delta matrix).
+    dc : scalar, optional, default 0.005
+        Phase velocity increment for root finding.
+    dt : scalar, optional, default 0.025
+        Frequency increment (%) for calculating group velocity.
+
+    Returns
+    -------
+    array_like
+        Phase or group dispersion velocity.
+
+    """
+    nt = len(t)
+    t1 = numpy.empty(nt, dtype=numpy.float64)
+    t2 = numpy.empty(nt, dtype=numpy.float64)
+
+    if itype == 1:
+        fac = 1.0 + dt
+        for i in range(nt):
+            t1[i] = t[i] / fac
+    else:
+        for i in range(nt):
+            t1[i] = t[i]
+
+    c1 = getc(t1, d, a, b, rho, mode, ifunc, dc)
+
+    if itype == 1:
+        fac = 1.0 - dt
+        for i in range(nt):
+            t2[i] = t[i] / fac
+
+        c2 = getc(t2, d, a, b, rho, mode, ifunc, dc)
+
+        for i in range(nt):
+            if c2[i] > 0.0:
+                t1i = 1.0 / t1[i]
+                t2i = 1.0 / t2[i]
+                c1[i] = (t1i - t2i) / (t1i / c1[i] - t2i / c2[i])
+            else:
+                c1[i] = 0.0
+
+    return c1

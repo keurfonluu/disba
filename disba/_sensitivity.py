@@ -3,7 +3,8 @@ from collections import namedtuple
 import numpy
 
 from ._base import BaseSensitivity
-from ._dispersion import GroupDispersion, PhaseDispersion
+from ._common import ifunc, ipar
+from ._cps import srfker96
 
 __all__ = [
     "SensitivityKernel",
@@ -75,19 +76,19 @@ class PhaseSensitivity(BaseSensitivity):
             Sensitivity kernel as a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter).
 
         """
-        if numpy.ndim(t) > 0:
-            raise ValueError("Period t must be scalar.")
-
-        period = numpy.array([t])
-        pd = PhaseDispersion(
+        c1, kernel = srfker96(
+            t,
             self._thickness,
             self._velocity_p,
             self._velocity_s,
             self._density,
-            self._algorithm,
-            self._dc,
+            mode=mode,
+            itype=0,
+            ifunc=ifunc[self._algorithm][wave],
+            ipar=ipar[parameter],
+            dc=self._dc,
+            dp=self._dp,
         )
-        c1, kernel = surfker(pd, period, mode, wave, parameter, self._dp)
 
         return SensitivityKernel(
             self._thickness.cumsum() - self._thickness[0],
@@ -163,20 +164,20 @@ class GroupSensitivity(BaseSensitivity):
             Sensitivity kernel as a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter).
 
         """
-        if numpy.ndim(t) > 0:
-            raise ValueError("Period t must be scalar.")
-
-        period = numpy.array([t])
-        gd = GroupDispersion(
+        c1, kernel = srfker96(
+            t,
             self._thickness,
             self._velocity_p,
             self._velocity_s,
             self._density,
-            self._algorithm,
-            self._dc,
-            self._dt,
+            mode=mode,
+            itype=1,
+            ifunc=ifunc[self._algorithm][wave],
+            ipar=ipar[parameter],
+            dc=self._dc,
+            dt=self._dt,
+            dp=self._dp,
         )
-        c1, kernel = surfker(gd, period, mode, wave, parameter, self._dp)
 
         return SensitivityKernel(
             self._thickness.cumsum() - self._thickness[0],
@@ -193,32 +194,3 @@ class GroupSensitivity(BaseSensitivity):
     def dt(self):
         """Return frequency increment (%) for calculating group velocity."""
         return self._dt
-
-
-def surfker(dispersion, period, mode, wave, parameter, dp):
-    """Compute sensitivity kernel."""
-    # Reference velocity
-    c1 = dispersion(period, mode, wave)
-
-    # Initialize kernel
-    nl = len(dispersion._thickness)
-    kernel = numpy.zeros(nl)
-
-    # Love-waves are not sensitive to compressional wave velocities
-    if not (parameter == "velocity_p" and wave == "love"):
-        # Ignore top and/or bottom layers depending on inputs
-        cond = parameter == "velocity_s" or wave == "love"
-        ibeg = int(dispersion._velocity_s[0] <= 0.0 and cond)
-        iend = nl - 1 if parameter == "thickness" else nl
-
-        # Loop over layers
-        fac = 1.0 + dp
-        par = getattr(dispersion, parameter)
-        for i in range(ibeg, iend):
-            tmp = par[i]
-            par[i] /= fac
-            c2 = dispersion(period, mode, wave)
-            kernel[i] = (c2.velocity - c1.velocity) / (par[i] - tmp)
-            par[i] *= fac
-
-    return c1.velocity[0], kernel
