@@ -9,7 +9,9 @@ __all__ = [
 
 
 @jitted
-def srfker96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, ipar=2, dc=0.005, dt=0.025, dp=0.025):
+def srfker96(
+    t, d, a, b, rho, mode=0, itype=0, ifunc=2, ipar=2, dc=0.005, dt=0.025, dp=0.025
+):
     """
     Get phase or group velocity sensitivity kernel.
 
@@ -80,13 +82,9 @@ def srfker96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, ipar=2, dc=0.005, dt=0.0
         else:
             for i in range(mmax):
                 par[i] = rho[i]
-        
+
         # Ignore top and/or bottom layers depending on inputs
-        ibeg = (
-            1
-            if b[0] < 0.01 and (ipar == 2 or ifunc == 0)
-            else 0    
-        )
+        ibeg = 1 if b[0] < 0.01 and (ipar == 2 or ifunc == 0) else 0
         iend = mmax - 1 if ipar == 0 else mmax
 
         # Loop over layers
@@ -103,7 +101,7 @@ def srfker96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, ipar=2, dc=0.005, dt=0.0
                 c2 = surf96(period, d, a, par, rho, mode, itype, ifunc, dc, dt)
             else:
                 c2 = surf96(period, d, a, b, par, mode, itype, ifunc, dc, dt)
-            
+
             kernel[i] = (c2[0] - c1[0]) / (par[i] - tmp)
             par[i] *= fac
 

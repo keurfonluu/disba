@@ -641,7 +641,7 @@ def svfunc(omega, wvno, d, a, b, rho):
 def swegn96(t, d, a, b, rho, mode, ifunc, dc):
     """
     Get eigenfunctions for a given period and mode.
-    
+
     Parameters
     ----------
     t : scalar

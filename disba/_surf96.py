@@ -747,7 +747,7 @@ def surf96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, dc=0.005, dt=0.025):
         fac = 1.0 - dt
         for i in range(nt):
             t2[i] = t[i] / fac
-        
+
         c2 = getc(t2, d, a, b, rho, mode, ifunc, dc)
 
         for i in range(nt):
