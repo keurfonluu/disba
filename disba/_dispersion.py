@@ -119,6 +119,9 @@ class GroupDispersion(BaseDispersion):
             Frequency increment (%) for calculating group velocity.
 
         """
+        if not isinstance(dt, float):
+            raise TypeError()
+
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
 
         self._dt = dt

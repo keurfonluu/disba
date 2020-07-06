@@ -2,10 +2,31 @@ from abc import ABC
 
 import numpy
 
+algorithms = {"dunkin", "fast-delta"}
+
+
+def is_arraylike(arr, size):
+    """Check input array."""
+    return isinstance(arr, (list, tuple, numpy.ndarray)) and numpy.size(arr) == size
+
 
 class Base(ABC):
     def __init__(self, thickness, velocity_p, velocity_s, density, algorithm, dc):
         """Base class."""
+        mmax = len(thickness)
+        if not is_arraylike(thickness, mmax):
+            raise TypeError()
+        if not is_arraylike(velocity_p, mmax):
+            raise TypeError()
+        if not is_arraylike(velocity_s, mmax):
+            raise TypeError()
+        if not is_arraylike(density, mmax):
+            raise TypeError()
+        if algorithm not in algorithms:
+            raise ValueError()
+        if not isinstance(dc, float):
+            raise TypeError()
+
         self._thickness = numpy.asarray(thickness)
         self._velocity_p = numpy.asarray(velocity_p)
         self._velocity_s = numpy.asarray(velocity_s)
@@ -53,6 +74,9 @@ class BaseDispersion(Base):
 class BaseSensitivity(Base):
     def __init__(self, thickness, velocity_p, velocity_s, density, algorithm, dc, dp):
         """Base class for sensitivity kernel."""
+        if not isinstance(dp, float):
+            raise TypeError()
+
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
 
         self._dp = dp
