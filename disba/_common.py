@@ -5,6 +5,13 @@ ifunc = {
     "fast-delta": {"love": 1, "rayleigh": 3},
 }
 
+ipar = {
+    "thickness": 0,
+    "velocity_p": 1,
+    "velocity_s": 2,
+    "density": 3,
+}
+
 
 def jitted(*args, **kwargs):
     """Custom :func:`jit` with default options."""
