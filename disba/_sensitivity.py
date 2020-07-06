@@ -139,6 +139,9 @@ class GroupSensitivity(BaseSensitivity):
             Parameter increment (%) for numerical partial derivatives.
 
         """
+        if not isinstance(dt, float):
+            raise TypeError()
+
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc, dp)
 
         self._dt = dt
