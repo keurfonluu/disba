@@ -4,7 +4,7 @@ import numpy
 
 from ._base import Base
 from ._common import ifunc
-from ._swegn96 import swegn96
+from ._cps import swegn96
 
 __all__ = [
     "LoveEigen",

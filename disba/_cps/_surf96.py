@@ -21,8 +21,8 @@ The code has been adapted and optimized for Numba.
 
 import numpy
 
-from ._common import jitted
-from ._exception import DispersionError
+from .._common import jitted
+from .._exception import DispersionError
 
 __all__ = [
     "surf96",

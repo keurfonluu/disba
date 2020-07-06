@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from ._base import BaseDispersion
 from ._common import ifunc
-from ._surf96 import surf96
+from ._cps import surf96
 
 __all__ = [
     "DispersionCurve",

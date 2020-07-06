@@ -4,7 +4,7 @@ import numpy
 
 from ._base import BaseSensitivity
 from ._common import ifunc, ipar
-from ._srfker96 import srfker96
+from ._cps import srfker96
 
 __all__ = [
     "SensitivityKernel",
