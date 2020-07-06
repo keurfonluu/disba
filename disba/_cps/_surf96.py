@@ -21,6 +21,7 @@ The code has been adapted and optimized for Numba.
 
 import numpy
 
+from ._common import normc
 from .._common import jitted
 from .._exception import DispersionError
 
@@ -83,20 +84,6 @@ def dnka(wvno2, gam, gammk, rho, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz):
     ca[2, 4] = t * ca[0, 2]
 
     return ca
-
-
-@jitted
-def normc(ee):
-    """Normalize Haskell or Dunkin vectors."""
-    t1 = 0.0
-    for i in range(5):
-        t1 = max(t1, numpy.abs(ee[i]))
-
-    if t1 < 1.0e-40:
-        t1 = 1.0
-
-    for i in range(5):
-        ee[i] /= t1
 
 
 @jitted
@@ -276,7 +263,7 @@ def dltar4(wvno, omega, d, a, b, rho, llw):
             for j in range(5):
                 ee[i] += e[j] * ca[j, i]
 
-        normc(ee)
+        ee, _ = normc(ee, 5)
         for i in range(5):
             e[i] = ee[i]
 
@@ -393,7 +380,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
     X[1] = -t[0] * t[0]
     X[4] = -4.0
     X *= mu[0] * mu[0]
-    normc(X)
+    X, _ = normc(X, 5)
 
     for i in range(mmax - 1):
         p1 = Cb[i] * X[1] + s[i] * Sb[i] * X[2]
@@ -442,7 +429,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
         X[2] = eps[i] * q3
         X[3] = eps[i] * q4
         X[4] = bp[i] * z1 + b[i] * z2
-        normc(X)
+        X, _ = normc(X, 5)
 
     return numpy.real(X[1] + s[-1] * X[3] - r[-1] * (X[3] + s[-1] * X[4]))
 

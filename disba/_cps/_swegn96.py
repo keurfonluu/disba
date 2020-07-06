@@ -23,6 +23,7 @@ Only the computation of eigenfunctions is implemented.
 
 import numpy
 
+from ._common import normc
 from ._surf96 import surf96
 from .._common import jitted
 
@@ -137,16 +138,16 @@ def varsv(p, q, rp, rsv, d, iwat):
     pex = pr
     svex = 0.0
 
+    epp = 0.5 * (numpy.cos(pi) + numpy.sin(pi) * 1j)
+    epm = numpy.conj(epp)
+    pfac = numpy.exp(-2.0 * pr) if pr < 30.0 else 0.0
+    cosp = numpy.real(epp + pfac * epm)
+    sinp = epp - pfac * epm
+    rsinp = numpy.real(rp * sinp)
+    sinpr = d if numpy.abs(pr) < 1.0e-5 and numpy.abs(rp) < 1.0e-5 else sinp / rp
+
     # Fluid layer
     if iwat == 1:
-        epp = 0.5 * (numpy.cos(pi) + numpy.sin(pi) * 1j)
-        epm = numpy.conj(epp)
-        pfac = numpy.exp(-2.0 * pr) if pr < 30.0 else 0.0
-        cosp = numpy.real(epp + pfac * epm)
-        sinp = epp - pfac * epm
-        rsinp = numpy.real(rp * sinp)
-        sinpr = d if numpy.abs(pr) < 1.0e-5 and numpy.abs(rp) < 1.0e-5 else sinp / rp
-
         cosq = 1.0
         rsinq = 0.0
         sinqr = 0.0
@@ -154,15 +155,6 @@ def varsv(p, q, rp, rsv, d, iwat):
     # Elastic layer
     else:
         svex = qr
-
-        epp = 0.5 * (numpy.cos(pi) + numpy.sin(pi) * 1j)
-        epm = numpy.conj(epp)
-        pfac = numpy.exp(-2.0 * pr) if pr < 30.0 else 0.0
-        cosp = numpy.real(epp + pfac * epm)
-        sinp = epp - pfac * epm
-        rsinp = numpy.real(rp * sinp)
-        sinpr = d if numpy.abs(pr) < 1.0e-5 and numpy.abs(rp) < 1.0e-5 else sinp / rp
-
         eqp = 0.5 * (numpy.cos(qi) + numpy.sin(qi) * 1j)
         eqm = numpy.conj(eqp)
         svfac = numpy.exp(-2.0 * qr) if qr < 30.0 else 0.0
@@ -331,23 +323,6 @@ def dnka(omega, wvno, b, rho, cosp, rsinp, sinpr, cossv, rsinsv, sinsvr, ex, exa
 
 
 @jitted
-def normc(ee, nmat):
-    """Normalize Haskell or Dunkin vectors."""
-    t1 = 0.0
-    for i in range(nmat):
-        t1 = max(t1, numpy.abs(ee[i]))
-
-    if t1 < 1.0e-40:
-        t1 = 1.0
-
-    for i in range(nmat):
-        ee[i] /= t1
-
-    ex = numpy.log(t1)
-    return ee, ex
-
-
-@jitted
 def shup(omega, wvno, d, a, b, rho):
     """Find the elements of the Haskell matrix for Love-wave."""
     mmax = len(d)
@@ -380,8 +355,7 @@ def shup(omega, wvno, d, a, b, rho):
             # Normalize
             rr = numpy.abs(amp0)
             ss = numpy.abs(str0)
-            if ss > rr:
-                rr = ss
+            rr = max(rr, ss)
             if rr < 1.0e-30:
                 rr = 1.0
             exl[i] = numpy.log(rr) + eexl
@@ -480,7 +454,7 @@ def svdown(omega, wvno, d, a, b, rho):
     exsum = 0.0
     for m in range(mmax - 1):
         xka = omega / a[m]
-        xkb = omega / b[m] if b[m] > 0.0 else 0.0
+        xkb = omega / b[m] if b[m] > 0.01 else 0.0
         rp = numpy.sqrt(wvno2 - xka * xka + 0.0 * 1j)
         rsv = numpy.sqrt(wvno2 - xkb * xkb + 0.0 * 1j)
         p = rp * d[m]
@@ -540,9 +514,7 @@ def shfunc(omega, wvno, d, a, b, rho):
     for i in range(1, mmax):
         if b[i] > 0.01:
             ext += exl[i - 1]
-            fac = 0.0
-            if ext < 80.0:
-                fac = numpy.exp(ext)
+            fac = numpy.exp(ext) if ext < 80.0 else 0.0
             uu[i] /= fac
             tt[i] /= fac
         else:
