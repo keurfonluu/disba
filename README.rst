@@ -7,12 +7,10 @@ disba
 
 **disba** aims to be lightweight and portable without compromising on the performance. For instance, it yields similar speed compared to CPS's *surf96* program compiled with `f2py <https://numpy.org/devdocs/f2py/index.html>`__ for Rayleigh-wave but is significantly faster for Love-wave with increasing number of layers. **disba** also implements the *fast delta matrix* algorithm for Rayleigh-wave which, albeit ironically slower, is more robust and handles reversion of phase velocity caused by low velocity zones.
 
-.. figure:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/perf_rayleigh.svg
-   :alt: perf-rayleigh
-   :width: 49%
-.. figure:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/perf_love.svg
-   :alt: perf-love
-   :width: 49%
+.. list-table::
+
+   *  - |Perf Rayleigh|
+      - |Perf Love|
 
 Features
 --------
@@ -79,12 +77,10 @@ The following example computes the Rayleigh- and Love- wave phase velocity dispe
 
    # pd returns a namedtuple (period, velocity, mode, wave, type)
 
-.. figure:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_rayleigh.svg
-   :alt: sample-rayleigh
-   :width: 49%
-.. figure:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_love.svg
-   :alt: sample-love
-   :width: 49%
+.. list-table::
+
+   *  - |Sample Rayleigh|
+      - |Sample Love|
 
 Likewise, ``GroupDispersion`` can be used for group velocity.
 
@@ -102,12 +98,10 @@ Likewise, ``GroupDispersion`` can be used for group velocity.
    #  - (depth, ur, uz, tz, tr, period, mode) for Rayleigh-wave
    #  - (depth, uu, tt, period, mode) for Love-wave
 
-.. figure:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/eigen_rayleigh.svg
-   :alt: eigen-rayleigh
-   :width: 49%
-.. figure:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/eigen_love.svg
-   :alt: eigen-love
-   :width: 49%
+.. list-table::
+
+   *  - |Eigen Rayleigh|
+      - |Eigen Love|
 
 And sensitivity kernels:
 
@@ -122,12 +116,10 @@ And sensitivity kernels:
 
    # ps returns a namedtuple (depth, kernel, period, velocity, mode,wave, type, parameter)
 
-.. figure:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/kernel_rayleigh.svg
-   :alt: kernel-rayleigh
-   :width: 49%
-.. figure:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/kernel_love.svg
-   :alt: kernel-love
-   :width: 49%
+.. list-table::
+
+   *  - |Kernel Rayleigh|
+      - |Kernel Love|
 
 .. |License| image:: https://img.shields.io/github/license/keurfonluu/disba
    :target: https://github.com/keurfonluu/disba/blob/master/LICENSE
@@ -152,3 +144,27 @@ And sensitivity kernels:
 
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/keurfonluu/disba.svg?style=flat
    :target: https://codecov.io/gh/keurfonluu/disba
+
+.. |Perf Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/perf_rayleigh.svg
+   :alt: perf-rayleigh
+
+.. |Perf Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/perf_love.svg
+   :alt: perf-love
+
+.. |Sample Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_rayleigh.svg
+   :alt: sample-rayleigh
+
+.. |Sample Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_love.svg
+   :alt: sample-love
+
+.. |Eigen Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/eigen_rayleigh.svg
+   :alt: eigen-rayleigh
+
+.. |Eigen Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/eigen_love.svg
+   :alt: eigen-love
+
+.. |Kernel Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/kernel_rayleigh.svg
+   :alt: kernel-rayleigh
+
+.. |Kernel Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/kernel_love.svg
+   :alt: kernel-love
