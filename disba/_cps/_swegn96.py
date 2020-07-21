@@ -83,9 +83,7 @@ def evalg(m, d, a, b, rho, wvno, om):
 @jitted
 def varl(m, omega, wvno, dpth, b, rho):
     """
-    Find variables cosQ, sinQ...
-
-    for Love-wave.
+    Find variables cosQ, sinQ for Love-wave.
 
     """
     # Define the horizontal wavenumber for the S-wave
@@ -125,9 +123,7 @@ def varl(m, omega, wvno, dpth, b, rho):
 @jitted
 def varsv(p, q, rp, rsv, d, iwat):
     """
-    Find variables cosP, cosQ, sinP, sinQ...
-
-    for Rayleigh-wave.
+    Find variables cosP, cosQ, sinP, sinQ for Rayleigh-wave.
 
     """
     pr = numpy.real(p)

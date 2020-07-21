@@ -69,7 +69,7 @@ The following example computes the Rayleigh- and Love- wave phase velocity dispe
    # Periods must be sorted starting with low periods
    t = numpy.logspace(0.0, 3.0, 100)
 
-   # Compute the 3 first Rayleigh- and Love- wave modal dispersioncurves
+   # Compute the 3 first Rayleigh- and Love- wave modal dispersion curves
    # Fundamental mode corresponds to mode 0
    pd = PhaseDispersion(*velocity_model.T)
    cpr = [pd(t, mode=i, wave="rayleigh") for i in range(3)]
