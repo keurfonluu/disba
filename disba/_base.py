@@ -2,6 +2,8 @@ from abc import ABC
 
 import numpy
 
+from ._helpers import resample
+
 algorithms = {"dunkin", "fast-delta"}
 
 
@@ -33,6 +35,31 @@ class Base(ABC):
         self._density = numpy.asarray(density)
         self._algorithm = algorithm
         self._dc = dc
+
+    def resample(self, dz):
+        """
+        Resample velocity model.
+        
+        Parameters
+        ----------
+        dz : scalar
+            Maximum layer thickness (in km).
+        
+        """
+        if dz <= 0.0:
+            raise ValueError()
+            
+        d, a, b, rho = resample(
+            self._thickness,
+            self._velocity_p,
+            self._velocity_s,
+            self._density,
+            dz,
+        )
+        self._thickness = d
+        self._velocity_p = a
+        self._velocity_s = b
+        self._density = rho
 
     @property
     def thickness(self):
