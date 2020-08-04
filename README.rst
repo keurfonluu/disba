@@ -33,13 +33,13 @@ The recommended way to install **disba** and all its dependencies is through the
 
 .. code:: bash
 
-   pip install disba --user
+   pip install disba[full] --user
 
 Otherwise, clone and extract the package, then run from the package location:
 
 .. code:: bash
 
-   pip install . --user
+   pip install .[full] --user
 
 Usage
 -----

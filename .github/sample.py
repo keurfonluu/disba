@@ -48,15 +48,9 @@ for wave in ["rayleigh", "love"]:
     fig.savefig(f"sample_{wave}.svg", transparent=True, bbox_inches="tight")
 
 
-# Resample velocity model with respect to depth
-thickess = numpy.ones(161) * 0.5
-idx = numpy.digitize(thickess.cumsum(), velocity_model[:, 0].cumsum(), right=True)
-velocity_model = velocity_model[idx]
-velocity_model[:, 0] = thickess
-
-
 # Eigenfunction
 eigf = EigenFunction(*velocity_model.T)
+eigf.resample(0.5)
 keys = {
     "rayleigh": ["ur", "uz", "tz", "tr"],
     "love": ["uu", "tt"],
@@ -72,7 +66,7 @@ for wave in ["rayleigh", "love"]:
     plt.xlabel("Normalized eigenfunction")
     plt.ylabel("Depth [km]")
     plt.xlim(-2.0, 2.0)
-    plt.ylim(0.0, 80.0)
+    plt.ylim(0.0, 90.0)
     plt.gca().invert_yaxis()
     plt.legend(loc=4, frameon=False)
 
@@ -81,6 +75,7 @@ for wave in ["rayleigh", "love"]:
 
 # Sensitivity kernel
 ps = PhaseSensitivity(*velocity_model.T)
+ps.resample(0.5)
 labels = {
     "thickness": "$\\partial c / \\partial d$",
     "velocity_p": "$\\partial c / \\partial \\alpha$",
@@ -98,7 +93,7 @@ for wave in ["rayleigh", "love"]:
     plt.xlabel("Sensitivity kernel ($\\times 10^{-2}$)")
     plt.ylabel("Depth [km]")
     plt.xlim(-2.0, 2.0)
-    plt.ylim(0.0, 80.0)
+    plt.ylim(0.0, 90.0)
     plt.gca().invert_yaxis()
     plt.legend(loc=4, frameon=False)
 
