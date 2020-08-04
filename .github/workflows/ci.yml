@@ -26,8 +26,9 @@ jobs:
       run: |
         pip install pytest
         pip install coverage
-        coverage run -m pytest
+        NUMBA_DISABLE_JIT=1 coverage run -m pytest
     - name: Submit coverage
+      if: ${{ matrix.python-version == '3.8' }}
       run: |
         pip install codecov
         codecov --token=${{ secrets.CODECOV_TOKEN }}
