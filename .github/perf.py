@@ -50,10 +50,8 @@ for wave in config.values():
     out = perfplot.bench(
         setup=lambda n: n,
         n_range=numpy.arange(19) + 2,
-        kernels=wave["kernels"],
         equality_check=lambda a, b: numpy.allclose(a, b, atol=0.02),
-        title=wave["title"],
         xlabel="Number of layers",
-        labels=wave["labels"],
+        **wave,
     )
     out.save(wave["filename"], transparent=True, bbox_inches="tight")
