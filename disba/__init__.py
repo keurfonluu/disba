@@ -4,6 +4,7 @@ from ._dispersion import DispersionCurve, GroupDispersion, PhaseDispersion
 from ._eigen import EigenFunction, LoveEigen, RayleighEigen
 from ._ellipticity import Ellipticity, RayleighEllipticity
 from ._exception import DispersionError
+from ._helpers import depthplot
 from ._sensitivity import GroupSensitivity, PhaseSensitivity, SensitivityKernel
 
 __all__ = [
@@ -22,5 +23,6 @@ __all__ = [
     "EigenFunction",
     "RayleighEllipticity",
     "Ellipticity",
+    "depthplot",
     "__version__",
 ]
