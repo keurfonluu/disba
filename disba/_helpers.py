@@ -1,6 +1,6 @@
-from ._common import jitted
-
 import numpy
+
+from ._common import jitted
 
 __all__ = [
     "depthplot",
@@ -14,7 +14,7 @@ def resample(thickness, velocity_p, velocity_s, density, dz):
 
     sizes = numpy.empty(mmax, dtype=numpy.int32)
     for i in range(mmax):
-        sizes[i] = numpy.ceil(thickness[i] / dz) if thickness[i] > dz else 1     
+        sizes[i] = numpy.ceil(thickness[i] / dz) if thickness[i] > dz else 1
 
     size = sizes.sum()
     d = numpy.empty(size, dtype=numpy.float64)
@@ -59,9 +59,7 @@ def depthplot(x, z, zmax, ax=None, **kwargs):
     try:
         import matplotlib.pyplot as plt
     except ImportError:
-        raise ImportError(
-            "depthplot requires matplotlib to be installed."
-        )
+        raise ImportError("depthplot requires matplotlib to be installed.")
 
     n = len(x)
     if len(z) != n:

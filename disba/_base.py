@@ -39,22 +39,18 @@ class Base(ABC):
     def resample(self, dz):
         """
         Resample velocity model.
-        
+
         Parameters
         ----------
         dz : scalar
             Maximum layer thickness (in km).
-        
+
         """
         if dz <= 0.0:
             raise ValueError()
-            
+
         d, a, b, rho = resample(
-            self._thickness,
-            self._velocity_p,
-            self._velocity_s,
-            self._density,
-            dz,
+            self._thickness, self._velocity_p, self._velocity_s, self._density, dz,
         )
         self._thickness = d
         self._velocity_p = a

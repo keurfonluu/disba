@@ -1,6 +1,6 @@
 import os
 
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import numpy
 import pytest
 
@@ -31,7 +31,7 @@ def test_resample(mode, wave, algorithm):
 
     pd.resample(0.1)
     cp = pd(t, mode, wave)
-    
+
     assert numpy.allclose(cref.velocity.sum(), cp.velocity.sum(), atol=0.1)
 
 
