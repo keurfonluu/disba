@@ -5,7 +5,7 @@ from ._eigen import EigenFunction, LoveEigen, RayleighEigen
 from ._ellipticity import Ellipticity, RayleighEllipticity
 from ._exception import DispersionError
 from ._helpers import depthplot
-from ._sensitivity import GroupSensitivity, PhaseSensitivity, SensitivityKernel
+from ._sensitivity import GroupSensitivity, PhaseSensitivity, SensitivityKernel, EllipticitySensitivity
 
 __all__ = [
     "srfker96",
@@ -18,6 +18,7 @@ __all__ = [
     "SensitivityKernel",
     "PhaseSensitivity",
     "GroupSensitivity",
+    "EllipticitySensitivity",
     "LoveEigen",
     "RayleighEigen",
     "EigenFunction",
