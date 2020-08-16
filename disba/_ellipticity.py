@@ -13,7 +13,9 @@ __all__ = [
 ]
 
 
-RayleighEllipticity = namedtuple("RayleighEllipticity", ("period", "ellipticity", "mode"))
+RayleighEllipticity = namedtuple(
+    "RayleighEllipticity", ("period", "ellipticity", "mode")
+)
 
 
 class Ellipticity(Base):

@@ -1,4 +1,7 @@
 ---
 exclude_paths:
   - '**/__init__.py'
+  - 'CODE_OF_CONDUCT.rst'
+  - 'CONTRIBUTING.rst'
   - 'tasks.py'
+  - '.github/**'

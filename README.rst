@@ -1,11 +1,11 @@
 disba
 =====
 
-|License| |Stars| |Pyversions| |Version| |Downloads| |Code style: black| |Codacy Badge| |Codecov|
+|License| |Stars| |Pyversions| |Version| |Downloads| |Code style: black| |Codacy Badge| |Codecov| |Build|
 
 **disba** is a computationally efficient Python library for the modeling of surface wave dispersion that implements a subset of codes from `Computer Programs in Seismology (CPS) <http://www.eas.slu.edu/eqc/eqccps.html>`__ in Python compiled `just-in-time <https://en.wikipedia.org/wiki/Just-in-time_compilation>`__ with `numba <https://numba.pydata.org/>`__. Such implementation alleviates the usual prerequisite for a Fortran compiler needed by other libraries also based on CPS (e.g. `pysurf96 <https://github.com/miili/pysurf96>`__, `srfpython <https://github.com/obsmax/srfpython>`__ and `PyLayeredModel <https://github.com/harrymd/PyLayeredModel>`__) which often leads to further installation troubleshooting, especially on Windows platform.
 
-**disba** aims to be lightweight and portable without compromising on the performance. For instance, it yields similar speed compared to CPS's *surf96* program compiled with `f2py <https://numpy.org/devdocs/f2py/index.html>`__ for Rayleigh-wave but is significantly faster for Love-wave with increasing number of layers. **disba** also implements the *fast delta matrix* algorithm for Rayleigh-wave which, albeit ironically slower, is more robust and handles reversion of phase velocity caused by low velocity zones.
+**disba** aims to be lightweight and portable without compromising on the performance. For instance, it yields similar speed compared to CPS's *surf96* program compiled with `f2py <https://numpy.org/devdocs/f2py/index.html>`__ for Rayleigh-wave but is significantly faster for Love-wave with increasing number of layers. **disba** also implements the *fast delta matrix* algorithm for Rayleigh-wave which, albeit ironically slower, is more robust and handles better reversion of phase velocity caused by low velocity zones.
 
 .. list-table::
 
@@ -142,6 +142,12 @@ Ellipticity and ellipticity sensitivity kernels:
    *  - |Sample Ellipticity|
       - |Kernel Ellipticity|
 
+Contributing
+------------
+
+Please refer to the `Contributing
+Guidelines <https://github.com/keurfonluu/disba/blob/master/CONTRIBUTING.rst>`__ to see how you can help. This project is released with a `Code of Conduct <https://github.com/keurfonluu/disba/blob/master/CODE_OF_CONDUCT.rst>`__ which you agree to abide by when contributing.
+
 .. |License| image:: https://img.shields.io/github/license/keurfonluu/disba
    :target: https://github.com/keurfonluu/disba/blob/master/LICENSE
 
@@ -166,6 +172,9 @@ Ellipticity and ellipticity sensitivity kernels:
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/keurfonluu/disba.svg?style=flat
    :target: https://codecov.io/gh/keurfonluu/disba
 
+.. |Build| image:: https://img.shields.io/github/workflow/status/keurfonluu/disba/Python%20package
+   :target: https://github.com/keurfonluu/disba
+
 .. |Perf Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/perf_rayleigh.svg
    :alt: perf-rayleigh
 
@@ -178,20 +187,20 @@ Ellipticity and ellipticity sensitivity kernels:
 .. |Sample Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_love.svg
    :alt: sample-love
 
-.. |Sample Ellipticity| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_ellipticity.svg
+.. |Sample Ellipticity| image:: https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/sample_ellipticity.svg
    :alt: sample-ellipticity
 
-.. |Eigen Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/eigen_rayleigh.svg
+.. |Eigen Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/eigen_rayleigh.svg
    :alt: eigen-rayleigh
 
-.. |Eigen Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/eigen_love.svg
+.. |Eigen Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/eigen_love.svg
    :alt: eigen-love
 
-.. |Kernel Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/kernel_rayleigh.svg
+.. |Kernel Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/kernel_rayleigh.svg
    :alt: kernel-rayleigh
 
-.. |Kernel Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/kernel_love.svg
+.. |Kernel Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/kernel_love.svg
    :alt: kernel-love
 
-.. |Kernel Ellipticity| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/kernel_ellipticity.svg
+.. |Kernel Ellipticity| image:: https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/kernel_ellipticity.svg
    :alt: kernel-ellipticity
