@@ -24,7 +24,7 @@ Forward modeling:
 Eigenfunctions and sensitivity kernels:
 
 -  Compute Rayleigh- and Love- wave eigenfunctions,
--  Compute Rayleigh- and Love- wave phase or group sensitivity kernels with respect to layer thickness, P- and S- wave velocities, and density.
+-  Compute Rayleigh- and Love- wave phase or group velocity, and Rayleigh-wave ellipticity sensitivity kernels with respect to layer thickness, P- and S- wave velocities, and density.
 
 Installation
 ------------
@@ -103,7 +103,7 @@ Likewise, ``GroupDispersion`` can be used for group velocity.
    *  - |Eigen Rayleigh|
       - |Eigen Love|
 
-And sensitivity kernels:
+Phase velocity sensitivity kernels (``GroupSensitivity`` for group velocity):
 
 .. code:: python
 
@@ -120,6 +120,27 @@ And sensitivity kernels:
 
    *  - |Kernel Rayleigh|
       - |Kernel Love|
+
+Ellipticity and ellipticity sensitivity kernels:
+
+.. code:: python
+
+   from disba import Ellipticity, EllipticitySensitivity
+
+   ell = Ellipticity(*velocity_model.T)
+   rel = ell(t, mode=0)
+
+   # ell returns a namedtuple (period, ellipticity, mode)
+
+   es = EllipticitySensitivity(*velocity_model.T)
+   ek = [es(20.0, mode=0, parameter=parameter) for parameter in parameters]
+
+   # es returns a namedtuple (depth, kernel, period, velocity, mode,wave, type, parameter)
+
+.. list-table::
+
+   *  - |Sample Ellipticity|
+      - |Kernel Ellipticity|
 
 .. |License| image:: https://img.shields.io/github/license/keurfonluu/disba
    :target: https://github.com/keurfonluu/disba/blob/master/LICENSE
@@ -157,6 +178,9 @@ And sensitivity kernels:
 .. |Sample Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_love.svg
    :alt: sample-love
 
+.. |Sample Ellipticity| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_ellipticity.svg
+   :alt: sample-ellipticity
+
 .. |Eigen Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/eigen_rayleigh.svg
    :alt: eigen-rayleigh
 
@@ -168,3 +192,6 @@ And sensitivity kernels:
 
 .. |Kernel Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/kernel_love.svg
    :alt: kernel-love
+
+.. |Kernel Ellipticity| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/kernel_ellipticity.svg
+   :alt: kernel-ellipticity
