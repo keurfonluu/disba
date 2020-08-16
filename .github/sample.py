@@ -116,7 +116,7 @@ fig.savefig("sample_ellipticity.svg", transparent=True, bbox_inches="tight")
 
 
 # Ellipticity sensitivity kernel
-es = EllipticitySensitivity(*velocity_model.T, dp=0.5)
+es = EllipticitySensitivity(*velocity_model.T)
 es.resample(0.5)
 labels = {
     "thickness": "$\\partial \\chi / \\partial d$",
@@ -128,7 +128,7 @@ labels = {
 fig = plt.figure()
 
 for parameter in ["thickness", "velocity_p", "velocity_s", "density"]:
-    ek = es(20.0, parameter=parameter)
+    ek = es(20.0, mode=0, parameter=parameter)
     plt.plot(ek.kernel * 1.0e2, ek.depth, linewidth=1, label=labels[parameter])
 
     plt.title("Ellipticity sensitivity")
