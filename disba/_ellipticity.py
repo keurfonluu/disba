@@ -13,7 +13,7 @@ __all__ = [
 ]
 
 
-RayleighEllipticity = namedtuple("RayleighEllipticity", ("period", "ellipticity"))
+RayleighEllipticity = namedtuple("RayleighEllipticity", ("period", "ellipticity", "mode"))
 
 
 class Ellipticity(Base):
@@ -57,7 +57,7 @@ class Ellipticity(Base):
         Returns
         -------
         namedtuple
-            Rayleigh-wave ellipticity as a namedtuple (period, ellipticity).
+            Rayleigh-wave ellipticity as a namedtuple (period, ellipticity, mode).
 
         """
         ell = []
@@ -78,4 +78,4 @@ class Ellipticity(Base):
                 i -= 1
                 break
 
-        return RayleighEllipticity(t[: i + 1], numpy.array(ell))
+        return RayleighEllipticity(t[: i + 1], numpy.array(ell), mode)
