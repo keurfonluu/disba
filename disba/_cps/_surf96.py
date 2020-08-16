@@ -153,7 +153,7 @@ def var(p, q, ra, rb, wvno, xka, xkb, dpth):
 
 @jitted
 def dltar1(wvno, omega, d, a, b, rho, llw):
-    """Love wave period equation."""
+    """Love-wave period equation."""
     beta1 = b[-1]
     rho1 = rho[-1]
     xkb = omega / beta1
@@ -204,7 +204,7 @@ def dltar1(wvno, omega, d, a, b, rho, llw):
 
 @jitted
 def dltar4(wvno, omega, d, a, b, rho, llw):
-    """Rayleigh wave period equation."""
+    """Rayleigh-wave period equation."""
     e = numpy.zeros(5, dtype=numpy.float64)
     ee = numpy.zeros(5, dtype=numpy.float64)
 

@@ -24,6 +24,7 @@ Only the computation of eigenfunctions is implemented.
 import numpy
 
 from .._common import jitted
+from .._exception import DispersionError
 from ._common import normc
 from ._surf96 import surf96
 
@@ -639,7 +640,11 @@ def swegn96(t, d, a, b, rho, mode, ifunc, dc):
     period[0] = t
     c = surf96(period, d, a, b, rho, mode, 0, ifunc, dc)
     omega = 2.0 * numpy.pi / t
-    wvno = omega / c[0]
+
+    if c[0] > 0.0:
+        wvno = omega / c[0]
+    else:
+        raise DispersionError("mode does not exist at given period")
 
     # Compute eigenfunctions
     if ifunc == 1:

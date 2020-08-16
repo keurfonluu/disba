@@ -3,7 +3,9 @@ from collections import namedtuple
 import numpy
 
 from ._base import Base
-from ._eigen import EigenFunction
+from ._common import ifunc
+from ._cps import swegn96
+from ._exception import DispersionError
 
 __all__ = [
     "RayleighEllipticity",
@@ -11,7 +13,7 @@ __all__ = [
 ]
 
 
-RayleighEllipticity = namedtuple("RayleighEllipticity", ("period", "ellipticity"))
+RayleighEllipticity = namedtuple("RayleighEllipticity", ("period", "ellipticity", "mode"))
 
 
 class Ellipticity(Base):
@@ -41,31 +43,39 @@ class Ellipticity(Base):
         """
         super().__init__(thickness, velocity_p, velocity_s, density, algorithm, dc)
 
-    def __call__(self, t):
+    def __call__(self, t, mode=0):
         """
-        Compute Rayleigh-wave ellipticity for input period axis.
+        Compute Rayleigh-wave ellipticity for input period axis and mode.
 
         Parameters
         ----------
         t : array_like
             Periods (in s).
+        mode : int, optional, default 0
+            Mode number (0 if fundamental).
 
         Returns
         -------
         namedtuple
-            Rayleigh-wave ellipticity as a namedtuple (period, ellipticity).
+            Rayleigh-wave ellipticity as a namedtuple (period, ellipticity, mode).
 
         """
-        eigf = EigenFunction(
-            self._thickness,
-            self._velocity_p,
-            self._velocity_s,
-            self._density,
-            self._algorithm,
-            self._dc,
-        )
+        ell = []
+        for i, tt in enumerate(t):
+            try:
+                eig = swegn96(
+                    tt,
+                    self._thickness,
+                    self._velocity_p,
+                    self._velocity_s,
+                    self._density,
+                    mode,
+                    ifunc[self._algorithm]["rayleigh"],
+                    self._dc,
+                )[:, :2]
+                ell.append(eig[0, 0] / eig[0, 1])
+            except DispersionError:
+                i -= 1
+                break
 
-        eigs = [eigf(tt, mode=0, wave="rayleigh") for tt in t]
-        ell = [eig.ur[0] / eig.uz[0] for eig in eigs]
-
-        return RayleighEllipticity(t, numpy.array(ell))
+        return RayleighEllipticity(t[: i + 1], numpy.array(ell), mode)

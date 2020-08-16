@@ -1,6 +1,6 @@
 import numpy
 
-from disba import EigenFunction, PhaseDispersion, PhaseSensitivity
+from disba import EigenFunction, PhaseDispersion, PhaseSensitivity, Ellipticity, EllipticitySensitivity
 
 import dufte
 import matplotlib.pyplot as plt
@@ -90,7 +90,7 @@ for wave in ["rayleigh", "love"]:
         plt.plot(sk.kernel * 1.0e2, sk.depth, linewidth=1, label=labels[parameter])
 
     plt.title(f"{wave.capitalize()}-wave")
-    plt.xlabel("Sensitivity kernel ($\\times 10^{-2}$)")
+    plt.xlabel("Sensitivity kernel [$\\times 10^{-2}$]")
     plt.ylabel("Depth [km]")
     plt.xlim(-2.0, 2.0)
     plt.ylim(0.0, 90.0)
@@ -98,3 +98,45 @@ for wave in ["rayleigh", "love"]:
     plt.legend(loc=4, frameon=False)
 
     fig.savefig(f"kernel_{wave}.svg", transparent=True, bbox_inches="tight")
+
+
+# Ellipticity
+ell = Ellipticity(*velocity_model.T)
+rel = ell(t, mode=0)
+
+fig = plt.figure()
+
+plt.semilogx(rel.period, rel.ellipticity, linewidth=1)
+plt.title("Ellipticity")
+plt.xlabel("Period [s]")
+plt.ylabel("Ellipticity [H/V]")
+plt.ylim(0.55, 0.85)
+
+fig.savefig("sample_ellipticity.svg", transparent=True, bbox_inches="tight")
+
+
+# Ellipticity sensitivity kernel
+es = EllipticitySensitivity(*velocity_model.T)
+es.resample(0.5)
+labels = {
+    "thickness": "$\\partial \\chi / \\partial d$",
+    "velocity_p": "$\\partial \\chi / \\partial \\alpha$",
+    "velocity_s": "$\\partial \\chi / \\partial \\beta$",
+    "density": "$\\partial \\chi / \\partial \\rho$",
+}
+
+fig = plt.figure()
+
+for parameter in ["thickness", "velocity_p", "velocity_s", "density"]:
+    ek = es(20.0, mode=0, parameter=parameter)
+    plt.plot(ek.kernel * 1.0e2, ek.depth, linewidth=1, label=labels[parameter])
+
+    plt.title("Ellipticity sensitivity")
+    plt.xlabel("Sensitivity kernel [$\\times 10^{-2}$]")
+    plt.ylabel("Depth [km]")
+    plt.xlim(-2.0, 2,0)
+    plt.ylim(0.0, 90.0)
+    plt.gca().invert_yaxis()
+    plt.legend(loc=4, frameon=False)
+
+fig.savefig("kernel_ellipticity.svg", transparent=True, bbox_inches="tight")

@@ -32,7 +32,6 @@ config = {
         ],
         "labels": ["pysurf96", "disba-dunkin", "disba-fast-delta"],
         "title": "Rayleigh-wave",
-        "filename": "perf_rayleigh.svg",
     },
     "love": {
         "kernels": [
@@ -41,17 +40,16 @@ config = {
         ],
         "labels": ["pysurf96", "disba"],
         "title": "Love-wave",
-        "filename": "perf_love.svg",
     },
 }
 periods = numpy.logspace(0.0, 1.0, 60)
 
-for wave in config.values():
+for k, v in config.items():
     out = perfplot.bench(
         setup=lambda n: n,
         n_range=numpy.arange(19) + 2,
         equality_check=lambda a, b: numpy.allclose(a, b, atol=0.02),
         xlabel="Number of layers",
-        **wave,
+        **v,
     )
-    out.save(wave["filename"], transparent=True, bbox_inches="tight")
+    out.save(f"perf_{k}.svg", transparent=True, bbox_inches="tight")
