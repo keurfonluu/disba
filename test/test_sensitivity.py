@@ -47,3 +47,21 @@ def test_group(wave, parameter, kref, atol):
     kg = gs(10.0, 0, wave, parameter)
 
     assert numpy.allclose(kref, kg.kernel.sum(), atol=atol)
+
+
+@pytest.mark.parametrize(
+    "parameter, kref, atol",
+    [
+        ("thickness", -0.293, 1.0e-3),
+        ("velocity_p", -0.450, 1.0e-3),
+        ("velocity_s", 0.731, 1.0e-3),
+        ("density", -0.000230, 1.0e-6),
+    ],
+)
+def test_ellipticity(parameter, kref, atol):
+    velocity_model = helpers.velocity_model(5)
+
+    es = disba.EllipticitySensitivity(*velocity_model, dp=0.005)
+    ke = es(10.0, 0, parameter)
+
+    assert numpy.allclose(kref, ke.kernel.sum(), atol=atol)
