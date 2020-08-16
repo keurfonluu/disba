@@ -1,7 +1,7 @@
 disba
 =====
 
-|License| |Stars| |Pyversions| |Version| |Downloads| |Code style: black| |Codacy Badge| |Codecov|
+|License| |Stars| |Pyversions| |Version| |Downloads| |Code style: black| |Codacy Badge| |Codecov| |Build|
 
 **disba** is a computationally efficient Python library for the modeling of surface wave dispersion that implements a subset of codes from `Computer Programs in Seismology (CPS) <http://www.eas.slu.edu/eqc/eqccps.html>`__ in Python compiled `just-in-time <https://en.wikipedia.org/wiki/Just-in-time_compilation>`__ with `numba <https://numba.pydata.org/>`__. Such implementation alleviates the usual prerequisite for a Fortran compiler needed by other libraries also based on CPS (e.g. `pysurf96 <https://github.com/miili/pysurf96>`__, `srfpython <https://github.com/obsmax/srfpython>`__ and `PyLayeredModel <https://github.com/harrymd/PyLayeredModel>`__) which often leads to further installation troubleshooting, especially on Windows platform.
 
