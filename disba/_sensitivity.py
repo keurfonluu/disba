@@ -238,7 +238,8 @@ class EllipticitySensitivity(BaseSensitivity):
 
     def __call__(self, t, mode=0, parameter="velocity_s"):
         """
-        Calculate Rayleigh-wave ellipticity sensitivity kernel for a given period and parameter.
+        Calculate Rayleigh-wave ellipticity sensitivity kernel for a given period and
+        parameter.
 
         Parameters
         ----------

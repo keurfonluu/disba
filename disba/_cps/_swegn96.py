@@ -640,7 +640,7 @@ def swegn96(t, d, a, b, rho, mode, ifunc, dc):
     period[0] = t
     c = surf96(period, d, a, b, rho, mode, 0, ifunc, dc)
     omega = 2.0 * numpy.pi / t
-    
+
     if c[0] > 0.0:
         wvno = omega / c[0]
     else:

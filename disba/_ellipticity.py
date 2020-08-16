@@ -78,4 +78,4 @@ class Ellipticity(Base):
                 i -= 1
                 break
 
-        return RayleighEllipticity(t[:i + 1], numpy.array(ell))
+        return RayleighEllipticity(t[: i + 1], numpy.array(ell))
