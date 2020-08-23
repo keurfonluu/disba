@@ -135,7 +135,7 @@ Ellipticity and ellipticity sensitivity kernels:
    es = EllipticitySensitivity(*velocity_model.T)
    ek = [es(20.0, mode=0, parameter=parameter) for parameter in parameters]
 
-   # es returns a namedtuple (depth, kernel, period, velocity, mode,wave, type, parameter)
+   # es returns a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter)
 
 .. list-table::
 
