@@ -3,9 +3,8 @@ Contributing Guidelines
 
 This project is mainly developed and maintained by `@keurfonluu <https://github.com/keurfonluu>`__. Everyone is welcomed to participate to the development of this project either by:
 
--  Submitting bug reports and/or feature requests via `issue tracker <https://github.com/keurfonluu/toughio/issues>`__,
--  Fixing bugs and/or adding new features through a `pull request <https://github.com/keurfonluu/toughio/pulls>`__,
--  Improving `documentation <https://toughio.readthedocs.io/>`__ by fixing typos and/or adding tutorials.
+-  Submitting bug reports and/or feature requests via `issue tracker <https://github.com/keurfonluu/disba/issues>`__,
+-  Fixing bugs and/or adding new features through a `pull request <https://github.com/keurfonluu/disba/pulls>`__.
 
 If you wish to participate but are new to GitHub, please read `GitHub's guide <https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests>`__ and do not hesitate to open an issue.
 
