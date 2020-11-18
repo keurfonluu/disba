@@ -58,7 +58,7 @@ class Ellipticity(Base):
 
         Returns
         -------
-        namedtuple
+        :class:`disba.RayleighEllipticity`
             Rayleigh-wave ellipticity as a namedtuple (period, ellipticity, mode).
 
         """

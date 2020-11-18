@@ -58,7 +58,7 @@ class PhaseDispersion(BaseDispersion):
 
         Returns
         -------
-        namedtuple
+        :class:`disba.DispersionCurve`
             Dispersion curve as a namedtuple (period, velocity, mode, wave, type).
 
         Note
@@ -141,7 +141,7 @@ class GroupDispersion(BaseDispersion):
 
         Returns
         -------
-        namedtuple
+        :class:`disba.DispersionCurve`
             Dispersion curve as a namedtuple (period, velocity, mode, wave, type).
 
         Note

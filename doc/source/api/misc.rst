@@ -1,0 +1,4 @@
+Miscellaneous
+=============
+
+.. autofunction:: disba.depthplot

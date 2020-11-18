@@ -1,0 +1,7 @@
+matplotlib
+sphinx
+sphinx-argparse
+sphinx-gallery
+sphinx-rtd-theme
+sphinxcontrib-bibtex
+-e git://github.com/Naeka/pybtex-apa-style.git#egg=pybtex-apa-style

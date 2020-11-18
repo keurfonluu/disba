@@ -62,10 +62,11 @@ class EigenFunction(Base):
 
         Returns
         -------
-        namedtuple
+        :class:`disba.RayleighEigen` or :class:`disba.LoveEigen`
             Eigenfunction as a namedtuple:
-             - If `wave == 'love'`, (depth, uu, tt, period, mode),
-             - If `wave == 'rayleigh'`, (depth, ur, uz, tz, tr, period, mode).
+
+             - If ``wave == 'love'``, (depth, uu, tt, period, mode),
+             - If ``wave == 'rayleigh'``, (depth, ur, uz, tz, tr, period, mode).
 
         """
         if numpy.ndim(t) > 0:
