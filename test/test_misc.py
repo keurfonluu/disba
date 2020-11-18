@@ -1,11 +1,11 @@
 import os
 
+import helpers
 import matplotlib.pyplot as plt
 import numpy
 import pytest
 
 import disba
-import helpers
 
 if not os.environ.get("DISPLAY", ""):
     plt.switch_backend("Agg")

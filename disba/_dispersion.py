@@ -18,7 +18,13 @@ DispersionCurve = namedtuple(
 
 class PhaseDispersion(BaseDispersion):
     def __init__(
-        self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005,
+        self,
+        thickness,
+        velocity_p,
+        velocity_s,
+        density,
+        algorithm="dunkin",
+        dc=0.005,
     ):
         """
         Phase velocity dispersion class.

@@ -1,8 +1,8 @@
+import helpers
 import numpy
 import pytest
 
 import disba
-import helpers
 
 
 @pytest.mark.parametrize("mode, eref", [(0, 14.038), (1, 3.290)])

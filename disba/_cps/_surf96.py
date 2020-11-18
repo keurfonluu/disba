@@ -654,7 +654,20 @@ def getc(t, d, a, b, rho, mode, ifunc, dc):
 
             # Bracket root and refine it
             c1, del1st, iret = getsol(
-                t[k], c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw,
+                t[k],
+                c1,
+                clow,
+                dc,
+                cm,
+                betmx,
+                ifirst,
+                del1st,
+                d,
+                a,
+                b,
+                rho,
+                ifunc,
+                llw,
             )
 
             if iret:
