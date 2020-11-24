@@ -47,6 +47,18 @@ To test the integrity of the installed package, check out this repository and ru
 
    pytest
 
+Documentation
+-------------
+
+Refer to the online `documentation <https://keurfonluu.github.io/disba/>`__ for detailed description of the API and examples.
+
+Alternatively, the documentation can be built using `Sphinx <https://www.sphinx-doc.org/en/master/>`__
+
+.. code:: bash
+
+   pip install -r doc/requirements.txt
+   sphinx-build -b html doc/source doc/build
+
 Usage
 -----
 
