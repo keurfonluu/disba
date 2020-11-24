@@ -1,0 +1,21 @@
+dist: xenial
+
+language: python
+python:
+  - 3.8
+
+env:
+  global:
+    # Doctr deploy key for keurfonluu/disba
+    - secure: "aSyfj2V6ibF1nESawziKO9RQ1FRMQ8vne3u8Sw6sf+S3DrwIfEdLlXK4pna88yG+BTq/POr29YO1piXw2Gtd1MaSve7ntKeSewI2/JwoxvNclLILFlwHxjgzTIkVKdwZ+LftdzbaKzy7e2AY4lRUCSEy9Y6i/S6TdQvEbwLI+botXNvY0vWp1gOzdiWuGBf5SgHX3T+CBo5sEhJl8hz4VT8j53eHX1XtSBELAH4Lko/I7vz39Xjgctcy0byjerecc/dkORttaBImsz2xgF6BFZ7IMRr5GtLb5ZhRHgJTcleEBtYOzm+FOJ8skv5lKXUoo8DY6L/CDo1AjG8VxOD6eZ9Mo/KKPWxv1/TgguJYhQq1rNmyDqra2q1rRNeqdhw0TyFMWq2/P35r/BMT7fR5ojKX7A/Sf1MClBS7Bja954REFPYcARQyJjnbUfTyf6kE1W/ppqsjezyCxP1aZVSuu+5IIrmzV6MRe00kQzdMwdUuMLwEFUVvwTpu+lgl6LsbV+DQzeWAqmBJ8NF0y19DvVWWP8P7BKPnI79w5CkfRwlUvzSZLt1jfFtRR9nLtv1SrlI8vDkUZ8Iv5+AjdK5lmgjYySqiaz9tLtx/QD1Nb+1YoC6luBE9aWBbHWPRnt96LPD9s7UMQW7bSgywtZUtK+wWmqUI6mOEFUoEsldkOUo="
+
+install:
+  - pip install .
+  - pip install scipy
+  - pip install -r doc/requirements.txt
+
+script:
+  - set -e
+  - sphinx-build -b html doc/source doc/build
+  - pip install doctr
+  - doctr deploy . --built-docs ./doc/build/
