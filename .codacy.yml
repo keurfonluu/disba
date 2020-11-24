@@ -5,3 +5,4 @@ exclude_paths:
   - 'CONTRIBUTING.rst'
   - 'tasks.py'
   - '.github/**'
+  - 'doc/source/conf.py'
