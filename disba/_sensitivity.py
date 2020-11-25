@@ -73,7 +73,7 @@ class PhaseSensitivity(BaseSensitivity):
 
         Returns
         -------
-        namedtuple
+        :class:`disba.SensitivityKernel`
             Sensitivity kernel as a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter).
 
         """
@@ -164,7 +164,7 @@ class GroupSensitivity(BaseSensitivity):
 
         Returns
         -------
-        namedtuple
+        :class:`disba.SensitivityKernel`
             Sensitivity kernel as a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter).
 
         """
@@ -252,7 +252,7 @@ class EllipticitySensitivity(BaseSensitivity):
 
         Returns
         -------
-        namedtuple
+        :class:`disba.SensitivityKernel`
             Sensitivity kernel as a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter).
 
         """

@@ -52,7 +52,7 @@ def depthplot(x, z, zmax, ax=None, **kwargs):
 
     Returns
     -------
-    matplotlib.pyplot.Axes
+    :class:`matplotlib.pyplot.Axes`
         Plotted data axes.
 
     """

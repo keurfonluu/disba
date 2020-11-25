@@ -22,7 +22,13 @@ RayleighEigen = namedtuple(
 
 class EigenFunction(Base):
     def __init__(
-        self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005,
+        self,
+        thickness,
+        velocity_p,
+        velocity_s,
+        density,
+        algorithm="dunkin",
+        dc=0.005,
     ):
         """
         Eigenfunction class.
@@ -62,10 +68,11 @@ class EigenFunction(Base):
 
         Returns
         -------
-        namedtuple
+        :class:`disba.RayleighEigen` or :class:`disba.LoveEigen`
             Eigenfunction as a namedtuple:
-             - If `wave == 'love'`, (depth, uu, tt, period, mode),
-             - If `wave == 'rayleigh'`, (depth, ur, uz, tz, tr, period, mode).
+
+             - If ``wave == 'love'``, (depth, uu, tt, period, mode),
+             - If ``wave == 'rayleigh'``, (depth, ur, uz, tz, tr, period, mode).
 
         """
         if numpy.ndim(t) > 0:

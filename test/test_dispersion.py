@@ -1,8 +1,8 @@
+import helpers
 import numpy
 import pytest
 
 import disba
-import helpers
 
 
 @pytest.mark.parametrize(
