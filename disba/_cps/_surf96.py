@@ -566,7 +566,7 @@ def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw
             c1 = c2
             del1 = del2
 
-            iret = betmx + dc <= c1 < cm
+            iret = c1 < cm or c1 >= betmx + dc
             if iret:
                 break
 
