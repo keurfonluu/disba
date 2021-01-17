@@ -42,7 +42,7 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
     "sphinxarg.ext",
-    "sphinxcontrib.bibtex",
+    # "sphinxcontrib.bibtex",
     # "sphinx_gallery.gen_gallery",
 ]
 
