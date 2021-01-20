@@ -92,7 +92,7 @@ class PhaseSensitivity(BaseSensitivity):
         )
 
         return SensitivityKernel(
-            self._thickness.cumsum() - self._thickness[0],
+            numpy.insert(self._thickness.cumsum()[:-1], 0, 0.0),
             kernel,
             t,
             c1,
@@ -184,7 +184,7 @@ class GroupSensitivity(BaseSensitivity):
         )
 
         return SensitivityKernel(
-            self._thickness.cumsum() - self._thickness[0],
+            numpy.insert(self._thickness.cumsum()[:-1], 0, 0.0),
             kernel,
             t,
             c1,
@@ -274,7 +274,7 @@ class EllipticitySensitivity(BaseSensitivity):
             par[i] *= fac
 
         return SensitivityKernel(
-            self._thickness.cumsum() - self._thickness[0],
+            numpy.insert(self._thickness.cumsum()[:-1], 0, 0.0),
             kernel,
             t,
             None,
