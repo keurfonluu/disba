@@ -505,9 +505,9 @@ def shfunc(omega, wvno, d, a, b, rho):
     for i in range(1, mmax):
         if b[i] > 0.01:
             ext += exl[i - 1]
-            fac = numpy.exp(ext) if ext < 80.0 else 0.0
-            uu[i] /= fac
-            tt[i] /= fac
+            fac = 1.0 / numpy.exp(ext) if ext < 80.0 else 0.0
+            uu[i] *= fac
+            tt[i] *= fac
         else:
             uu[i] = 0.0
             tt[i] = 0.0
