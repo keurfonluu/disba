@@ -5,7 +5,7 @@ disba
 
 **disba** is a computationally efficient Python library for the modeling of surface wave dispersion that implements a subset of codes from `Computer Programs in Seismology (CPS) <http://www.eas.slu.edu/eqc/eqccps.html>`__ in Python compiled `just-in-time <https://en.wikipedia.org/wiki/Just-in-time_compilation>`__ with `numba <https://numba.pydata.org/>`__. Such implementation alleviates the usual prerequisite for a Fortran compiler needed by other libraries also based on CPS (e.g. `pysurf96 <https://github.com/miili/pysurf96>`__, `srfpython <https://github.com/obsmax/srfpython>`__ and `PyLayeredModel <https://github.com/harrymd/PyLayeredModel>`__) which often leads to further installation troubleshooting, especially on Windows platform.
 
-**disba** aims to be lightweight and portable without compromising on the performance. For instance, it yields similar speed compared to CPS's *surf96* program compiled with `f2py <https://numpy.org/devdocs/f2py/index.html>`__ for Rayleigh-wave but is significantly faster for Love-wave with increasing number of layers. **disba** also implements the *fast delta matrix* algorithm for Rayleigh-wave which, albeit ironically slower, is more robust and handles better reversion of phase velocity caused by low velocity zones.
+**disba** aims to be lightweight and portable without compromising on the performance. For instance, it yields similar speed compared to CPS's *surf96* program compiled with `f2py <https://numpy.org/devdocs/f2py/index.html>`__ for Rayleigh-wave but is significantly faster for Love-wave with increasing number of layers. **disba** also implements the *fast delta matrix* algorithm for Rayleigh-wave which is slightly faster than *Dunkin's matrix* algorithm.
 
 .. list-table::
 
