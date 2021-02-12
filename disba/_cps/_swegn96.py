@@ -601,7 +601,7 @@ def svfunc(omega, wvno, d, a, b, rho):
 
 
 @jitted
-def swegn96(t, d, a, b, rho, mode, ifunc, dc):
+def swegn96(t, d, a, b, rho, mode, ifunc=2, dc=0.005):
     """
     Get eigenfunctions for a given period and mode.
 
