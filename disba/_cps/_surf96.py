@@ -293,145 +293,151 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
     After Buchen and Ben-Hador (1996).
 
     """
+    mmax = len(d)
+
     # Handle water layer
     if llw == 0:
         beta = beta * 1.0
         beta[0] = 1.0e-8
 
-    # Initialize arrays
-    mmax = len(d)
-
-    mu = numpy.zeros(mmax)
-    gam = numpy.zeros(mmax)
-    t = numpy.zeros(mmax)
-
-    r = numpy.zeros(mmax, dtype=numpy.complex_)
-    s = numpy.zeros(mmax, dtype=numpy.complex_)
-    Ca = numpy.ones(mmax - 1, dtype=numpy.complex_)
-    Cb = numpy.ones(mmax - 1, dtype=numpy.complex_)
-    Sa = numpy.zeros(mmax - 1, dtype=numpy.complex_)
-    Sb = numpy.zeros(mmax - 1, dtype=numpy.complex_)
-
-    eps = numpy.zeros(mmax - 1, dtype=numpy.complex_)
-    eta = numpy.zeros(mmax - 1, dtype=numpy.complex_)
-    a = numpy.zeros(mmax - 1, dtype=numpy.complex_)
-    ap = numpy.zeros(mmax - 1, dtype=numpy.complex_)
-    b = numpy.zeros(mmax - 1, dtype=numpy.complex_)
-    bp = numpy.zeros(mmax - 1, dtype=numpy.complex_)
-    scale = numpy.zeros(mmax - 1, dtype=numpy.int32)
-
-    X = numpy.zeros(5, dtype=numpy.complex_)
-
     # Phase velocity
     c = omega / wvno
     c2 = c * c
 
-    # Layer eigenfunctions and other variables
-    for i in range(mmax):
-        mu[i] = rho[i] * beta[i] ** 2
-        gam[i] = beta[i] ** 2 / c2
-        t[i] = 2.0 - c2 / beta[i] ** 2
-
-        if c < alpha[i]:
-            r[i] = numpy.sqrt(1.0 - c2 / alpha[i] ** 2)
-        elif c > alpha[i]:
-            r[i] = numpy.sqrt(c2 / alpha[i] ** 2 - 1.0) * 1j
-
-        if c < beta[i]:
-            s[i] = numpy.sqrt(1.0 - c2 / beta[i] ** 2)
-        elif c > beta[i]:
-            s[i] = numpy.sqrt(c2 / beta[i] ** 2 - 1.0) * 1j
-
-    for i in range(mmax - 1):
-        eps[i] = rho[i + 1] / rho[i]
-        eta[i] = 2.0 * (gam[i] - eps[i] * gam[i + 1])
-        a[i] = eps[i] + eta[i]
-        ap[i] = a[i] - 1.0
-        b[i] = 1.0 - eta[i]
-        bp[i] = b[i] - 1.0
-
-        if c < alpha[i]:
-            Ca[i] = numpy.cosh(wvno * r[i] * d[i])
-            Sa[i] = numpy.sinh(wvno * r[i] * d[i])
-        elif c > alpha[i]:
-            Ca[i] = numpy.cos(wvno * r[i].imag * d[i])
-            Sa[i] = numpy.sin(wvno * r[i].imag * d[i]) * 1j
-
-        if c < beta[i]:
-            Cb[i] = numpy.cosh(wvno * s[i] * d[i])
-            Sb[i] = numpy.sinh(wvno * s[i] * d[i])
-
-            # Handle hyperbolic overflow
-            if wvno * s[i].real * d[i] > 80.0:
-                scale[i] = 1
-                Cb[i] /= Ca[i]
-                Sb[i] /= Ca[i]
-
-        elif c > beta[i]:
-            Cb[i] = numpy.cos(wvno * s[i].imag * d[i])
-            Sb[i] = numpy.sin(wvno * s[i].imag * d[i]) * 1j
-
-    if llw == 0:
-        Cb[0] = 1.0
-        Sb[0] = 0.0
-
     # Rayleigh-wave fast delta matrix
-    X[0] = 2.0 * t[0]
-    X[1] = -t[0] * t[0]
+    gam0 = beta[0] ** 2.0 / c2
+    mu0 = rho[0] * beta[0] ** 2.0
+    t0 = 2.0 - c2 / beta[0] ** 2.0
+
+    X = numpy.zeros(5, dtype=numpy.complex_)
+    X[0] = 2.0 * t0
+    X[1] = -t0 * t0
     X[4] = -4.0
-    X *= mu[0] * mu[0]
+    X *= mu0 * mu0
     X, _ = normc(X, 5)
 
     for i in range(mmax - 1):
-        p1 = Cb[i] * X[1] + s[i] * Sb[i] * X[2]
-        p2 = Cb[i] * X[3] + s[i] * Sb[i] * X[4]
-        p3 = Cb[i] * X[2]
-        p4 = Cb[i] * X[4]
+        scale = 0
+        gam1 = beta[i + 1] ** 2.0 / c2
+        eps = rho[i + 1] / rho[i]
+        eta = 2.0 * (gam0 - eps * gam1)
+        a = eps + eta
+        ap = a - 1.0
+        b = 1.0 - eta
+        bp = b - 1.0
+        gam0 = gam1
+
+        r = (
+            numpy.sqrt(1.0 - c2 / alpha[i] ** 2.0)
+            if c < alpha[i]
+            else numpy.sqrt(c2 / alpha[i] ** 2.0 - 1.0) * 1j
+            if c > alpha[i]
+            else 0.0
+        )
+        s = (
+            numpy.sqrt(1.0 - c2 / beta[i] ** 2.0)
+            if c < beta[i]
+            else numpy.sqrt(c2 / beta[i] ** 2.0 - 1.0) * 1j
+            if c > beta[i]
+            else 0.0
+        )
+
+        if c < alpha[i]:
+            Ca = numpy.cosh(wvno * r * d[i])
+            Sa = numpy.sinh(wvno * r * d[i])
+        elif c > alpha[i]:
+            Ca = numpy.cos(wvno * r.imag * d[i])
+            Sa = numpy.sin(wvno * r.imag * d[i]) * 1j
+        else:
+            Ca = 1.0
+            Sa = 0.0
+
+        if c < beta[i]:
+            Cb = numpy.cosh(wvno * s * d[i])
+            Sb = numpy.sinh(wvno * s * d[i])
+
+            # Handle hyperbolic overflow
+            if wvno * s.real * d[i] > 80.0:
+                scale = 1
+                Cb /= Ca
+                Sb /= Ca
+
+        elif c > beta[i]:
+            Cb = numpy.cos(wvno * s.imag * d[i])
+            Sb = numpy.sin(wvno * s.imag * d[i]) * 1j
+
+        else:
+            Cb = 1.0
+            Sb = 0.0
+
+        if i == 0 and llw == 0:
+            Cb = 1.0
+            Sb = 0.0
+
+        p1 = Cb * X[1] + s * Sb * X[2]
+        p2 = Cb * X[3] + s * Sb * X[4]
+        p3 = Cb * X[2]
+        p4 = Cb * X[4]
         if c == beta[i]:
             p3 += wvno * d[i] * X[1]
             p4 += wvno * d[i] * X[3]
         else:
-            p3 += Sb[i] * X[1] / s[i]
-            p4 += Sb[i] * X[3] / s[i]
+            p3 += Sb * X[1] / s
+            p4 += Sb * X[3] / s
 
-        if scale[i] == 1:
-            q1 = p1 - r[i] * p2
-            q3 = p3 - r[i] * p4
+        if scale == 1:
+            q1 = p1 - r * p2
+            q3 = p3 - r * p4
             q2 = p4
             q4 = p2
             if c != alpha[i]:
-                q2 -= p3 / r[i]
-                q4 -= p1 / r[i]
+                q2 -= p3 / r
+                q4 -= p1 / r
         else:
-            q1 = Ca[i] * p1 - r[i] * Sa[i] * p2
-            q3 = Ca[i] * p3 - r[i] * Sa[i] * p4
-            q2 = Ca[i] * p4
-            q4 = Ca[i] * p2
+            q1 = Ca * p1 - r * Sa * p2
+            q3 = Ca * p3 - r * Sa * p4
+            q2 = Ca * p4
+            q4 = Ca * p2
             if c == alpha[i]:
                 q2 -= wvno * d[i] * p3
                 q4 -= wvno * d[i] * p1
             else:
-                q2 -= Sa[i] * p3 / r[i]
-                q4 -= Sa[i] * p1 / r[i]
+                q2 -= Sa * p3 / r
+                q4 -= Sa * p1 / r
 
-        y1 = a[i] * q1
-        y2 = ap[i] * q2
-        z1 = bp[i] * q1
-        z2 = b[i] * q2
-        if scale[i] == 0:
-            y1 += ap[i] * X[0]
-            y2 += a[i] * X[0]
-            z1 += b[i] * X[0]
-            z2 += bp[i] * X[0]
+        y1 = a * q1
+        y2 = ap * q2
+        z1 = bp * q1
+        z2 = b * q2
+        if scale == 0:
+            y1 += ap * X[0]
+            y2 += a * X[0]
+            z1 += b * X[0]
+            z2 += bp * X[0]
 
-        X[0] = bp[i] * y1 + b[i] * y2
-        X[1] = a[i] * y1 + ap[i] * y2
-        X[2] = eps[i] * q3
-        X[3] = eps[i] * q4
-        X[4] = bp[i] * z1 + b[i] * z2
+        X[0] = bp * y1 + b * y2
+        X[1] = a * y1 + ap * y2
+        X[2] = eps * q3
+        X[3] = eps * q4
+        X[4] = bp * z1 + b * z2
         X, _ = normc(X, 5)
 
-    return numpy.real(X[1] + s[-1] * X[3] - r[-1] * (X[3] + s[-1] * X[4]))
+    r = (
+        numpy.sqrt(1.0 - c2 / alpha[-1] ** 2)
+        if c < alpha[-1]
+        else numpy.sqrt(c2 / alpha[-1] ** 2 - 1.0) * 1j
+        if c > alpha[-1]
+        else 0.0
+    )
+    s = (
+        numpy.sqrt(1.0 - c2 / beta[-1] ** 2)
+        if c < beta[-1]
+        else numpy.sqrt(c2 / beta[-1] ** 2 - 1.0) * 1j
+        if c > beta[-1]
+        else 0.0
+    )
+
+    return numpy.real(X[1] + s * X[3] - r * (X[3] + s * X[4]))
 
 
 @jitted
