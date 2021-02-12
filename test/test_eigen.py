@@ -17,7 +17,7 @@ import disba
 def test_eigen(wave, water_layer, eref):
     velocity_model = helpers.velocity_model(5, water_layer=water_layer)
 
-    eigf = disba.EigenFunction(*velocity_model)
+    eigf = disba.EigenFunction(*velocity_model, algorithm="dunkin")
     eig = eigf(10.0, 0, wave)
 
     for k, v in eref.items():

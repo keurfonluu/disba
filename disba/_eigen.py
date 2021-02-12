@@ -27,7 +27,7 @@ class EigenFunction(Base):
         velocity_p,
         velocity_s,
         density,
-        algorithm="dunkin",
+        algorithm="fast-delta",
         dc=0.005,
     ):
         """
@@ -43,7 +43,7 @@ class EigenFunction(Base):
             Layer S-wave velocity (in km/s).
         density : array_like
             Layer density (in g/cm3).
-        algorithm : str {'dunkin', 'fast-delta'}, optional, default 'dunkin'
+        algorithm : str {'dunkin', 'fast-delta'}, optional, default 'fast-delta'
             Algorithm to use for computation of Rayleigh-wave dispersion:
              - 'dunkin': Dunkin's matrix (adapted from surf96),
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
