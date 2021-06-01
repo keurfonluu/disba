@@ -737,7 +737,6 @@ def surf96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, dc=0.005, dt=0.025):
     """
     nt = len(t)
     t1 = numpy.empty(nt, dtype=numpy.float64)
-    t2 = numpy.empty(nt, dtype=numpy.float64)
 
     if itype == 1:
         fac = 1.0 + dt
@@ -750,6 +749,7 @@ def surf96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, dc=0.005, dt=0.025):
     c1 = getc(t1, d, a, b, rho, mode, ifunc, dc)
 
     if itype == 1:
+        t2 = numpy.empty(nt, dtype=numpy.float64)
         fac = 1.0 - dt
         for i in range(nt):
             t2[i] = t[i] / fac

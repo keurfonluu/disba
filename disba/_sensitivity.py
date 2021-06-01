@@ -27,7 +27,7 @@ class PhaseSensitivity(BaseSensitivity):
         velocity_p,
         velocity_s,
         density,
-        algorithm="fast-delta",
+        algorithm="dunkin",
         dc=0.005,
         dp=0.025,
     ):
@@ -44,7 +44,7 @@ class PhaseSensitivity(BaseSensitivity):
             Layer S-wave velocity (in km/s).
         density : array_like
             Layer density (in g/cm3).
-        algorithm : str {'dunkin', 'fast-delta'}, optional, default 'fast-delta'
+        algorithm : str {'dunkin', 'fast-delta'}, optional, default 'dunkin'
             Algorithm to use for computation of Rayleigh-wave dispersion:
              - 'dunkin': Dunkin's matrix (adapted from surf96),
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
@@ -110,7 +110,7 @@ class GroupSensitivity(BaseSensitivity):
         velocity_p,
         velocity_s,
         density,
-        algorithm="fast-delta",
+        algorithm="dunkin",
         dc=0.005,
         dt=0.025,
         dp=0.025,
@@ -128,7 +128,7 @@ class GroupSensitivity(BaseSensitivity):
             Layer S-wave velocity (in km/s).
         density : array_like
             Layer density (in g/cm3).
-        algorithm : str {'dunkin', 'fast-delta'}, optional, default 'fast-delta'
+        algorithm : str {'dunkin', 'fast-delta'}, optional, default 'dunkin'
             Algorithm to use for computation of Rayleigh-wave dispersion:
              - 'dunkin': Dunkin's matrix (adapted from surf96),
              - 'fast-delta': fast delta matrix (after Buchen and Ben-Hador, 1996).
