@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Luu"
+  given-names: "Keurfon"
+  orcid: "https://orcid.org/0000-0001-7927-0019"
+title: "disba: Numba-accelerated computation of surface wave dispersion"
+doi: 10.5281/zenodo.3987395
+url: https://github.com/keurfonluu/disba
+license: BSD-3-Clause
