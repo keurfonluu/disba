@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disba._sensitivity &mdash; disba 0.6.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> disba
+          </a>
+              <div class="version">
+                0.6.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">disba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>disba._sensitivity</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for disba._sensitivity</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">._base</span> <span class="kn">import</span> <span class="n">BaseSensitivity</span>
+<span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">ipar</span>
+<span class="kn">from</span> <span class="nn">._cps</span> <span class="kn">import</span> <span class="n">srfker96</span><span class="p">,</span> <span class="n">swegn96</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;SensitivityKernel&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PhaseSensitivity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GroupSensitivity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EllipticitySensitivity&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="n">SensitivityKernel</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s2">&quot;SensitivityKernel&quot;</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;depth&quot;</span><span class="p">,</span> <span class="s2">&quot;kernel&quot;</span><span class="p">,</span> <span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="s2">&quot;wave&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;parameter&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="PhaseSensitivity"><a class="viewcode-back" href="../../api/sensitivity.html#disba.PhaseSensitivity">[docs]</a><span class="k">class</span> <span class="nc">PhaseSensitivity</span><span class="p">(</span><span class="n">BaseSensitivity</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">thickness</span><span class="p">,</span>
+        <span class="n">velocity_p</span><span class="p">,</span>
+        <span class="n">velocity_s</span><span class="p">,</span>
+        <span class="n">density</span><span class="p">,</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;dunkin&quot;</span><span class="p">,</span>
+        <span class="n">dc</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+        <span class="n">dp</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Phase velocity sensitivity kernel class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        thickness : array_like</span>
+<span class="sd">            Layer thickness (in km).</span>
+<span class="sd">        velocity_p : array_like</span>
+<span class="sd">            Layer P-wave velocity (in km/s).</span>
+<span class="sd">        velocity_s : array_like</span>
+<span class="sd">            Layer S-wave velocity (in km/s).</span>
+<span class="sd">        density : array_like</span>
+<span class="sd">            Layer density (in g/cm3).</span>
+<span class="sd">        algorithm : str {&#39;dunkin&#39;, &#39;fast-delta&#39;}, optional, default &#39;dunkin&#39;</span>
+<span class="sd">            Algorithm to use for computation of Rayleigh-wave dispersion:</span>
+<span class="sd">             - &#39;dunkin&#39;: Dunkin&#39;s matrix (adapted from surf96),</span>
+<span class="sd">             - &#39;fast-delta&#39;: fast delta matrix (after Buchen and Ben-Hador, 1996).</span>
+<span class="sd">        dc : scalar, optional, default 0.005</span>
+<span class="sd">            Phase velocity increment for root finding.</span>
+<span class="sd">        dp : scalar, optional, default 0.025</span>
+<span class="sd">            Parameter increment (%) for numerical partial derivatives.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">velocity_p</span><span class="p">,</span> <span class="n">velocity_s</span><span class="p">,</span> <span class="n">density</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">dp</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PhaseSensitivity.__call__"><a class="viewcode-back" href="../../api/sensitivity.html#disba.PhaseSensitivity.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;rayleigh&quot;</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="s2">&quot;velocity_s&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate phase velocity sensitivity kernel for a given period and parameter.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : scalar</span>
+<span class="sd">            Period (in s).</span>
+<span class="sd">        mode : int, optional, default 0</span>
+<span class="sd">            Mode number (0 if fundamental).</span>
+<span class="sd">        wave : str {&#39;love&#39;, &#39;rayleigh&#39;}, optional, default &#39;rayleigh&#39;</span>
+<span class="sd">            Wave type.</span>
+<span class="sd">        parameter : str {&#39;thickness&#39;, &#39;velocity_p&#39;, &#39;velocity_s&#39;, &#39;density&#39;}, optional, default &#39;velocity_s&#39;</span>
+<span class="sd">            Parameter with respect to which sensitivity kernel is calculated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`disba.SensitivityKernel`</span>
+<span class="sd">            Sensitivity kernel as a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">c1</span><span class="p">,</span> <span class="n">kernel</span> <span class="o">=</span> <span class="n">srfker96</span><span class="p">(</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_p</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_s</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_density</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+            <span class="n">itype</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">ifunc</span><span class="o">=</span><span class="n">ifunc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_algorithm</span><span class="p">][</span><span class="n">wave</span><span class="p">],</span>
+            <span class="n">ipar</span><span class="o">=</span><span class="n">ipar</span><span class="p">[</span><span class="n">parameter</span><span class="p">],</span>
+            <span class="n">dc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dc</span><span class="p">,</span>
+            <span class="n">dp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dp</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">SensitivityKernel</span><span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="n">kernel</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="n">c1</span><span class="p">,</span>
+            <span class="n">mode</span><span class="p">,</span>
+            <span class="n">wave</span><span class="p">,</span>
+            <span class="s2">&quot;phase&quot;</span><span class="p">,</span>
+            <span class="n">parameter</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GroupSensitivity"><a class="viewcode-back" href="../../api/sensitivity.html#disba.GroupSensitivity">[docs]</a><span class="k">class</span> <span class="nc">GroupSensitivity</span><span class="p">(</span><span class="n">BaseSensitivity</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">thickness</span><span class="p">,</span>
+        <span class="n">velocity_p</span><span class="p">,</span>
+        <span class="n">velocity_s</span><span class="p">,</span>
+        <span class="n">density</span><span class="p">,</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;dunkin&quot;</span><span class="p">,</span>
+        <span class="n">dc</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+        <span class="n">dt</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span>
+        <span class="n">dp</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Phase velocity sensitivity kernel class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        thickness : array_like</span>
+<span class="sd">            Layer thickness (in km).</span>
+<span class="sd">        velocity_p : array_like</span>
+<span class="sd">            Layer P-wave velocity (in km/s).</span>
+<span class="sd">        velocity_s : array_like</span>
+<span class="sd">            Layer S-wave velocity (in km/s).</span>
+<span class="sd">        density : array_like</span>
+<span class="sd">            Layer density (in g/cm3).</span>
+<span class="sd">        algorithm : str {&#39;dunkin&#39;, &#39;fast-delta&#39;}, optional, default &#39;dunkin&#39;</span>
+<span class="sd">            Algorithm to use for computation of Rayleigh-wave dispersion:</span>
+<span class="sd">             - &#39;dunkin&#39;: Dunkin&#39;s matrix (adapted from surf96),</span>
+<span class="sd">             - &#39;fast-delta&#39;: fast delta matrix (after Buchen and Ben-Hador, 1996).</span>
+<span class="sd">        dc : scalar, optional, default 0.005</span>
+<span class="sd">            Phase velocity increment for root finding.</span>
+<span class="sd">        dt : scalar, optional, default 0.025</span>
+<span class="sd">            Frequency increment (%) for calculating group velocity.</span>
+<span class="sd">        dp : scalar, optional, default 0.025</span>
+<span class="sd">            Parameter increment (%) for numerical partial derivatives.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">velocity_p</span><span class="p">,</span> <span class="n">velocity_s</span><span class="p">,</span> <span class="n">density</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">dp</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="n">dt</span>
+
+<div class="viewcode-block" id="GroupSensitivity.__call__"><a class="viewcode-back" href="../../api/sensitivity.html#disba.GroupSensitivity.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;rayleigh&quot;</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="s2">&quot;velocity_s&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate group velocity sensitivity kernel for a given period and parameter.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : scalar</span>
+<span class="sd">            Period (in s).</span>
+<span class="sd">        mode : int, optional, default 0</span>
+<span class="sd">            Mode number (0 if fundamental).</span>
+<span class="sd">        wave : str {&#39;love&#39;, &#39;rayleigh&#39;}, optional, default &#39;rayleigh&#39;</span>
+<span class="sd">            Wave type.</span>
+<span class="sd">        parameter : str {&#39;thickness&#39;, &#39;velocity_p&#39;, &#39;velocity_s&#39;, &#39;density&#39;}, optional, default &#39;velocity_s&#39;</span>
+<span class="sd">            Parameter with respect to which sensitivity kernel is calculated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`disba.SensitivityKernel`</span>
+<span class="sd">            Sensitivity kernel as a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">c1</span><span class="p">,</span> <span class="n">kernel</span> <span class="o">=</span> <span class="n">srfker96</span><span class="p">(</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_p</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_s</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_density</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+            <span class="n">itype</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">ifunc</span><span class="o">=</span><span class="n">ifunc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_algorithm</span><span class="p">][</span><span class="n">wave</span><span class="p">],</span>
+            <span class="n">ipar</span><span class="o">=</span><span class="n">ipar</span><span class="p">[</span><span class="n">parameter</span><span class="p">],</span>
+            <span class="n">dc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dc</span><span class="p">,</span>
+            <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dt</span><span class="p">,</span>
+            <span class="n">dp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dp</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">SensitivityKernel</span><span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="n">kernel</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="n">c1</span><span class="p">,</span>
+            <span class="n">mode</span><span class="p">,</span>
+            <span class="n">wave</span><span class="p">,</span>
+            <span class="s2">&quot;group&quot;</span><span class="p">,</span>
+            <span class="n">parameter</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return frequency increment (%) for calculating group velocity.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span></div>
+
+
+<div class="viewcode-block" id="EllipticitySensitivity"><a class="viewcode-back" href="../../api/sensitivity.html#disba.EllipticitySensitivity">[docs]</a><span class="k">class</span> <span class="nc">EllipticitySensitivity</span><span class="p">(</span><span class="n">BaseSensitivity</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">thickness</span><span class="p">,</span>
+        <span class="n">velocity_p</span><span class="p">,</span>
+        <span class="n">velocity_s</span><span class="p">,</span>
+        <span class="n">density</span><span class="p">,</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;dunkin&quot;</span><span class="p">,</span>
+        <span class="n">dc</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+        <span class="n">dp</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rayleigh-wave ellipticity sensitivity kernel class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        thickness : array_like</span>
+<span class="sd">            Layer thickness (in km).</span>
+<span class="sd">        velocity_p : array_like</span>
+<span class="sd">            Layer P-wave velocity (in km/s).</span>
+<span class="sd">        velocity_s : array_like</span>
+<span class="sd">            Layer S-wave velocity (in km/s).</span>
+<span class="sd">        density : array_like</span>
+<span class="sd">            Layer density (in g/cm3).</span>
+<span class="sd">        algorithm : str {&#39;dunkin&#39;, &#39;fast-delta&#39;}, optional, default &#39;dunkin&#39;</span>
+<span class="sd">            Algorithm to use for computation of Rayleigh-wave dispersion:</span>
+<span class="sd">             - &#39;dunkin&#39;: Dunkin&#39;s matrix (adapted from surf96),</span>
+<span class="sd">             - &#39;fast-delta&#39;: fast delta matrix (after Buchen and Ben-Hador, 1996).</span>
+<span class="sd">        dc : scalar, optional, default 0.005</span>
+<span class="sd">            Phase velocity increment for root finding.</span>
+<span class="sd">        dp : scalar, optional, default 0.025</span>
+<span class="sd">            Parameter increment (%) for numerical partial derivatives.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">velocity_p</span><span class="p">,</span> <span class="n">velocity_s</span><span class="p">,</span> <span class="n">density</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">dp</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EllipticitySensitivity.__call__"><a class="viewcode-back" href="../../api/sensitivity.html#disba.EllipticitySensitivity.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="s2">&quot;velocity_s&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate Rayleigh-wave ellipticity sensitivity kernel for a given period and</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : scalar</span>
+<span class="sd">            Period (in s).</span>
+<span class="sd">        mode : int, optional, default 0</span>
+<span class="sd">            Mode number (0 if fundamental).</span>
+<span class="sd">        parameter : str {&#39;thickness&#39;, &#39;velocity_p&#39;, &#39;velocity_s&#39;, &#39;density&#39;}, optional, default &#39;velocity_s&#39;</span>
+<span class="sd">            Parameter with respect to which sensitivity kernel is calculated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`disba.SensitivityKernel`</span>
+<span class="sd">            Sensitivity kernel as a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Reference ellipticity</span>
+        <span class="n">ell1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ellipticity</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+        <span class="c1"># Initialize kernel</span>
+        <span class="n">mmax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">)</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">mmax</span><span class="p">)</span>
+
+        <span class="c1"># Loop over layers</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dp</span>
+        <span class="n">par</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mmax</span><span class="p">):</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">fac</span>
+            <span class="n">ell2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ellipticity</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ell2</span> <span class="o">-</span> <span class="n">ell1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">tmp</span><span class="p">)</span>
+            <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*=</span> <span class="n">fac</span>
+
+        <span class="k">return</span> <span class="n">SensitivityKernel</span><span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="n">kernel</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="n">mode</span><span class="p">,</span>
+            <span class="s2">&quot;rayleigh&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ellipticity&quot;</span><span class="p">,</span>
+            <span class="n">parameter</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_ellipticity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute Rayleigh-wave ellipticity for input period and mode.&quot;&quot;&quot;</span>
+        <span class="n">eig</span> <span class="o">=</span> <span class="n">swegn96</span><span class="p">(</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_p</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_s</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_density</span><span class="p">,</span>
+            <span class="n">mode</span><span class="p">,</span>
+            <span class="n">ifunc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_algorithm</span><span class="p">][</span><span class="s2">&quot;rayleigh&quot;</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dc</span><span class="p">,</span>
+        <span class="p">)[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">eig</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">eig</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Keurfon Luu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

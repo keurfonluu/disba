@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disba’s documentation &mdash; disba 0.6.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> disba
+          </a>
+              <div class="version">
+                0.6.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">disba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>disba’s documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="disba-s-documentation">
+<h1>disba’s documentation<a class="headerlink" href="#disba-s-documentation" title="Permalink to this headline"></a></h1>
+</section>
+<section id="disba">
+<h1>disba<a class="headerlink" href="#disba" title="Permalink to this headline"></a></h1>
+<p><a class="reference external" href="https://github.com/keurfonluu/disba/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/keurfonluu/disba" /></a> <a class="reference external" href="https://github.com/keurfonluu/disba"><img alt="Stars" src="https://img.shields.io/github/stars/keurfonluu/disba?logo=github" /></a> <a class="reference external" href="https://pypi.org/pypi/disba/"><img alt="Pyversions" src="https://img.shields.io/pypi/pyversions/disba.svg?style=flat" /></a> <a class="reference external" href="https://pypi.org/project/disba"><img alt="Version" src="https://img.shields.io/pypi/v/disba.svg?style=flat" /></a> <a class="reference external" href="https://pepy.tech/project/disba"><img alt="Downloads" src="https://pepy.tech/badge/disba" /></a> <a class="reference external" href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg?style=flat" /></a> <a class="reference external" href="https://www.codacy.com/manual/keurfonluu/disba?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=keurfonluu/disba&amp;utm_campaign=Badge_Grade"><img alt="Codacy Badge" src="https://img.shields.io/codacy/grade/1d2218bb7d0e4e0fb2dec26fa32fe92e.svg?style=flat" /></a> <a class="reference external" href="https://codecov.io/gh/keurfonluu/disba"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/keurfonluu/disba.svg?style=flat" /></a> <a class="reference external" href="https://github.com/keurfonluu/disba"><img alt="Build" src="https://img.shields.io/github/workflow/status/keurfonluu/disba/Python%20package" /></a> <a class="reference external" href="https://github.com/softwareunderground/awesome-open-geoscience"><img alt="Awesome" src="https://img.shields.io/badge/awesome-yes-C6A4BF" /></a> <a class="reference external" href="https://doi.org/10.5281/zenodo.3987395"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3987395.svg?style=flat" /></a></p>
+<p><strong>disba</strong> is a computationally efficient Python library for the modeling of surface wave dispersion that implements a subset of codes from <a class="reference external" href="http://www.eas.slu.edu/eqc/eqccps.html">Computer Programs in Seismology (CPS)</a> in Python compiled <a class="reference external" href="https://en.wikipedia.org/wiki/Just-in-time_compilation">just-in-time</a> with <a class="reference external" href="https://numba.pydata.org/">numba</a>. Such implementation alleviates the usual prerequisite for a Fortran compiler needed by other libraries also based on CPS (e.g., <a class="reference external" href="https://github.com/miili/pysurf96">pysurf96</a>, <a class="reference external" href="https://github.com/obsmax/srfpython">srfpython</a> and <a class="reference external" href="https://github.com/harrymd/PyLayeredModel">PyLayeredModel</a>) which often leads to further installation troubleshooting, especially on Windows platform.</p>
+<p><strong>disba</strong> aims to be lightweight and portable without compromising on the performance. For both Rayleigh-wave and Love-wave, it is significantly faster than CPS’s <em>surf96</em> program compiled with <a class="reference external" href="https://numpy.org/devdocs/f2py/index.html">f2py</a>, noticeably for large number of layers.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="perf-rayleigh" src="https://raw.githubusercontent.com/keurfonluu/disba/e29865fb0b385b295bc55b733a138a741787879d/.github/perf_rayleigh.svg" /></p></td>
+<td><p><img alt="perf-love" src="https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/perf_love.svg" /></p></td>
+</tr>
+</tbody>
+</table>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline"></a></h2>
+<p>Forward modeling:</p>
+<ul class="simple">
+<li><p>Compute Rayleigh-wave phase or group dispersion curves using <em>Dunkin’s matrix</em> or <em>fast delta matrix</em> algorithms,</p></li>
+<li><p>Compute Love-wave phase or group dispersion curves using <em>Thomson-Haskell</em> method,</p></li>
+<li><p>Compute Rayleigh-wave ellipticity.</p></li>
+</ul>
+<p>Eigenfunctions and sensitivity kernels:</p>
+<ul class="simple">
+<li><p>Compute Rayleigh- and Love- wave eigenfunctions,</p></li>
+<li><p>Compute Rayleigh- and Love- wave phase or group velocity, and Rayleigh-wave ellipticity sensitivity kernels with respect to layer thickness, P- and S- wave velocities, and density.</p></li>
+</ul>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
+<p>The recommended way to install <strong>disba</strong> and all its dependencies is through the Python Package Index:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install disba<span class="o">[</span>full<span class="o">]</span> --user
+</pre></div>
+</div>
+<p>Otherwise, clone and extract the package, then run from the package location:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install .<span class="o">[</span>full<span class="o">]</span> --user
+</pre></div>
+</div>
+<p>To test the integrity of the installed package, check out this repository and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest
+</pre></div>
+</div>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline"></a></h2>
+<p>Refer to the online <a class="reference external" href="https://keurfonluu.github.io/disba/">documentation</a> for detailed description of the API and examples.</p>
+<p>Alternatively, the documentation can be built using <a class="reference external" href="https://www.sphinx-doc.org/en/master/">Sphinx</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -r doc/requirements.txt
+sphinx-build -b html doc/source doc/build
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<p>The following example computes the Rayleigh- and Love- wave phase velocity dispersion curves for the 3 first modes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">disba</span> <span class="kn">import</span> <span class="n">PhaseDispersion</span>
+
+<span class="c1"># Velocity model</span>
+<span class="c1"># thickness, Vp, Vs, density</span>
+<span class="c1"># km, km/s, km/s, g/cm3</span>
+<span class="n">velocity_model</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+   <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">7.00</span><span class="p">,</span> <span class="mf">3.50</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">6.80</span><span class="p">,</span> <span class="mf">3.40</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">7.00</span><span class="p">,</span> <span class="mf">3.50</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">7.60</span><span class="p">,</span> <span class="mf">3.80</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">8.40</span><span class="p">,</span> <span class="mf">4.20</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">9.00</span><span class="p">,</span> <span class="mf">4.50</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">9.40</span><span class="p">,</span> <span class="mf">4.70</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">9.60</span><span class="p">,</span> <span class="mf">4.80</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">9.50</span><span class="p">,</span> <span class="mf">4.75</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="c1"># Periods must be sorted starting with low periods</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Compute the 3 first Rayleigh- and Love- wave modal dispersion curves</span>
+<span class="c1"># Fundamental mode corresponds to mode 0</span>
+<span class="n">pd</span> <span class="o">=</span> <span class="n">PhaseDispersion</span><span class="p">(</span><span class="o">*</span><span class="n">velocity_model</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">cpr</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;rayleigh&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+<span class="n">cpl</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;love&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+
+<span class="c1"># pd returns a namedtuple (period, velocity, mode, wave, type)</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="sample-rayleigh" src="https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_rayleigh.svg" /></p></td>
+<td><p><img alt="sample-love" src="https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/sample_love.svg" /></p></td>
+</tr>
+</tbody>
+</table>
+<p>Likewise, <code class="docutils literal notranslate"><span class="pre">GroupDispersion</span></code> can be used for group velocity.</p>
+<p><strong>disba</strong>’s API is consistent across all its classes which are initialized and called in the same fashion. Thus, eigenfunctions are calculated as follow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">disba</span> <span class="kn">import</span> <span class="n">EigenFunction</span>
+
+<span class="n">eigf</span> <span class="o">=</span> <span class="n">EigenFunction</span><span class="p">(</span><span class="o">*</span><span class="n">velocity_model</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">eigr</span> <span class="o">=</span> <span class="n">eigf</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;rayleigh&quot;</span><span class="p">)</span>
+<span class="n">eigl</span> <span class="o">=</span> <span class="n">eigf</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;love&quot;</span><span class="p">)</span>
+
+<span class="c1"># eigf returns a namedtuple</span>
+<span class="c1">#  - (depth, ur, uz, tz, tr, period, mode) for Rayleigh-wave</span>
+<span class="c1">#  - (depth, uu, tt, period, mode) for Love-wave</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="eigen-rayleigh" src="https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/eigen_rayleigh.svg" /></p></td>
+<td><p><img alt="eigen-love" src="https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/eigen_love.svg" /></p></td>
+</tr>
+</tbody>
+</table>
+<p>Phase velocity sensitivity kernels (<code class="docutils literal notranslate"><span class="pre">GroupSensitivity</span></code> for group velocity):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">disba</span> <span class="kn">import</span> <span class="n">PhaseSensitivity</span>
+
+<span class="n">ps</span> <span class="o">=</span> <span class="n">PhaseSensitivity</span><span class="p">(</span><span class="o">*</span><span class="n">velocity_model</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;thickness&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity_p&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity_s&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">]</span>
+<span class="n">skr</span> <span class="o">=</span> <span class="p">[</span><span class="n">ps</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;rayleigh&quot;</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="n">parameter</span><span class="p">)</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">]</span>
+<span class="n">skl</span> <span class="o">=</span> <span class="p">[</span><span class="n">ps</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;love&quot;</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="n">parameter</span><span class="p">)</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">]</span>
+
+<span class="c1"># ps returns a namedtuple (depth, kernel, period, velocity, mode,wave, type, parameter)</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="kernel-rayleigh" src="https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/kernel_rayleigh.svg" /></p></td>
+<td><p><img alt="kernel-love" src="https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/kernel_love.svg" /></p></td>
+</tr>
+</tbody>
+</table>
+<p>Ellipticity and ellipticity sensitivity kernels:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">disba</span> <span class="kn">import</span> <span class="n">Ellipticity</span><span class="p">,</span> <span class="n">EllipticitySensitivity</span>
+
+<span class="n">ell</span> <span class="o">=</span> <span class="n">Ellipticity</span><span class="p">(</span><span class="o">*</span><span class="n">velocity_model</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">rel</span> <span class="o">=</span> <span class="n">ell</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># ell returns a namedtuple (period, ellipticity, mode)</span>
+
+<span class="n">es</span> <span class="o">=</span> <span class="n">EllipticitySensitivity</span><span class="p">(</span><span class="o">*</span><span class="n">velocity_model</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">ek</span> <span class="o">=</span> <span class="p">[</span><span class="n">es</span><span class="p">(</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="n">parameter</span><span class="p">)</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">]</span>
+
+<span class="c1"># es returns a namedtuple (depth, kernel, period, velocity, mode, wave, type, parameter)</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><img alt="sample-ellipticity" src="https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/sample_ellipticity.svg" /></p></td>
+<td><p><img alt="kernel-ellipticity" src="https://raw.githubusercontent.com/keurfonluu/disba/5f9b95a144e3751ffa98b5860663af874c02ae1c/.github/kernel_ellipticity.svg" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline"></a></h2>
+<p>Please refer to the <a class="reference external" href="https://github.com/keurfonluu/disba/blob/master/CONTRIBUTING.rst">Contributing
+Guidelines</a> to see how you can help. This project is released with a <a class="reference external" href="https://github.com/keurfonluu/disba/blob/master/CODE_OF_CONDUCT.rst">Code of Conduct</a> which you agree to abide by when contributing.</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Keurfon Luu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disba._cps._srfker96 &mdash; disba 0.6.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> disba
+          </a>
+              <div class="version">
+                0.6.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">disba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>disba._cps._srfker96</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for disba._cps._srfker96</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">.._common</span> <span class="kn">import</span> <span class="n">jitted</span>
+<span class="kn">from</span> <span class="nn">._surf96</span> <span class="kn">import</span> <span class="n">surf96</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;srfker96&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="srfker96"><a class="viewcode-back" href="../../../api/cps.html#disba.srfker96">[docs]</a><span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">srfker96</span><span class="p">(</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">itype</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ifunc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ipar</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dc</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">dp</span><span class="o">=</span><span class="mf">0.025</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get phase or group velocity sensitivity kernel.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : scalar</span>
+<span class="sd">        Period (in s).</span>
+<span class="sd">    d : array_like</span>
+<span class="sd">        Layer thickness (in km).</span>
+<span class="sd">    a : array_like</span>
+<span class="sd">        Layer P-wave velocity (in km/s).</span>
+<span class="sd">    b : array_like</span>
+<span class="sd">        Layer S-wave velocity (in km/s).</span>
+<span class="sd">    rho : array_like</span>
+<span class="sd">        Layer density (in g/cm3).</span>
+<span class="sd">    mode : int, optional, default 0</span>
+<span class="sd">        Mode number (0 if fundamental).</span>
+<span class="sd">    itype : int, optional, default 0</span>
+<span class="sd">        Velocity type:</span>
+<span class="sd">         - 0: phase velocity,</span>
+<span class="sd">         - 1: group velocity.</span>
+<span class="sd">    ifunc : int, optional, default 2</span>
+<span class="sd">        Select wave type and algorithm for period equation:</span>
+<span class="sd">         - 1: Love-wave (Thomson-Haskell method),</span>
+<span class="sd">         - 2: Rayleigh-wave (Dunkin&#39;s matrix),</span>
+<span class="sd">         - 3: Rayleigh-wave (fast delta matrix).</span>
+<span class="sd">    ipar : int, optional, default 2</span>
+<span class="sd">        Select parameter with respect to which sensitivity kernel is calculated:</span>
+<span class="sd">         - 0: Layer thickness,</span>
+<span class="sd">         - 1: P-wave velocity,</span>
+<span class="sd">         - 2: S-wave velocity,</span>
+<span class="sd">         - 3: Layer density.</span>
+<span class="sd">    dc : scalar, optional, default 0.005</span>
+<span class="sd">        Phase velocity increment for root finding.</span>
+<span class="sd">    dt : scalar, optional, default 0.025</span>
+<span class="sd">        Frequency increment (%) for calculating group velocity.</span>
+<span class="sd">    dp : scalar, optional, default 0.025</span>
+<span class="sd">        Parameter increment (%) for numerical partial derivatives.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array_like</span>
+<span class="sd">        Phase or group velocity sensitivity kernel.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Reference velocity</span>
+    <span class="n">period</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">period</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+    <span class="n">c1</span> <span class="o">=</span> <span class="n">surf96</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">itype</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+
+    <span class="c1"># Initialize kernel</span>
+    <span class="n">mmax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mmax</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># Love-waves are not sensitive to P-wave</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ipar</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">ifunc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># Copy parameter array</span>
+        <span class="n">par</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">mmax</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ipar</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mmax</span><span class="p">):</span>
+                <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">ipar</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mmax</span><span class="p">):</span>
+                <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">ipar</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mmax</span><span class="p">):</span>
+                <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mmax</span><span class="p">):</span>
+                <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># Ignore top and/or bottom layers depending on inputs</span>
+        <span class="n">ibeg</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.01</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ipar</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">ifunc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">iend</span> <span class="o">=</span> <span class="n">mmax</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">ipar</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">mmax</span>
+
+        <span class="c1"># Loop over layers</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">dp</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ibeg</span><span class="p">,</span> <span class="n">iend</span><span class="p">):</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">fac</span>
+
+            <span class="k">if</span> <span class="n">ipar</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">c2</span> <span class="o">=</span> <span class="n">surf96</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">par</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">itype</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ipar</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">c2</span> <span class="o">=</span> <span class="n">surf96</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">par</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">itype</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ipar</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">c2</span> <span class="o">=</span> <span class="n">surf96</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">par</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">itype</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c2</span> <span class="o">=</span> <span class="n">surf96</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">par</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">itype</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+
+            <span class="n">kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">c2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">tmp</span><span class="p">)</span>
+            <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*=</span> <span class="n">fac</span>
+
+    <span class="k">return</span> <span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">kernel</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Keurfon Luu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

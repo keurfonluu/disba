@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ellipticity &mdash; disba 0.6.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Sensitivity kernel" href="sensitivity.html" />
+    <link rel="prev" title="Eigenfunction" href="eigen.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> disba
+          </a>
+              <div class="version">
+                0.6.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dispersion.html">Dispersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eigen.html">Eigenfunction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Ellipticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensitivity.html">Sensitivity kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cps.html">CPS</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">disba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">API Reference</a> &raquo;</li>
+      <li>Ellipticity</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ellipticity.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ellipticity">
+<h1>Ellipticity<a class="headerlink" href="#ellipticity" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="disba.Ellipticity">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">Ellipticity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dunkin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_ellipticity.html#Ellipticity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.Ellipticity" title="Permalink to this definition"></a></dt>
+<dd><p>Ellipticity class (only Rayleigh-wave).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>thickness</strong> (<em>array_like</em>) – Layer thickness (in km).</p></li>
+<li><p><strong>velocity_p</strong> (<em>array_like</em>) – Layer P-wave velocity (in km/s).</p></li>
+<li><p><strong>velocity_s</strong> (<em>array_like</em>) – Layer S-wave velocity (in km/s).</p></li>
+<li><p><strong>density</strong> (<em>array_like</em>) – Layer density (in g/cm3).</p></li>
+<li><p><strong>algorithm</strong> (<em>str {'dunkin'</em><em>, </em><em>'fast-delta'}</em><em>, </em><em>optional</em><em>, </em><em>default 'dunkin'</em>) – <dl class="simple">
+<dt>Algorithm to use for computation of Rayleigh-wave dispersion:</dt><dd><ul>
+<li><p>’dunkin’: Dunkin’s matrix (adapted from surf96),</p></li>
+<li><p>’fast-delta’: fast delta matrix (after Buchen and Ben-Hador, 1996).</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>dc</strong> (<em>scalar</em><em>, </em><em>optional</em><em>, </em><em>default 0.005</em>) – Phase velocity increment for root finding.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="disba.Ellipticity.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_ellipticity.html#Ellipticity.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.Ellipticity.__call__" title="Permalink to this definition"></a></dt>
+<dd><p>Compute Rayleigh-wave ellipticity for input period axis and mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>array_like</em>) – Periods (in s).</p></li>
+<li><p><strong>mode</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 0</em>) – Mode number (0 if fundamental).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rayleigh-wave ellipticity as a namedtuple (period, ellipticity, mode).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#disba.RayleighEllipticity" title="disba.RayleighEllipticity"><code class="xref py py-class docutils literal notranslate"><span class="pre">disba.RayleighEllipticity</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="disba.Ellipticity.algorithm">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">algorithm</span></span><a class="headerlink" href="#disba.Ellipticity.algorithm" title="Permalink to this definition"></a></dt>
+<dd><p>Return algorithm to use for computation of Rayleigh-wave dispersion.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="disba.Ellipticity.dc">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">dc</span></span><a class="headerlink" href="#disba.Ellipticity.dc" title="Permalink to this definition"></a></dt>
+<dd><p>Return phase velocity increment for root finding.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="disba.Ellipticity.density">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">density</span></span><a class="headerlink" href="#disba.Ellipticity.density" title="Permalink to this definition"></a></dt>
+<dd><p>Return layer density (in g/cm3).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="disba.Ellipticity.resample">
+<span class="sig-name descname"><span class="pre">resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dz</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.Ellipticity.resample" title="Permalink to this definition"></a></dt>
+<dd><p>Resample velocity model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dz</strong> (<em>scalar</em>) – Maximum layer thickness (in km).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="disba.Ellipticity.thickness">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">thickness</span></span><a class="headerlink" href="#disba.Ellipticity.thickness" title="Permalink to this definition"></a></dt>
+<dd><p>Return layer thickness (in km).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="disba.Ellipticity.velocity_p">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">velocity_p</span></span><a class="headerlink" href="#disba.Ellipticity.velocity_p" title="Permalink to this definition"></a></dt>
+<dd><p>Return layer P-wave velocity (in km/s).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="disba.Ellipticity.velocity_s">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">velocity_s</span></span><a class="headerlink" href="#disba.Ellipticity.velocity_s" title="Permalink to this definition"></a></dt>
+<dd><p>Return layer S-wave velocity (in km/s).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="disba.RayleighEllipticity">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">RayleighEllipticity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ellipticity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.RayleighEllipticity" title="Permalink to this definition"></a></dt>
+<dd><p>Create new instance of RayleighEllipticity(period, ellipticity, mode)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEllipticity.ellipticity">
+<span class="sig-name descname"><span class="pre">ellipticity</span></span><a class="headerlink" href="#disba.RayleighEllipticity.ellipticity" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEllipticity.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.RayleighEllipticity.mode" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEllipticity.period">
+<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.RayleighEllipticity.period" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="eigen.html" class="btn btn-neutral float-left" title="Eigenfunction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sensitivity.html" class="btn btn-neutral float-right" title="Sensitivity kernel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Keurfon Luu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

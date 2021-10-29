@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPS &mdash; disba 0.6.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Miscellaneous" href="misc.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> disba
+          </a>
+              <div class="version">
+                0.6.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dispersion.html">Dispersion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eigen.html">Eigenfunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ellipticity.html">Ellipticity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensitivity.html">Sensitivity kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">CPS</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">disba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">API Reference</a> &raquo;</li>
+      <li>CPS</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/cps.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cps">
+<h1>CPS<a class="headerlink" href="#cps" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="disba.surf96">
+<span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">surf96</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ifunc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_cps/_surf96.html#surf96"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.surf96" title="Permalink to this definition"></a></dt>
+<dd><p>Get phase or group velocity dispersion curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>array_like</em>) – Periods (in s).</p></li>
+<li><p><strong>d</strong> (<em>array_like</em>) – Layer thickness (in km).</p></li>
+<li><p><strong>a</strong> (<em>array_like</em>) – Layer P-wave velocity (in km/s).</p></li>
+<li><p><strong>b</strong> (<em>array_like</em>) – Layer S-wave velocity (in km/s).</p></li>
+<li><p><strong>rho</strong> (<em>array_like</em>) – Layer density (in g/cm3).</p></li>
+<li><p><strong>mode</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 0</em>) – Mode number (0 if fundamental).</p></li>
+<li><p><strong>itype</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 0</em>) – <dl class="simple">
+<dt>Velocity type:</dt><dd><ul>
+<li><p>0: phase velocity,</p></li>
+<li><p>1: group velocity.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>ifunc</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 2</em>) – <dl class="simple">
+<dt>Select wave type and algorithm for period equation:</dt><dd><ul>
+<li><p>1: Love-wave (Thomson-Haskell method),</p></li>
+<li><p>2: Rayleigh-wave (Dunkin’s matrix),</p></li>
+<li><p>3: Rayleigh-wave (fast delta matrix).</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>dc</strong> (<em>scalar</em><em>, </em><em>optional</em><em>, </em><em>default 0.005</em>) – Phase velocity increment for root finding.</p></li>
+<li><p><strong>dt</strong> (<em>scalar</em><em>, </em><em>optional</em><em>, </em><em>default 0.025</em>) – Frequency increment (%) for calculating group velocity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Phase or group dispersion velocity.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disba.swegn96">
+<span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">swegn96</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ifunc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_cps/_swegn96.html#swegn96"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.swegn96" title="Permalink to this definition"></a></dt>
+<dd><p>Get eigenfunctions for a given period and mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>scalar</em>) – Period (in s).</p></li>
+<li><p><strong>d</strong> (<em>array_like</em>) – Layer thickness (in km).</p></li>
+<li><p><strong>a</strong> (<em>array_like</em>) – Layer P-wave velocity (in km/s).</p></li>
+<li><p><strong>b</strong> (<em>array_like</em>) – Layer S-wave velocity (in km/s).</p></li>
+<li><p><strong>rho</strong> (<em>array_like</em>) – Layer density (in g/cm3).</p></li>
+<li><p><strong>mode</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 0</em>) – Mode number (0 if fundamental).</p></li>
+<li><p><strong>ifunc</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 2</em>) – <dl class="simple">
+<dt>Select wave type and algorithm for period equation:</dt><dd><ul>
+<li><p>1: Love-wave (Thomson-Haskell method),</p></li>
+<li><p>2: Rayleigh-wave (Dunkin’s matrix),</p></li>
+<li><p>3: Rayleigh-wave (fast delta matrix).</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>dc</strong> (<em>scalar</em><em>, </em><em>optional</em><em>, </em><em>default 0.005</em>) – Phase velocity increment for root finding.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Eigenfunctions.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="disba.srfker96">
+<span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">srfker96</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ifunc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ipar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_cps/_srfker96.html#srfker96"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.srfker96" title="Permalink to this definition"></a></dt>
+<dd><p>Get phase or group velocity sensitivity kernel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>scalar</em>) – Period (in s).</p></li>
+<li><p><strong>d</strong> (<em>array_like</em>) – Layer thickness (in km).</p></li>
+<li><p><strong>a</strong> (<em>array_like</em>) – Layer P-wave velocity (in km/s).</p></li>
+<li><p><strong>b</strong> (<em>array_like</em>) – Layer S-wave velocity (in km/s).</p></li>
+<li><p><strong>rho</strong> (<em>array_like</em>) – Layer density (in g/cm3).</p></li>
+<li><p><strong>mode</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 0</em>) – Mode number (0 if fundamental).</p></li>
+<li><p><strong>itype</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 0</em>) – <dl class="simple">
+<dt>Velocity type:</dt><dd><ul>
+<li><p>0: phase velocity,</p></li>
+<li><p>1: group velocity.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>ifunc</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 2</em>) – <dl class="simple">
+<dt>Select wave type and algorithm for period equation:</dt><dd><ul>
+<li><p>1: Love-wave (Thomson-Haskell method),</p></li>
+<li><p>2: Rayleigh-wave (Dunkin’s matrix),</p></li>
+<li><p>3: Rayleigh-wave (fast delta matrix).</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>ipar</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>default 2</em>) – <dl class="simple">
+<dt>Select parameter with respect to which sensitivity kernel is calculated:</dt><dd><ul>
+<li><p>0: Layer thickness,</p></li>
+<li><p>1: P-wave velocity,</p></li>
+<li><p>2: S-wave velocity,</p></li>
+<li><p>3: Layer density.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>dc</strong> (<em>scalar</em><em>, </em><em>optional</em><em>, </em><em>default 0.005</em>) – Phase velocity increment for root finding.</p></li>
+<li><p><strong>dt</strong> (<em>scalar</em><em>, </em><em>optional</em><em>, </em><em>default 0.025</em>) – Frequency increment (%) for calculating group velocity.</p></li>
+<li><p><strong>dp</strong> (<em>scalar</em><em>, </em><em>optional</em><em>, </em><em>default 0.025</em>) – Parameter increment (%) for numerical partial derivatives.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Phase or group velocity sensitivity kernel.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="misc.html" class="btn btn-neutral float-left" title="Miscellaneous" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Keurfon Luu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

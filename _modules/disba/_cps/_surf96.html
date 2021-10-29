@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disba._cps._surf96 &mdash; disba 0.6.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> disba
+          </a>
+              <div class="version">
+                0.6.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">disba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>disba._cps._surf96</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for disba._cps._surf96</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Numba implementation of the Fortran program surf96.</span>
+
+<span class="sd">This module is not a one-to-one translation from Fortran to Python.</span>
+<span class="sd">The code has been adapted and optimized for Numba.</span>
+
+<span class="sd">..</span>
+
+<span class="sd">    COMPUTER PROGRAMS IN SEISMOLOGY</span>
+<span class="sd">    VOLUME IV</span>
+
+<span class="sd">    COPYRIGHT 1986, 1991</span>
+<span class="sd">    D. R. Russell, R. B. Herrmann</span>
+<span class="sd">    Department of Earth and Atmospheric Sciences</span>
+<span class="sd">    Saint Louis University</span>
+<span class="sd">    221 North Grand Boulevard</span>
+<span class="sd">    St. Louis, Missouri 63103</span>
+<span class="sd">    U. S. A.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">.._common</span> <span class="kn">import</span> <span class="n">jitted</span>
+<span class="kn">from</span> <span class="nn">.._exception</span> <span class="kn">import</span> <span class="n">DispersionError</span>
+<span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">normc</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;surf96&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="n">twopi</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">dnka</span><span class="p">(</span><span class="n">wvno2</span><span class="p">,</span> <span class="n">gam</span><span class="p">,</span> <span class="n">gammk</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">cpcq</span><span class="p">,</span> <span class="n">cpy</span><span class="p">,</span> <span class="n">cpz</span><span class="p">,</span> <span class="n">cqw</span><span class="p">,</span> <span class="n">cqx</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">xz</span><span class="p">,</span> <span class="n">wy</span><span class="p">,</span> <span class="n">wz</span><span class="p">,</span> <span class="n">ca</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dunkin&#39;s matrix.&quot;&quot;&quot;</span>
+    <span class="n">gamm1</span> <span class="o">=</span> <span class="n">gam</span> <span class="o">-</span> <span class="mf">1.0</span>
+    <span class="n">twgm1</span> <span class="o">=</span> <span class="n">gam</span> <span class="o">+</span> <span class="n">gamm1</span>
+    <span class="n">gmgmk</span> <span class="o">=</span> <span class="n">gam</span> <span class="o">*</span> <span class="n">gammk</span>
+    <span class="n">gmgm1</span> <span class="o">=</span> <span class="n">gam</span> <span class="o">*</span> <span class="n">gamm1</span>
+    <span class="n">gm1sq</span> <span class="o">=</span> <span class="n">gamm1</span> <span class="o">*</span> <span class="n">gamm1</span>
+
+    <span class="n">rho2</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">rho</span>
+    <span class="n">a0pq</span> <span class="o">=</span> <span class="n">a0</span> <span class="o">-</span> <span class="n">cpcq</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">wvno2</span>
+
+    <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpcq</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">gmgm1</span> <span class="o">*</span> <span class="n">a0pq</span> <span class="o">-</span> <span class="n">gmgmk</span> <span class="o">*</span> <span class="n">xz</span> <span class="o">-</span> <span class="n">wvno2</span> <span class="o">*</span> <span class="n">gm1sq</span> <span class="o">*</span> <span class="n">wy</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">wvno2</span> <span class="o">*</span> <span class="n">cpy</span> <span class="o">-</span> <span class="n">cqx</span><span class="p">)</span> <span class="o">/</span> <span class="n">rho</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">twgm1</span> <span class="o">*</span> <span class="n">a0pq</span> <span class="o">+</span> <span class="n">gammk</span> <span class="o">*</span> <span class="n">xz</span> <span class="o">+</span> <span class="n">wvno2</span> <span class="o">*</span> <span class="n">gamm1</span> <span class="o">*</span> <span class="n">wy</span><span class="p">)</span> <span class="o">/</span> <span class="n">rho</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cpz</span> <span class="o">-</span> <span class="n">wvno2</span> <span class="o">*</span> <span class="n">cqw</span><span class="p">)</span> <span class="o">/</span> <span class="n">rho</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">wvno2</span> <span class="o">*</span> <span class="n">a0pq</span> <span class="o">+</span> <span class="n">xz</span> <span class="o">+</span> <span class="n">wvno2</span> <span class="o">*</span> <span class="n">wvno2</span> <span class="o">*</span> <span class="n">wy</span><span class="p">)</span> <span class="o">/</span> <span class="n">rho2</span>
+
+    <span class="n">ca</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">gmgmk</span> <span class="o">*</span> <span class="n">cpz</span> <span class="o">-</span> <span class="n">gm1sq</span> <span class="o">*</span> <span class="n">cqw</span><span class="p">)</span> <span class="o">*</span> <span class="n">rho</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpcq</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">gammk</span> <span class="o">*</span> <span class="n">cpz</span> <span class="o">-</span> <span class="n">gamm1</span> <span class="o">*</span> <span class="n">cqw</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">wz</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+    <span class="n">ca</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">gm1sq</span> <span class="o">*</span> <span class="n">cpy</span> <span class="o">-</span> <span class="n">gmgmk</span> <span class="o">*</span> <span class="n">cqx</span><span class="p">)</span> <span class="o">*</span> <span class="n">rho</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">xy</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">gamm1</span> <span class="o">*</span> <span class="n">cpy</span> <span class="o">-</span> <span class="n">gammk</span> <span class="o">*</span> <span class="n">cqx</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">ca</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">ca</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="o">-</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">gmgmk</span> <span class="o">*</span> <span class="n">gm1sq</span> <span class="o">*</span> <span class="n">a0pq</span> <span class="o">+</span> <span class="n">gmgmk</span> <span class="o">*</span> <span class="n">gmgmk</span> <span class="o">*</span> <span class="n">xz</span> <span class="o">+</span> <span class="n">gm1sq</span> <span class="o">*</span> <span class="n">gm1sq</span> <span class="o">*</span> <span class="n">wy</span><span class="p">)</span> <span class="o">*</span> <span class="n">rho2</span>
+    <span class="p">)</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ca</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="o">-</span><span class="p">(</span><span class="n">gammk</span> <span class="o">*</span> <span class="n">gamm1</span> <span class="o">*</span> <span class="n">twgm1</span> <span class="o">*</span> <span class="n">a0pq</span> <span class="o">+</span> <span class="n">gam</span> <span class="o">*</span> <span class="n">gammk</span> <span class="o">*</span> <span class="n">gammk</span> <span class="o">*</span> <span class="n">xz</span> <span class="o">+</span> <span class="n">gamm1</span> <span class="o">*</span> <span class="n">gm1sq</span> <span class="o">*</span> <span class="n">wy</span><span class="p">)</span>
+        <span class="o">*</span> <span class="n">rho</span>
+    <span class="p">)</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">ca</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">ca</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">ca</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">ca</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">a0</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">cpcq</span> <span class="o">-</span> <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">ca</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">ca</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">ca</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">var</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">wvno</span><span class="p">,</span> <span class="n">xka</span><span class="p">,</span> <span class="n">xkb</span><span class="p">,</span> <span class="n">dpth</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find variables cosP, cosQ, sinP, sinQ...&quot;&quot;&quot;</span>
+    <span class="c1"># Examine P-wave eigenfunctions</span>
+    <span class="c1"># Checking whether c &gt; vp, c = vp or c &lt; vp</span>
+    <span class="n">pex</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">wvno</span> <span class="o">&lt;</span> <span class="n">xka</span><span class="p">:</span>
+        <span class="n">sinp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">sinp</span> <span class="o">/</span> <span class="n">ra</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="n">ra</span> <span class="o">*</span> <span class="n">sinp</span>
+        <span class="n">cosp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">wvno</span> <span class="o">==</span> <span class="n">xka</span><span class="p">:</span>
+        <span class="n">cosp</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">dpth</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">elif</span> <span class="n">wvno</span> <span class="o">&gt;</span> <span class="n">xka</span><span class="p">:</span>
+        <span class="n">pex</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="mf">16.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">cosp</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">fac</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="n">sinp</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fac</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">sinp</span> <span class="o">/</span> <span class="n">ra</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">sinp</span>
+
+    <span class="c1"># Examine S-wave eigenfunctions</span>
+    <span class="c1"># Checking whether c &gt; vs, c = vs or c &lt; vs</span>
+    <span class="n">sex</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">wvno</span> <span class="o">&lt;</span> <span class="n">xkb</span><span class="p">:</span>
+        <span class="n">sinq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">sinq</span> <span class="o">/</span> <span class="n">rb</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="n">rb</span> <span class="o">*</span> <span class="n">sinq</span>
+        <span class="n">cosq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">wvno</span> <span class="o">==</span> <span class="n">xkb</span><span class="p">:</span>
+        <span class="n">cosq</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">dpth</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">elif</span> <span class="n">wvno</span> <span class="o">&gt;</span> <span class="n">xkb</span><span class="p">:</span>
+        <span class="n">sex</span> <span class="o">=</span> <span class="n">q</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">q</span><span class="p">)</span> <span class="k">if</span> <span class="n">q</span> <span class="o">&lt;</span> <span class="mf">16.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">cosq</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">fac</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="n">sinq</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fac</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">sinq</span> <span class="o">/</span> <span class="n">rb</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">rb</span> <span class="o">*</span> <span class="n">sinq</span>
+
+    <span class="c1"># Form eigenfunction products for use with compound matrices</span>
+    <span class="n">exa</span> <span class="o">=</span> <span class="n">pex</span> <span class="o">+</span> <span class="n">sex</span>
+    <span class="n">a0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">exa</span><span class="p">)</span> <span class="k">if</span> <span class="n">exa</span> <span class="o">&lt;</span> <span class="mf">60.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">cpcq</span> <span class="o">=</span> <span class="n">cosp</span> <span class="o">*</span> <span class="n">cosq</span>
+    <span class="n">cpy</span> <span class="o">=</span> <span class="n">cosp</span> <span class="o">*</span> <span class="n">y</span>
+    <span class="n">cpz</span> <span class="o">=</span> <span class="n">cosp</span> <span class="o">*</span> <span class="n">z</span>
+    <span class="n">cqw</span> <span class="o">=</span> <span class="n">cosq</span> <span class="o">*</span> <span class="n">w</span>
+    <span class="n">cqx</span> <span class="o">=</span> <span class="n">cosq</span> <span class="o">*</span> <span class="n">x</span>
+    <span class="n">xy</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span>
+    <span class="n">xz</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">z</span>
+    <span class="n">wy</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">y</span>
+    <span class="n">wz</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">z</span>
+
+    <span class="n">qmp</span> <span class="o">=</span> <span class="n">sex</span> <span class="o">-</span> <span class="n">pex</span>
+    <span class="n">fac</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">qmp</span><span class="p">)</span> <span class="k">if</span> <span class="n">qmp</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">40.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">cosq</span> <span class="o">*=</span> <span class="n">fac</span>
+    <span class="n">y</span> <span class="o">*=</span> <span class="n">fac</span>
+    <span class="n">z</span> <span class="o">*=</span> <span class="n">fac</span>
+
+    <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">cosp</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">cpcq</span><span class="p">,</span> <span class="n">cpy</span><span class="p">,</span> <span class="n">cpz</span><span class="p">,</span> <span class="n">cqw</span><span class="p">,</span> <span class="n">cqx</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">xz</span><span class="p">,</span> <span class="n">wy</span><span class="p">,</span> <span class="n">wz</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">dltar1</span><span class="p">(</span><span class="n">wvno</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">llw</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Love-wave period equation.&quot;&quot;&quot;</span>
+    <span class="n">beta1</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">rho1</span> <span class="o">=</span> <span class="n">rho</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">xkb</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">/</span> <span class="n">beta1</span>
+    <span class="n">wvnop</span> <span class="o">=</span> <span class="n">wvno</span> <span class="o">+</span> <span class="n">xkb</span>
+    <span class="n">wvnom</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">wvno</span> <span class="o">-</span> <span class="n">xkb</span><span class="p">)</span>
+    <span class="n">rb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wvnop</span> <span class="o">*</span> <span class="n">wvnom</span><span class="p">)</span>
+    <span class="n">e1</span> <span class="o">=</span> <span class="n">rho1</span> <span class="o">*</span> <span class="n">rb</span>
+    <span class="n">e2</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">beta1</span> <span class="o">*</span> <span class="n">beta1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">beta1</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+        <span class="n">rho1</span> <span class="o">=</span> <span class="n">rho</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+        <span class="n">xmu</span> <span class="o">=</span> <span class="n">rho1</span> <span class="o">*</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">beta1</span>
+        <span class="n">xkb</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">/</span> <span class="n">beta1</span>
+        <span class="n">wvnop</span> <span class="o">=</span> <span class="n">wvno</span> <span class="o">+</span> <span class="n">xkb</span>
+        <span class="n">wvnom</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">wvno</span> <span class="o">-</span> <span class="n">xkb</span><span class="p">)</span>
+        <span class="n">rb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wvnop</span> <span class="o">*</span> <span class="n">wvnom</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">*</span> <span class="n">rb</span>
+
+        <span class="k">if</span> <span class="n">wvno</span> <span class="o">&lt;</span> <span class="n">xkb</span><span class="p">:</span>
+            <span class="n">sinq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">sinq</span> <span class="o">/</span> <span class="n">rb</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="n">rb</span> <span class="o">*</span> <span class="n">sinq</span>
+            <span class="n">cosq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">wvno</span> <span class="o">==</span> <span class="n">xkb</span><span class="p">:</span>
+            <span class="n">cosq</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fac</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">q</span><span class="p">)</span> <span class="k">if</span> <span class="n">q</span> <span class="o">&lt;</span> <span class="mf">16.0</span> <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="n">cosq</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">fac</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="n">sinq</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fac</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">sinq</span> <span class="o">/</span> <span class="n">rb</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">rb</span> <span class="o">*</span> <span class="n">sinq</span>
+
+        <span class="n">e10</span> <span class="o">=</span> <span class="n">e1</span> <span class="o">*</span> <span class="n">cosq</span> <span class="o">+</span> <span class="n">e2</span> <span class="o">*</span> <span class="n">xmu</span> <span class="o">*</span> <span class="n">z</span>
+        <span class="n">e20</span> <span class="o">=</span> <span class="n">e1</span> <span class="o">*</span> <span class="n">y</span> <span class="o">/</span> <span class="n">xmu</span> <span class="o">+</span> <span class="n">e2</span> <span class="o">*</span> <span class="n">cosq</span>
+        <span class="n">xnor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">e10</span><span class="p">)</span>
+        <span class="n">ynor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">e20</span><span class="p">)</span>
+        <span class="n">xnor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">xnor</span><span class="p">,</span> <span class="n">ynor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">xnor</span> <span class="o">&lt;</span> <span class="mf">1.0e-40</span><span class="p">:</span>
+            <span class="n">xnor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">e1</span> <span class="o">=</span> <span class="n">e10</span> <span class="o">/</span> <span class="n">xnor</span>
+        <span class="n">e2</span> <span class="o">=</span> <span class="n">e20</span> <span class="o">/</span> <span class="n">xnor</span>
+
+    <span class="k">return</span> <span class="n">e1</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">dltar4</span><span class="p">(</span><span class="n">wvno</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rayleigh-wave period equation.&quot;&quot;&quot;</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">ee</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">omega</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">omega</span><span class="p">,</span> <span class="mf">1.0e-4</span><span class="p">)</span>
+    <span class="n">wvno2</span> <span class="o">=</span> <span class="n">wvno</span> <span class="o">*</span> <span class="n">wvno</span>
+    <span class="n">xka</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">/</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">xkb</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">/</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">wvnop</span> <span class="o">=</span> <span class="n">wvno</span> <span class="o">+</span> <span class="n">xka</span>
+    <span class="n">wvnom</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">wvno</span> <span class="o">-</span> <span class="n">xka</span><span class="p">)</span>
+    <span class="n">ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wvnop</span> <span class="o">*</span> <span class="n">wvnom</span><span class="p">)</span>
+    <span class="n">wvnop</span> <span class="o">=</span> <span class="n">wvno</span> <span class="o">+</span> <span class="n">xkb</span>
+    <span class="n">wvnom</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">wvno</span> <span class="o">-</span> <span class="n">xkb</span><span class="p">)</span>
+    <span class="n">rb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wvnop</span> <span class="o">*</span> <span class="n">wvnom</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">omega</span>
+
+    <span class="c1"># E matrix for the bottom half-space</span>
+    <span class="n">gammk</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">t</span>
+    <span class="n">gam</span> <span class="o">=</span> <span class="n">gammk</span> <span class="o">*</span> <span class="n">wvno2</span>
+    <span class="n">gamm1</span> <span class="o">=</span> <span class="n">gam</span> <span class="o">-</span> <span class="mf">1.0</span>
+    <span class="n">rho1</span> <span class="o">=</span> <span class="n">rho</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho1</span> <span class="o">*</span> <span class="n">rho1</span> <span class="o">*</span> <span class="p">(</span><span class="n">gamm1</span> <span class="o">*</span> <span class="n">gamm1</span> <span class="o">-</span> <span class="n">gam</span> <span class="o">*</span> <span class="n">gammk</span> <span class="o">*</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">rb</span><span class="p">)</span>
+    <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">rho1</span> <span class="o">*</span> <span class="n">ra</span>
+    <span class="n">e</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho1</span> <span class="o">*</span> <span class="p">(</span><span class="n">gamm1</span> <span class="o">-</span> <span class="n">gammk</span> <span class="o">*</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">rb</span><span class="p">)</span>
+    <span class="n">e</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho1</span> <span class="o">*</span> <span class="n">rb</span>
+    <span class="n">e</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">wvno2</span> <span class="o">-</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">rb</span>
+
+    <span class="c1"># Matrix multiplication from bottom layer upward</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">xka</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">/</span> <span class="n">a</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+        <span class="n">xkb</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">/</span> <span class="n">b</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">/</span> <span class="n">omega</span>
+        <span class="n">gammk</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">t</span>
+        <span class="n">gam</span> <span class="o">=</span> <span class="n">gammk</span> <span class="o">*</span> <span class="n">wvno2</span>
+        <span class="n">wvnop</span> <span class="o">=</span> <span class="n">wvno</span> <span class="o">+</span> <span class="n">xka</span>
+        <span class="n">wvnom</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">wvno</span> <span class="o">-</span> <span class="n">xka</span><span class="p">)</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wvnop</span> <span class="o">*</span> <span class="n">wvnom</span><span class="p">)</span>
+        <span class="n">wvnop</span> <span class="o">=</span> <span class="n">wvno</span> <span class="o">+</span> <span class="n">xkb</span>
+        <span class="n">wvnom</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">wvno</span> <span class="o">-</span> <span class="n">xkb</span><span class="p">)</span>
+        <span class="n">rb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wvnop</span> <span class="o">*</span> <span class="n">wvnom</span><span class="p">)</span>
+
+        <span class="n">dpth</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+        <span class="n">rho1</span> <span class="o">=</span> <span class="n">rho</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">dpth</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">rb</span> <span class="o">*</span> <span class="n">dpth</span>
+
+        <span class="c1"># Evaluate cosP, cosQ...</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">cpcq</span><span class="p">,</span> <span class="n">cpy</span><span class="p">,</span> <span class="n">cpz</span><span class="p">,</span> <span class="n">cqw</span><span class="p">,</span> <span class="n">cqx</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">xz</span><span class="p">,</span> <span class="n">wy</span><span class="p">,</span> <span class="n">wz</span> <span class="o">=</span> <span class="n">var</span><span class="p">(</span>
+            <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">wvno</span><span class="p">,</span> <span class="n">xka</span><span class="p">,</span> <span class="n">xkb</span><span class="p">,</span> <span class="n">dpth</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Evaluate Dunkin&#39;s matrix</span>
+        <span class="n">ca</span> <span class="o">=</span> <span class="n">dnka</span><span class="p">(</span>
+            <span class="n">wvno2</span><span class="p">,</span> <span class="n">gam</span><span class="p">,</span> <span class="n">gammk</span><span class="p">,</span> <span class="n">rho1</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">cpcq</span><span class="p">,</span> <span class="n">cpy</span><span class="p">,</span> <span class="n">cpz</span><span class="p">,</span> <span class="n">cqw</span><span class="p">,</span> <span class="n">cqx</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">xz</span><span class="p">,</span> <span class="n">wy</span><span class="p">,</span> <span class="n">wz</span><span class="p">,</span> <span class="n">ca</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+            <span class="n">ee</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+                <span class="n">ee</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">ca</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+
+        <span class="n">ee</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">normc</span><span class="p">(</span><span class="n">ee</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+            <span class="n">e</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ee</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">llw</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">xka</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">/</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">wvnop</span> <span class="o">=</span> <span class="n">wvno</span> <span class="o">+</span> <span class="n">xka</span>
+        <span class="n">wvnom</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">wvno</span> <span class="o">-</span> <span class="n">xka</span><span class="p">)</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wvnop</span> <span class="o">*</span> <span class="n">wvnom</span><span class="p">)</span>
+        <span class="n">dpth</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rho1</span> <span class="o">=</span> <span class="n">rho</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">dpth</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">cosp</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">var</span><span class="p">(</span>
+            <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="mf">1.0e-5</span><span class="p">,</span> <span class="n">wvno</span><span class="p">,</span> <span class="n">xka</span><span class="p">,</span> <span class="n">xkb</span><span class="p">,</span> <span class="n">dpth</span>
+        <span class="p">)</span>
+        <span class="n">dlt</span> <span class="o">=</span> <span class="n">cosp</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">rho1</span> <span class="o">*</span> <span class="n">w</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dlt</span> <span class="o">=</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">dlt</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">fast_delta</span><span class="p">(</span><span class="n">wvno</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">llw</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fast delta matrix.</span>
+
+<span class="sd">    After Buchen and Ben-Hador (1996).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mmax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="c1"># Handle water layer</span>
+    <span class="k">if</span> <span class="n">llw</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="mf">1.0</span>
+        <span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0e-8</span>
+
+    <span class="c1"># Phase velocity</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">/</span> <span class="n">wvno</span>
+    <span class="n">c2</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">c</span>
+
+    <span class="c1"># Rayleigh-wave fast delta matrix</span>
+    <span class="n">gam0</span> <span class="o">=</span> <span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="n">c2</span>
+    <span class="n">mu0</span> <span class="o">=</span> <span class="n">rho</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="n">c2</span> <span class="o">/</span> <span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">complex_</span><span class="p">)</span>
+    <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">t0</span>
+    <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">t0</span> <span class="o">*</span> <span class="n">t0</span>
+    <span class="n">X</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">4.0</span>
+    <span class="n">X</span> <span class="o">*=</span> <span class="n">mu0</span> <span class="o">*</span> <span class="n">mu0</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">normc</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mmax</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">gam1</span> <span class="o">=</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="n">c2</span>
+        <span class="n">eps</span> <span class="o">=</span> <span class="n">rho</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">rho</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">eta</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">gam0</span> <span class="o">-</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">gam1</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">eps</span> <span class="o">+</span> <span class="n">eta</span>
+        <span class="n">ap</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="mf">1.0</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">eta</span>
+        <span class="n">bp</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="mf">1.0</span>
+        <span class="n">gam0</span> <span class="o">=</span> <span class="n">gam1</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">c2</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">c2</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">c2</span> <span class="o">/</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">c2</span> <span class="o">/</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">Ca</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">wvno</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">Sa</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">wvno</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">Ca</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">wvno</span> <span class="o">*</span> <span class="n">r</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">Sa</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">wvno</span> <span class="o">*</span> <span class="n">r</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Ca</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">Sa</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">Cb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">wvno</span> <span class="o">*</span> <span class="n">s</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">Sb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">wvno</span> <span class="o">*</span> <span class="n">s</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+            <span class="c1"># Handle hyperbolic overflow</span>
+            <span class="k">if</span> <span class="n">wvno</span> <span class="o">*</span> <span class="n">s</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">80.0</span><span class="p">:</span>
+                <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">Cb</span> <span class="o">/=</span> <span class="n">Ca</span>
+                <span class="n">Sb</span> <span class="o">/=</span> <span class="n">Ca</span>
+
+        <span class="k">elif</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">Cb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">wvno</span> <span class="o">*</span> <span class="n">s</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">Sb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">wvno</span> <span class="o">*</span> <span class="n">s</span><span class="o">.</span><span class="n">imag</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Cb</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">Sb</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">llw</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">Cb</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">Sb</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">Cb</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">Sb</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">Cb</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">Sb</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">p3</span> <span class="o">=</span> <span class="n">Cb</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">p4</span> <span class="o">=</span> <span class="n">Cb</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">p3</span> <span class="o">+=</span> <span class="n">wvno</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">p4</span> <span class="o">+=</span> <span class="n">wvno</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p3</span> <span class="o">+=</span> <span class="n">Sb</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">s</span>
+            <span class="n">p4</span> <span class="o">+=</span> <span class="n">Sb</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="n">s</span>
+
+        <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">q1</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">p2</span>
+            <span class="n">q3</span> <span class="o">=</span> <span class="n">p3</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">p4</span>
+            <span class="n">q2</span> <span class="o">=</span> <span class="n">p4</span>
+            <span class="n">q4</span> <span class="o">=</span> <span class="n">p2</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">!=</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">q2</span> <span class="o">-=</span> <span class="n">p3</span> <span class="o">/</span> <span class="n">r</span>
+                <span class="n">q4</span> <span class="o">-=</span> <span class="n">p1</span> <span class="o">/</span> <span class="n">r</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">q1</span> <span class="o">=</span> <span class="n">Ca</span> <span class="o">*</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Sa</span> <span class="o">*</span> <span class="n">p2</span>
+            <span class="n">q3</span> <span class="o">=</span> <span class="n">Ca</span> <span class="o">*</span> <span class="n">p3</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Sa</span> <span class="o">*</span> <span class="n">p4</span>
+            <span class="n">q2</span> <span class="o">=</span> <span class="n">Ca</span> <span class="o">*</span> <span class="n">p4</span>
+            <span class="n">q4</span> <span class="o">=</span> <span class="n">Ca</span> <span class="o">*</span> <span class="n">p2</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">q2</span> <span class="o">-=</span> <span class="n">wvno</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">p3</span>
+                <span class="n">q4</span> <span class="o">-=</span> <span class="n">wvno</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">p1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">q2</span> <span class="o">-=</span> <span class="n">Sa</span> <span class="o">*</span> <span class="n">p3</span> <span class="o">/</span> <span class="n">r</span>
+                <span class="n">q4</span> <span class="o">-=</span> <span class="n">Sa</span> <span class="o">*</span> <span class="n">p1</span> <span class="o">/</span> <span class="n">r</span>
+
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">q1</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="n">ap</span> <span class="o">*</span> <span class="n">q2</span>
+        <span class="n">z1</span> <span class="o">=</span> <span class="n">bp</span> <span class="o">*</span> <span class="n">q1</span>
+        <span class="n">z2</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="n">q2</span>
+        <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">y1</span> <span class="o">+=</span> <span class="n">ap</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">y2</span> <span class="o">+=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">z1</span> <span class="o">+=</span> <span class="n">b</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">z2</span> <span class="o">+=</span> <span class="n">bp</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bp</span> <span class="o">*</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">y2</span>
+        <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">ap</span> <span class="o">*</span> <span class="n">y2</span>
+        <span class="n">X</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">q3</span>
+        <span class="n">X</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">q4</span>
+        <span class="n">X</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">bp</span> <span class="o">*</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">z2</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">normc</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">c2</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">alpha</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">c2</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">alpha</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">c2</span> <span class="o">/</span> <span class="n">beta</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">beta</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">c2</span> <span class="o">/</span> <span class="n">beta</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">beta</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">dltar</span><span class="p">(</span><span class="n">wvno</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select Rayleigh or Love wave period equation.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ifunc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dltar1</span><span class="p">(</span><span class="n">wvno</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">llw</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ifunc</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dltar4</span><span class="p">(</span><span class="n">wvno</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fast_delta</span><span class="p">(</span><span class="n">wvno</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">llw</span><span class="p">)</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">nevill</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">del1</span><span class="p">,</span> <span class="n">del2</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Hybrid method for refining root once it has been bracketted.&quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># Initial guess</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="n">twopi</span> <span class="o">/</span> <span class="n">t</span>
+    <span class="n">c3</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">c1</span> <span class="o">+</span> <span class="n">c2</span><span class="p">)</span>
+    <span class="n">del3</span> <span class="o">=</span> <span class="n">dltar</span><span class="p">(</span><span class="n">omega</span> <span class="o">/</span> <span class="n">c3</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">)</span>
+    <span class="n">nev</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">nctrl</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">nctrl</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">nctrl</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Make sure new estimate is inside the previous values</span>
+        <span class="c1"># If not, perform interval halving</span>
+        <span class="k">if</span> <span class="n">c3</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">)</span> <span class="ow">or</span> <span class="n">c3</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
+            <span class="n">nev</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">c3</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">c1</span> <span class="o">+</span> <span class="n">c2</span><span class="p">)</span>
+            <span class="n">del3</span> <span class="o">=</span> <span class="n">dltar</span><span class="p">(</span><span class="n">omega</span> <span class="o">/</span> <span class="n">c3</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">)</span>
+
+        <span class="n">s13</span> <span class="o">=</span> <span class="n">del1</span> <span class="o">-</span> <span class="n">del3</span>
+        <span class="n">s32</span> <span class="o">=</span> <span class="n">del3</span> <span class="o">-</span> <span class="n">del2</span>
+
+        <span class="c1"># Define new bounds according to the sign of the period equation</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">del3</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">del1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">c2</span> <span class="o">=</span> <span class="n">c3</span>
+            <span class="n">del2</span> <span class="o">=</span> <span class="n">del3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="n">c3</span>
+            <span class="n">del1</span> <span class="o">=</span> <span class="n">del3</span>
+
+        <span class="c1"># Check for convergence</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">c1</span> <span class="o">-</span> <span class="n">c2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1.0e-6</span> <span class="o">*</span> <span class="n">c1</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># If the slopes are not the same between c1, c2 and c3</span>
+        <span class="c1"># Do not use Neville iteration</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">s13</span><span class="p">)</span> <span class="o">!=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">s32</span><span class="p">):</span>
+            <span class="n">nev</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># If the period equation differs by more than a factor of 10</span>
+        <span class="c1"># Use interval halving to avoid poor behavior of polynomial fit</span>
+        <span class="n">ss1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">del1</span><span class="p">)</span>
+        <span class="n">s1</span> <span class="o">=</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">ss1</span>
+        <span class="n">ss2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">del2</span><span class="p">)</span>
+        <span class="n">s2</span> <span class="o">=</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">ss2</span>
+        <span class="k">if</span> <span class="n">s1</span> <span class="o">&gt;</span> <span class="n">ss2</span> <span class="ow">or</span> <span class="n">s2</span> <span class="o">&gt;</span> <span class="n">ss1</span> <span class="ow">or</span> <span class="n">nev</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">c3</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">c1</span> <span class="o">+</span> <span class="n">c2</span><span class="p">)</span>
+            <span class="n">del3</span> <span class="o">=</span> <span class="n">dltar</span><span class="p">(</span><span class="n">omega</span> <span class="o">/</span> <span class="n">c3</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">)</span>
+            <span class="n">nev</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nev</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">[</span><span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">c3</span>
+                <span class="n">y</span><span class="p">[</span><span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">del3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">c1</span>
+                <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">del1</span>
+                <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">c2</span>
+                <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">del2</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="c1"># Perform Neville iteration</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">kk</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">kk</span>
+                <span class="n">denom</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">denom</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0e-10</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">m</span><span class="p">]):</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">denom</span>
+
+            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+                <span class="n">c3</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">del3</span> <span class="o">=</span> <span class="n">dltar</span><span class="p">(</span><span class="n">omega</span> <span class="o">/</span> <span class="n">c3</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">)</span>
+                <span class="n">nev</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">m</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c3</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">c1</span> <span class="o">+</span> <span class="n">c2</span><span class="p">)</span>
+                <span class="n">del3</span> <span class="o">=</span> <span class="n">dltar</span><span class="p">(</span><span class="n">omega</span> <span class="o">/</span> <span class="n">c3</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">)</span>
+                <span class="n">nev</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">c3</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">getsol</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">clow</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">betmx</span><span class="p">,</span> <span class="n">ifirst</span><span class="p">,</span> <span class="n">del1st</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Bracket dispersion curve and then refine it.&quot;&quot;&quot;</span>
+    <span class="c1"># Bracket solution</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="n">twopi</span> <span class="o">/</span> <span class="n">t1</span>
+    <span class="n">del1</span> <span class="o">=</span> <span class="n">dltar</span><span class="p">(</span><span class="n">omega</span> <span class="o">/</span> <span class="n">c1</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">)</span>
+    <span class="n">del1st</span> <span class="o">=</span> <span class="n">del1</span> <span class="k">if</span> <span class="n">ifirst</span> <span class="k">else</span> <span class="n">del1st</span>
+    <span class="n">idir</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">ifirst</span> <span class="ow">and</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">del1st</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">del1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">1.0</span>
+
+    <span class="c1"># idir indicates the direction of the search for the true phase velocity from the initial estimate</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">c2</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">idir</span> <span class="o">*</span> <span class="n">dc</span>
+
+        <span class="k">if</span> <span class="n">c2</span> <span class="o">&lt;=</span> <span class="n">clow</span><span class="p">:</span>
+            <span class="n">idir</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="n">clow</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">omega</span> <span class="o">=</span> <span class="n">twopi</span> <span class="o">/</span> <span class="n">t1</span>
+            <span class="n">del2</span> <span class="o">=</span> <span class="n">dltar</span><span class="p">(</span><span class="n">omega</span> <span class="o">/</span> <span class="n">c2</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">del1</span><span class="p">)</span> <span class="o">!=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">del2</span><span class="p">):</span>
+                <span class="n">c1</span> <span class="o">=</span> <span class="n">nevill</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">del1</span><span class="p">,</span> <span class="n">del2</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">llw</span><span class="p">,</span> <span class="n">ca</span><span class="p">)</span>
+                <span class="n">iret</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">&gt;</span> <span class="n">betmx</span>
+                <span class="k">break</span>
+
+            <span class="n">c1</span> <span class="o">=</span> <span class="n">c2</span>
+            <span class="n">del1</span> <span class="o">=</span> <span class="n">del2</span>
+
+            <span class="n">iret</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">&lt;</span> <span class="n">cm</span> <span class="ow">or</span> <span class="n">c1</span> <span class="o">&gt;=</span> <span class="n">betmx</span> <span class="o">+</span> <span class="n">dc</span>
+            <span class="k">if</span> <span class="n">iret</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">c1</span><span class="p">,</span> <span class="n">del1st</span><span class="p">,</span> <span class="n">iret</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">gtsolh</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Starting solution.&quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mf">0.95</span> <span class="o">*</span> <span class="n">b</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">b</span> <span class="o">/</span> <span class="n">a</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">c</span> <span class="o">/</span> <span class="n">b</span>
+        <span class="n">k2</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">gk2</span> <span class="o">=</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">fac1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">gk2</span><span class="p">)</span>
+        <span class="n">fac2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">k2</span><span class="p">)</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">-</span> <span class="n">k2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">fac1</span> <span class="o">*</span> <span class="n">fac2</span>
+        <span class="n">frp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">4.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">-</span> <span class="n">k2</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa</span>
+        <span class="n">frp</span> <span class="o">+=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">fac2</span> <span class="o">*</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">kappa</span> <span class="o">/</span> <span class="n">fac1</span>
+        <span class="n">frp</span> <span class="o">+=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">fac1</span> <span class="o">*</span> <span class="n">kappa</span> <span class="o">/</span> <span class="n">fac2</span>
+        <span class="n">frp</span> <span class="o">/=</span> <span class="n">b</span>
+        <span class="n">c</span> <span class="o">-=</span> <span class="n">fr</span> <span class="o">/</span> <span class="n">frp</span>
+
+    <span class="k">return</span> <span class="n">c</span>
+
+
+<span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">getc</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">dc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get phase velocity dispersion curve.&quot;&quot;&quot;</span>
+    <span class="c1"># Initialize arrays</span>
+    <span class="n">kmax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">kmax</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">cg</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">kmax</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># Preallocate Dunkin&#39;s matrix</span>
+    <span class="n">ca</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># Check for water layer</span>
+    <span class="n">llw</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="c1"># Find the extremal velocities to assist in starting search</span>
+    <span class="n">betmx</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0e20</span>
+    <span class="n">betmn</span> <span class="o">=</span> <span class="mf">1.0e20</span>
+    <span class="n">mmax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mmax</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.01</span> <span class="ow">and</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">betmn</span><span class="p">:</span>
+            <span class="n">betmn</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">jmn</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">jsol</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.01</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">betmn</span><span class="p">:</span>
+            <span class="n">betmn</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">jmn</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">jsol</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">betmx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">betmx</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="c1"># Solid layer solve halfspace period equation</span>
+    <span class="n">cc</span> <span class="o">=</span> <span class="n">betmn</span> <span class="k">if</span> <span class="n">jsol</span> <span class="k">else</span> <span class="n">gtsolh</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">jmn</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">jmn</span><span class="p">])</span>
+
+    <span class="c1"># Back off a bit to get a starting value at a lower phase velocity</span>
+    <span class="n">cc</span> <span class="o">*=</span> <span class="mf">0.9</span>
+    <span class="n">c1</span> <span class="o">=</span> <span class="n">cc</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">cc</span>
+
+    <span class="n">one</span> <span class="o">=</span> <span class="mf">1.0e-2</span>
+    <span class="n">onea</span> <span class="o">=</span> <span class="mf">1.5</span>
+    <span class="k">for</span> <span class="n">iq</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">ibeg</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">iend</span> <span class="o">=</span> <span class="n">kmax</span>
+
+        <span class="n">del1st</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ibeg</span><span class="p">,</span> <span class="n">iend</span><span class="p">):</span>
+            <span class="c1"># Get initial phase velocity estimate to begin search</span>
+            <span class="n">ifirst</span> <span class="o">=</span> <span class="n">k</span> <span class="o">==</span> <span class="n">ibeg</span>
+            <span class="k">if</span> <span class="n">ifirst</span> <span class="ow">and</span> <span class="n">iq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">clow</span> <span class="o">=</span> <span class="n">cc</span>
+                <span class="n">c1</span> <span class="o">=</span> <span class="n">cc</span>
+            <span class="k">elif</span> <span class="n">ifirst</span> <span class="ow">and</span> <span class="n">iq</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">clow</span> <span class="o">=</span> <span class="n">c1</span>
+                <span class="n">c1</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">ibeg</span><span class="p">]</span> <span class="o">+</span> <span class="n">one</span> <span class="o">*</span> <span class="n">dc</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">ifirst</span> <span class="ow">and</span> <span class="n">iq</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">clow</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">one</span> <span class="o">*</span> <span class="n">dc</span>
+                <span class="n">c1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">clow</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">ifirst</span> <span class="ow">and</span> <span class="n">iq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">clow</span> <span class="o">=</span> <span class="n">cm</span>
+                <span class="n">c1</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">onea</span> <span class="o">*</span> <span class="n">dc</span>
+
+            <span class="c1"># Bracket root and refine it</span>
+            <span class="n">c1</span><span class="p">,</span> <span class="n">del1st</span><span class="p">,</span> <span class="n">iret</span> <span class="o">=</span> <span class="n">getsol</span><span class="p">(</span>
+                <span class="n">t</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                <span class="n">c1</span><span class="p">,</span>
+                <span class="n">clow</span><span class="p">,</span>
+                <span class="n">dc</span><span class="p">,</span>
+                <span class="n">cm</span><span class="p">,</span>
+                <span class="n">betmx</span><span class="p">,</span>
+                <span class="n">ifirst</span><span class="p">,</span>
+                <span class="n">del1st</span><span class="p">,</span>
+                <span class="n">d</span><span class="p">,</span>
+                <span class="n">a</span><span class="p">,</span>
+                <span class="n">b</span><span class="p">,</span>
+                <span class="n">rho</span><span class="p">,</span>
+                <span class="n">ifunc</span><span class="p">,</span>
+                <span class="n">llw</span><span class="p">,</span>
+                <span class="n">ca</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">iret</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">iq</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">kmax</span><span class="p">):</span>
+                        <span class="n">cg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+                    <span class="k">if</span> <span class="n">iq</span> <span class="o">==</span> <span class="n">mode</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">cg</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">c1</span> <span class="o">=</span> <span class="mf">0.0</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">DispersionError</span><span class="p">(</span><span class="s2">&quot;failed to find root for fundamental mode&quot;</span><span class="p">)</span>
+
+            <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">c1</span>
+            <span class="n">cg</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">return</span> <span class="n">cg</span>
+
+
+<div class="viewcode-block" id="surf96"><a class="viewcode-back" href="../../../api/cps.html#disba.surf96">[docs]</a><span class="nd">@jitted</span>
+<span class="k">def</span> <span class="nf">surf96</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">itype</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ifunc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dc</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.025</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get phase or group velocity dispersion curve.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : array_like</span>
+<span class="sd">        Periods (in s).</span>
+<span class="sd">    d : array_like</span>
+<span class="sd">        Layer thickness (in km).</span>
+<span class="sd">    a : array_like</span>
+<span class="sd">        Layer P-wave velocity (in km/s).</span>
+<span class="sd">    b : array_like</span>
+<span class="sd">        Layer S-wave velocity (in km/s).</span>
+<span class="sd">    rho : array_like</span>
+<span class="sd">        Layer density (in g/cm3).</span>
+<span class="sd">    mode : int, optional, default 0</span>
+<span class="sd">        Mode number (0 if fundamental).</span>
+<span class="sd">    itype : int, optional, default 0</span>
+<span class="sd">        Velocity type:</span>
+<span class="sd">         - 0: phase velocity,</span>
+<span class="sd">         - 1: group velocity.</span>
+<span class="sd">    ifunc : int, optional, default 2</span>
+<span class="sd">        Select wave type and algorithm for period equation:</span>
+<span class="sd">         - 1: Love-wave (Thomson-Haskell method),</span>
+<span class="sd">         - 2: Rayleigh-wave (Dunkin&#39;s matrix),</span>
+<span class="sd">         - 3: Rayleigh-wave (fast delta matrix).</span>
+<span class="sd">    dc : scalar, optional, default 0.005</span>
+<span class="sd">        Phase velocity increment for root finding.</span>
+<span class="sd">    dt : scalar, optional, default 0.025</span>
+<span class="sd">        Frequency increment (%) for calculating group velocity.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array_like</span>
+<span class="sd">        Phase or group dispersion velocity.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">itype</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">dt</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nt</span><span class="p">):</span>
+            <span class="n">t1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">fac</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nt</span><span class="p">):</span>
+            <span class="n">t1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">c1</span> <span class="o">=</span> <span class="n">getc</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">dc</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">itype</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">dt</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nt</span><span class="p">):</span>
+            <span class="n">t2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">fac</span>
+
+        <span class="n">c2</span> <span class="o">=</span> <span class="n">getc</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">dc</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nt</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">c2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">t1i</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">t1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">t2i</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">t2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">c1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">t1i</span> <span class="o">-</span> <span class="n">t2i</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">t1i</span> <span class="o">/</span> <span class="n">c1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">t2i</span> <span class="o">/</span> <span class="n">c2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">return</span> <span class="n">c1</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Keurfon Luu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

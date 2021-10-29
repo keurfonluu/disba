@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>disba._dispersion &mdash; disba 0.6.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> disba
+          </a>
+              <div class="version">
+                0.6.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">disba</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>disba._dispersion</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for disba._dispersion</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="kn">from</span> <span class="nn">._base</span> <span class="kn">import</span> <span class="n">BaseDispersion</span>
+<span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">ifunc</span>
+<span class="kn">from</span> <span class="nn">._cps</span> <span class="kn">import</span> <span class="n">surf96</span>
+<span class="kn">from</span> <span class="nn">._helpers</span> <span class="kn">import</span> <span class="n">is_sorted</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;DispersionCurve&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PhaseDispersion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GroupDispersion&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="n">DispersionCurve</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s2">&quot;DispersionCurve&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="s2">&quot;wave&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="PhaseDispersion"><a class="viewcode-back" href="../../api/dispersion.html#disba.PhaseDispersion">[docs]</a><span class="k">class</span> <span class="nc">PhaseDispersion</span><span class="p">(</span><span class="n">BaseDispersion</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">velocity_p</span><span class="p">,</span> <span class="n">velocity_s</span><span class="p">,</span> <span class="n">density</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;dunkin&quot;</span><span class="p">,</span> <span class="n">dc</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Phase velocity dispersion class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        thickness : array_like</span>
+<span class="sd">            Layer thickness (in km).</span>
+<span class="sd">        velocity_p : array_like</span>
+<span class="sd">            Layer P-wave velocity (in km/s).</span>
+<span class="sd">        velocity_s : array_like</span>
+<span class="sd">            Layer S-wave velocity (in km/s).</span>
+<span class="sd">        density : array_like</span>
+<span class="sd">            Layer density (in g/cm3).</span>
+<span class="sd">        algorithm : str {&#39;dunkin&#39;, &#39;fast-delta&#39;}, optional, default &#39;dunkin&#39;</span>
+<span class="sd">            Algorithm to use for computation of Rayleigh-wave dispersion:</span>
+<span class="sd">             - &#39;dunkin&#39;: Dunkin&#39;s matrix (adapted from surf96),</span>
+<span class="sd">             - &#39;fast-delta&#39;: fast delta matrix (after Buchen and Ben-Hador, 1996).</span>
+<span class="sd">        dc : scalar, optional, default 0.005</span>
+<span class="sd">            Phase velocity increment for root finding.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">velocity_p</span><span class="p">,</span> <span class="n">velocity_s</span><span class="p">,</span> <span class="n">density</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">dc</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PhaseDispersion.__call__"><a class="viewcode-back" href="../../api/dispersion.html#disba.PhaseDispersion.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;rayleigh&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate phase velocities for input period axis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : array_like</span>
+<span class="sd">            Periods (in s).</span>
+<span class="sd">        mode : int, optional, default 0</span>
+<span class="sd">            Mode number (0 if fundamental).</span>
+<span class="sd">        wave : str {&#39;love&#39;, &#39;rayleigh&#39;}, optional, default &#39;rayleigh&#39;</span>
+<span class="sd">            Wave type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`disba.DispersionCurve`</span>
+<span class="sd">            Dispersion curve as a namedtuple (period, velocity, mode, wave, type).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_sorted</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;period axis must be sorted&quot;</span><span class="p">)</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="n">surf96</span><span class="p">(</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_p</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_s</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_density</span><span class="p">,</span>
+            <span class="n">mode</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="n">ifunc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_algorithm</span><span class="p">][</span><span class="n">wave</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dc</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">DispersionCurve</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="s2">&quot;phase&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GroupDispersion"><a class="viewcode-back" href="../../api/dispersion.html#disba.GroupDispersion">[docs]</a><span class="k">class</span> <span class="nc">GroupDispersion</span><span class="p">(</span><span class="n">BaseDispersion</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">thickness</span><span class="p">,</span>
+        <span class="n">velocity_p</span><span class="p">,</span>
+        <span class="n">velocity_s</span><span class="p">,</span>
+        <span class="n">density</span><span class="p">,</span>
+        <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;dunkin&quot;</span><span class="p">,</span>
+        <span class="n">dc</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+        <span class="n">dt</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Group velocity dispersion class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        thickness : array_like</span>
+<span class="sd">            Layer thickness (in km).</span>
+<span class="sd">        velocity_p : array_like</span>
+<span class="sd">            Layer P-wave velocity (in km/s).</span>
+<span class="sd">        velocity_s : array_like</span>
+<span class="sd">            Layer S-wave velocity (in km/s).</span>
+<span class="sd">        density : array_like</span>
+<span class="sd">            Layer density (in g/cm3).</span>
+<span class="sd">        algorithm : str {&#39;dunkin&#39;, &#39;fast-delta&#39;}, optional, default &#39;dunkin&#39;</span>
+<span class="sd">            Algorithm to use for computation of Rayleigh-wave dispersion:</span>
+<span class="sd">             - &#39;dunkin&#39;: Dunkin&#39;s matrix (adapted from surf96),</span>
+<span class="sd">             - &#39;fast-delta&#39;: fast delta matrix (after Buchen and Ben-Hador, 1996).</span>
+<span class="sd">        dc : scalar, optional, default 0.005</span>
+<span class="sd">            Phase velocity increment for root finding.</span>
+<span class="sd">        dt : scalar, optional, default 0.025</span>
+<span class="sd">            Frequency increment (%) for calculating group velocity.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">thickness</span><span class="p">,</span> <span class="n">velocity_p</span><span class="p">,</span> <span class="n">velocity_s</span><span class="p">,</span> <span class="n">density</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">dc</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="n">dt</span>
+
+<div class="viewcode-block" id="GroupDispersion.__call__"><a class="viewcode-back" href="../../api/dispersion.html#disba.GroupDispersion.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">wave</span><span class="o">=</span><span class="s2">&quot;rayleigh&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate group velocities for input period axis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : array_like</span>
+<span class="sd">            Periods (in s).</span>
+<span class="sd">        mode : int, optional, default 0</span>
+<span class="sd">            Mode number (0 if fundamental).</span>
+<span class="sd">        wave : str {&#39;love&#39;, &#39;rayleigh&#39;}, optional, default &#39;rayleigh&#39;</span>
+<span class="sd">            Wave type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`disba.DispersionCurve`</span>
+<span class="sd">            Dispersion curve as a namedtuple (period, velocity, mode, wave, type).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_sorted</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;period axis must be sorted&quot;</span><span class="p">)</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="n">surf96</span><span class="p">(</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_p</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_s</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_density</span><span class="p">,</span>
+            <span class="n">mode</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="n">ifunc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_algorithm</span><span class="p">][</span><span class="n">wave</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dc</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">DispersionCurve</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="s2">&quot;group&quot;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return frequency increment (%) for calculating group velocity.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Keurfon Luu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
