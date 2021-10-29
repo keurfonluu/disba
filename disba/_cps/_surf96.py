@@ -34,10 +34,8 @@ twopi = 2.0 * numpy.pi
 
 
 @jitted
-def dnka(wvno2, gam, gammk, rho, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz):
+def dnka(wvno2, gam, gammk, rho, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz, ca):
     """Dunkin's matrix."""
-    ca = numpy.zeros((5, 5), dtype=numpy.float64)
-
     gamm1 = gam - 1.0
     twgm1 = gam + gamm1
     gmgmk = gam * gammk
@@ -203,7 +201,7 @@ def dltar1(wvno, omega, d, a, b, rho, llw):
 
 
 @jitted
-def dltar4(wvno, omega, d, a, b, rho, llw):
+def dltar4(wvno, omega, d, a, b, rho, llw, ca):
     """Rayleigh-wave period equation."""
     e = numpy.zeros(5, dtype=numpy.float64)
     ee = numpy.zeros(5, dtype=numpy.float64)
@@ -256,7 +254,9 @@ def dltar4(wvno, omega, d, a, b, rho, llw):
         )
 
         # Evaluate Dunkin's matrix
-        ca = dnka(wvno2, gam, gammk, rho1, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz)
+        ca = dnka(
+            wvno2, gam, gammk, rho1, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz, ca
+        )
 
         for i in range(5):
             ee[i] = 0.0
@@ -441,18 +441,18 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
 
 
 @jitted
-def dltar(wvno, omega, d, a, b, rho, ifunc, llw):
+def dltar(wvno, omega, d, a, b, rho, ifunc, llw, ca):
     """Select Rayleigh or Love wave period equation."""
     if ifunc == 1:
         return dltar1(wvno, omega, d, a, b, rho, llw)
     elif ifunc == 2:
-        return dltar4(wvno, omega, d, a, b, rho, llw)
+        return dltar4(wvno, omega, d, a, b, rho, llw, ca)
     else:
         return fast_delta(wvno, omega, d, a, b, rho, llw)
 
 
 @jitted
-def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw):
+def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw, ca):
     """Hybrid method for refining root once it has been bracketted."""
     x = numpy.zeros(20, dtype=numpy.float64)
     y = numpy.zeros(20, dtype=numpy.float64)
@@ -460,7 +460,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw):
     # Initial guess
     omega = twopi / t
     c3 = 0.5 * (c1 + c2)
-    del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
+    del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw, ca)
     nev = 1
     nctrl = 1
 
@@ -474,7 +474,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw):
         if c3 < min(c1, c2) or c3 > max(c1, c2):
             nev = 0
             c3 = 0.5 * (c1 + c2)
-            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
+            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw, ca)
 
         s13 = del1 - del3
         s32 = del3 - del2
@@ -504,7 +504,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw):
         s2 = 0.01 * ss2
         if s1 > ss2 or s2 > ss1 or nev == 0:
             c3 = 0.5 * (c1 + c2)
-            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
+            del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw, ca)
             nev = 1
             m = 1
         else:
@@ -531,13 +531,13 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw):
 
             if flag:
                 c3 = x[0]
-                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
+                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw, ca)
                 nev = 2
                 m += 1
                 m = min(m, 10)
             else:
                 c3 = 0.5 * (c1 + c2)
-                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw)
+                del3 = dltar(omega / c3, omega, d, a, b, rho, ifunc, llw, ca)
                 nev = 1
                 m = 1
 
@@ -545,11 +545,11 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw):
 
 
 @jitted
-def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw):
+def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw, ca):
     """Bracket dispersion curve and then refine it."""
     # Bracket solution
     omega = twopi / t1
-    del1 = dltar(omega / c1, omega, d, a, b, rho, ifunc, llw)
+    del1 = dltar(omega / c1, omega, d, a, b, rho, ifunc, llw, ca)
     del1st = del1 if ifirst else del1st
     idir = -1.0 if not ifirst and numpy.sign(del1st) * numpy.sign(del1) < 0.0 else 1.0
 
@@ -562,10 +562,10 @@ def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw
             c1 = clow
         else:
             omega = twopi / t1
-            del2 = dltar(omega / c2, omega, d, a, b, rho, ifunc, llw)
+            del2 = dltar(omega / c2, omega, d, a, b, rho, ifunc, llw, ca)
 
             if numpy.sign(del1) != numpy.sign(del2):
-                c1 = nevill(t1, c1, c2, del1, del2, d, a, b, rho, ifunc, llw)
+                c1 = nevill(t1, c1, c2, del1, del2, d, a, b, rho, ifunc, llw, ca)
                 iret = c1 > betmx
                 break
 
@@ -608,6 +608,9 @@ def getc(t, d, a, b, rho, mode, ifunc, dc):
     kmax = len(t)
     c = numpy.zeros(kmax, dtype=numpy.float64)
     cg = numpy.zeros(kmax, dtype=numpy.float64)
+
+    # Preallocate Dunkin's matrix
+    ca = numpy.empty((5, 5), dtype=numpy.float64)
 
     # Check for water layer
     llw = 0 if b[0] <= 0.0 else -1
@@ -674,6 +677,7 @@ def getc(t, d, a, b, rho, mode, ifunc, dc):
                 rho,
                 ifunc,
                 llw,
+                ca,
             )
 
             if iret:

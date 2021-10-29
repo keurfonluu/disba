@@ -22,13 +22,7 @@ RayleighEigen = namedtuple(
 
 class EigenFunction(Base):
     def __init__(
-        self,
-        thickness,
-        velocity_p,
-        velocity_s,
-        density,
-        algorithm="dunkin",
-        dc=0.005,
+        self, thickness, velocity_p, velocity_s, density, algorithm="dunkin", dc=0.005,
     ):
         """
         Eigenfunction class.
