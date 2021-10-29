@@ -610,8 +610,7 @@ def getc(t, d, a, b, rho, mode, ifunc, dc):
     cg = numpy.zeros(kmax, dtype=numpy.float64)
 
     # Preallocate Dunkin's matrix
-    if ifunc == 2:
-        ca = numpy.empty((5, 5), dtype=numpy.float64)
+    ca = numpy.empty((5, 5), dtype=numpy.float64)
 
     # Check for water layer
     llw = 0 if b[0] <= 0.0 else -1
