@@ -11,7 +11,7 @@ __all__ = [
 def is_sorted(t):
     """Check if array is sorted."""
     for i in range(t.size - 1):
-        if t[i + 1] < t[i] :
+        if t[i + 1] < t[i]:
             return False
 
     return True

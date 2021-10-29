@@ -254,7 +254,9 @@ def dltar4(wvno, omega, d, a, b, rho, llw, ca):
         )
 
         # Evaluate Dunkin's matrix
-        ca = dnka(wvno2, gam, gammk, rho1, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz, ca)
+        ca = dnka(
+            wvno2, gam, gammk, rho1, a0, cpcq, cpy, cpz, cqw, cqx, xy, xz, wy, wz, ca
+        )
 
         for i in range(5):
             ee[i] = 0.0
