@@ -3,6 +3,7 @@ from collections import namedtuple
 from ._base import BaseDispersion
 from ._common import ifunc
 from ._cps import surf96
+from ._helpers import is_sorted
 
 __all__ = [
     "DispersionCurve",
@@ -67,11 +68,10 @@ class PhaseDispersion(BaseDispersion):
         :class:`disba.DispersionCurve`
             Dispersion curve as a namedtuple (period, velocity, mode, wave, type).
 
-        Note
-        ----
-        This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
-
         """
+        if not is_sorted(t):
+            raise ValueError("period axis must be sorted")
+
         c = surf96(
             t,
             self._thickness,
@@ -150,11 +150,10 @@ class GroupDispersion(BaseDispersion):
         :class:`disba.DispersionCurve`
             Dispersion curve as a namedtuple (period, velocity, mode, wave, type).
 
-        Note
-        ----
-        This function does not perform any check to reduce overhead in case this function is called multiple times (e.g. inversion).
-
         """
+        if not is_sorted(t):
+            raise ValueError("period axis must be sorted")
+
         c = surf96(
             t,
             self._thickness,

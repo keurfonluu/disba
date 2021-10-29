@@ -8,6 +8,16 @@ __all__ = [
 
 
 @jitted
+def is_sorted(t):
+    """Check if array is sorted."""
+    for i in range(t.size - 1):
+        if t[i + 1] < t[i] :
+            return False
+
+    return True
+
+
+@jitted
 def resample(thickness, velocity_p, velocity_s, density, dz):
     """Resample velocity model."""
     mmax = len(thickness)
