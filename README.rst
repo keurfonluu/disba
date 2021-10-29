@@ -199,7 +199,7 @@ Guidelines <https://github.com/keurfonluu/disba/blob/master/CONTRIBUTING.rst>`__
 .. |Awesome| image:: https://img.shields.io/badge/awesome-yes-C6A4BF
    :target: https://github.com/softwareunderground/awesome-open-geoscience
 
-.. |Perf Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/24e552c31a52569fd03401f37181769a9c1eff7e/.github/perf_rayleigh.svg
+.. |Perf Rayleigh| image:: https://raw.githubusercontent.com/keurfonluu/disba/e29865fb0b385b295bc55b733a138a741787879d/.github/perf_rayleigh.svg
    :alt: perf-rayleigh
 
 .. |Perf Love| image:: https://raw.githubusercontent.com/keurfonluu/disba/5d23a8bb3967fd59c1a38b59ce1bf800749c7eb2/.github/perf_love.svg
