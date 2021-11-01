@@ -45,50 +45,64 @@ def resample(thickness, velocity_p, velocity_s, density, dz):
     return d, a, b, rho
 
 
-def depthplot(x, z, zmax, ax=None, **kwargs):
+def depthplot(thickness, parameter, zmax=None, plot_args=None, ax=None):
     """
-    Vertical step plot.
+    Plot parameter against depth.
 
     Parameters
     ----------
-    x : array_like
-        X coordinates of data points.
-    z : array_like
-        Z coordinates of data points.
-    zmax : scalar
+    thickness : array_like
+        Layer's thickness.
+    parameter : array_like
+        Parameter to plot against depth.
+    zmax : scalar or None, optional, default None
         Depth of last data point.
+    plot_args : dict or None, optional, default None
+        Plot arguments passed to :func:`matplotlib.pyplot.plot`.
     ax : matplotlib.pyplot.Axes or None, optional, default None
-        Matplotlib axes. If `None`, a new figure and axe is created.
-
-    Returns
-    -------
-    :class:`matplotlib.pyplot.Axes`
-        Plotted data axes.
+        Matplotlib axes. If `None`, use current active plot.
 
     """
     try:
         import matplotlib.pyplot as plt
     except ImportError:
-        raise ImportError("depthplot requires matplotlib to be installed.")
+        raise ImportError("depthplot requires matplotlib to be installed")
 
-    n = len(x)
-    if len(z) != n:
-        raise ValueError()
-    if zmax <= z[-1]:
+    x = parameter
+    z = numpy.cumsum(thickness)
+    n = z.size
+
+    if len(parameter) != n:
         raise ValueError()
 
+    # Plot arguments
+    plot_args = plot_args if plot_args is not None else {}
+    _plot_args = {
+        "color": "black",
+        "linewidth": 2,
+    }
+    _plot_args.update(plot_args)
+
+    # Determine zmax
+    if zmax is None:
+        tmp = numpy.array(thickness)
+        tmp[-1] = tmp[:-1].min()
+        zmax = tmp.sum()
+
+    # Build layered model
     xin = numpy.empty(2 * n)
-    xin[:-1:2] = x
     xin[1::2] = x
+    xin[2::2] = x[1:]
+    xin[0] = xin[1]
 
-    zin = numpy.empty(2 * n)
-    zin[0] = z[0]
-    zin[1:-2:2] = z[1:]
-    zin[2:-1:2] = z[1:]
-    zin[-1] = zmax
+    zin = numpy.zeros_like(xin)
+    zin[1:-1:2] = z[:-1]
+    zin[2::2] = z[:-1]
+    zin[-1] = max(z[-1], zmax)
 
-    if ax is None:
-        _, ax = plt.subplots(1, 1)
-    ax.plot(xin, zin, **kwargs)
+    # Plot
+    plot = getattr(plt if ax is None else ax, "plot")
+    plot(xin, zin, **_plot_args)
 
-    return ax
+    ax = ax if ax is not None else plt.gca()
+    ax.set_ylim(zmax, zin.min())

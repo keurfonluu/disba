@@ -37,8 +37,6 @@ def test_resample(mode, wave, algorithm):
 
 def test_depthplot(monkeypatch):
     velocity_model = helpers.velocity_model(5)
-    x = velocity_model[1]
-    z = velocity_model[0].cumsum() - velocity_model[0][0]
 
     monkeypatch.setattr(plt, "show", lambda: None)
-    disba.depthplot(x, z, velocity_model[0].sum())
+    disba.depthplot(velocity_model[0], velocity_model[2])

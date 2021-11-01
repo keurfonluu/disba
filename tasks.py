@@ -10,7 +10,7 @@ import disba
 @task
 def build(c):
     shutil.rmtree("dist", ignore_errors=True)
-    c.run("python -m pep517.build --source --binary .")
+    c.run("python -m build --sdist --wheel .")
 
 
 @task
@@ -56,8 +56,8 @@ def docstring(c):
 
 @task
 def isort(c):
-    c.run("isort -rc disba")
-    c.run("isort -rc test")
+    c.run("isort disba")
+    c.run("isort test")
 
 
 @task
