@@ -2,6 +2,6 @@ matplotlib
 sphinx
 sphinx-argparse
 sphinx-gallery
-sphinx-book-theme
+pydata-sphinx-theme
 sphinxcontrib-bibtex
 -e git://github.com/Naeka/pybtex-apa-style.git#egg=pybtex-apa-style
