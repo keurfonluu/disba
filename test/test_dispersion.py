@@ -1,5 +1,5 @@
 import helpers
-import numpy
+import numpy as np
 import pytest
 
 import disba
@@ -18,12 +18,12 @@ import disba
 )
 def test_phase(mode, wave, algorithm, cref):
     velocity_model = helpers.velocity_model(5)
-    t = numpy.logspace(0.0, 1.0, 20)
+    t = np.logspace(0.0, 1.0, 20)
 
     pd = disba.PhaseDispersion(*velocity_model, algorithm=algorithm)
     cp = pd(t, mode, wave)
 
-    assert numpy.allclose(cref, cp.velocity.sum(), atol=0.001)
+    assert np.allclose(cref, cp.velocity.sum(), atol=0.001)
 
 
 @pytest.mark.parametrize(
@@ -39,12 +39,12 @@ def test_phase(mode, wave, algorithm, cref):
 )
 def test_group(mode, wave, algorithm, cref):
     velocity_model = helpers.velocity_model(5)
-    t = numpy.logspace(0.0, 1.0, 20)
+    t = np.logspace(0.0, 1.0, 20)
 
     gd = disba.GroupDispersion(*velocity_model, algorithm=algorithm)
     cg = gd(t, mode, wave)
 
-    assert numpy.allclose(cref, cg.velocity.sum(), atol=0.001)
+    assert np.allclose(cref, cg.velocity.sum(), atol=0.001)
 
 
 @pytest.mark.parametrize(
@@ -57,9 +57,9 @@ def test_group(mode, wave, algorithm, cref):
 )
 def test_water_layer(wave, algorithm, cref):
     velocity_model = helpers.velocity_model(5, water_layer=True)
-    t = numpy.logspace(0.0, 1.0, 20)
+    t = np.logspace(0.0, 1.0, 20)
 
     pd = disba.PhaseDispersion(*velocity_model, algorithm=algorithm)
     cp = pd(t, wave=wave)
 
-    assert numpy.allclose(cref, cp.velocity.sum(), atol=0.001)
+    assert np.allclose(cref, cp.velocity.sum(), atol=0.001)

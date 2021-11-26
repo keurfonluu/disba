@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-import numpy
+import numpy as np
 
 from ._base import Base
 from ._common import ifunc
@@ -69,7 +69,7 @@ class EigenFunction(Base):
              - If ``wave == 'rayleigh'``, (depth, ur, uz, tz, tr, period, mode).
 
         """
-        if numpy.ndim(t) > 0:
+        if np.ndim(t) > 0:
             raise ValueError("Period t must be scalar.")
 
         egn = swegn96(

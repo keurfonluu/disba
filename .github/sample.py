@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 
 from disba import EigenFunction, PhaseDispersion, PhaseSensitivity, Ellipticity, EllipticitySensitivity
 
@@ -9,7 +9,7 @@ plt.style.use(dufte.style)
 
 
 # Velocity model and periods
-velocity_model = numpy.array(
+velocity_model = np.array(
     [
         [10.0, 7.00, 3.50, 2.00],
         [10.0, 6.80, 3.40, 2.00],
@@ -22,7 +22,7 @@ velocity_model = numpy.array(
         [10.0, 9.50, 4.75, 2.00],
     ]
 )
-t = numpy.logspace(0.0, 3.0, 100)
+t = np.logspace(0.0, 3.0, 100)
 
 
 # Dispersion curve

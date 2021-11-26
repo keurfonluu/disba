@@ -2,7 +2,7 @@ import os
 
 import helpers
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 import pytest
 
 import disba
@@ -24,7 +24,7 @@ if not os.environ.get("DISPLAY", ""):
 )
 def test_resample(mode, wave, algorithm):
     velocity_model = helpers.velocity_model(5)
-    t = numpy.logspace(0.0, 1.0, 20)
+    t = np.logspace(0.0, 1.0, 20)
 
     pd = disba.PhaseDispersion(*velocity_model, algorithm=algorithm)
     cref = pd(t, mode, wave)
@@ -32,7 +32,7 @@ def test_resample(mode, wave, algorithm):
     pd.resample(0.1)
     cp = pd(t, mode, wave)
 
-    assert numpy.allclose(cref.velocity.sum(), cp.velocity.sum(), atol=0.1)
+    assert np.allclose(cref.velocity.sum(), cp.velocity.sum(), atol=0.1)
 
 
 def test_depthplot(monkeypatch):

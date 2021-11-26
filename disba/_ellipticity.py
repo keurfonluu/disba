@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-import numpy
+import numpy as np
 
 from ._base import Base
 from ._common import ifunc
@@ -80,4 +80,4 @@ class Ellipticity(Base):
                 i -= 1
                 break
 
-        return RayleighEllipticity(t[: i + 1], numpy.array(ell), mode)
+        return RayleighEllipticity(t[: i + 1], np.array(ell), mode)

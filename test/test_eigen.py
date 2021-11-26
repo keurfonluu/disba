@@ -1,5 +1,5 @@
 import helpers
-import numpy
+import numpy as np
 import pytest
 
 import disba
@@ -21,4 +21,4 @@ def test_eigen(wave, water_layer, eref):
     eig = eigf(10.0, 0, wave)
 
     for k, v in eref.items():
-        assert numpy.allclose(v, getattr(eig, k).sum(), atol=1.0e-3)
+        assert np.allclose(v, getattr(eig, k).sum(), atol=1.0e-3)

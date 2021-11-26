@@ -19,7 +19,7 @@ The code has been adapted and optimized for Numba.
 
 """
 
-import numpy
+import numpy as np
 
 from .._common import jitted
 from .._exception import DispersionError
@@ -30,7 +30,7 @@ __all__ = [
 ]
 
 
-twopi = 2.0 * numpy.pi
+twopi = 2.0 * np.pi
 
 
 @jitted
@@ -91,17 +91,17 @@ def var(p, q, ra, rb, wvno, xka, xkb, dpth):
     # Checking whether c > vp, c = vp or c < vp
     pex = 0.0
     if wvno < xka:
-        sinp = numpy.sin(p)
+        sinp = np.sin(p)
         w = sinp / ra
         x = -ra * sinp
-        cosp = numpy.cos(p)
+        cosp = np.cos(p)
     elif wvno == xka:
         cosp = 1.0
         w = dpth
         x = 0.0
     elif wvno > xka:
         pex = p
-        fac = numpy.exp(-2.0 * p) if p < 16.0 else 0.0
+        fac = np.exp(-2.0 * p) if p < 16.0 else 0.0
         cosp = (1.0 + fac) * 0.5
         sinp = (1.0 - fac) * 0.5
         w = sinp / ra
@@ -111,17 +111,17 @@ def var(p, q, ra, rb, wvno, xka, xkb, dpth):
     # Checking whether c > vs, c = vs or c < vs
     sex = 0.0
     if wvno < xkb:
-        sinq = numpy.sin(q)
+        sinq = np.sin(q)
         y = sinq / rb
         z = -rb * sinq
-        cosq = numpy.cos(q)
+        cosq = np.cos(q)
     elif wvno == xkb:
         cosq = 1.0
         y = dpth
         z = 0.0
     elif wvno > xkb:
         sex = q
-        fac = numpy.exp(-2.0 * q) if q < 16.0 else 0.0
+        fac = np.exp(-2.0 * q) if q < 16.0 else 0.0
         cosq = (1.0 + fac) * 0.5
         sinq = (1.0 - fac) * 0.5
         y = sinq / rb
@@ -129,7 +129,7 @@ def var(p, q, ra, rb, wvno, xka, xkb, dpth):
 
     # Form eigenfunction products for use with compound matrices
     exa = pex + sex
-    a0 = numpy.exp(-exa) if exa < 60.0 else 0.0
+    a0 = np.exp(-exa) if exa < 60.0 else 0.0
     cpcq = cosp * cosq
     cpy = cosp * y
     cpz = cosp * z
@@ -141,7 +141,7 @@ def var(p, q, ra, rb, wvno, xka, xkb, dpth):
     wz = w * z
 
     qmp = sex - pex
-    fac = numpy.exp(qmp) if qmp > -40.0 else 0.0
+    fac = np.exp(qmp) if qmp > -40.0 else 0.0
     cosq *= fac
     y *= fac
     z *= fac
@@ -156,8 +156,8 @@ def dltar1(wvno, omega, d, a, b, rho, llw):
     rho1 = rho[-1]
     xkb = omega / beta1
     wvnop = wvno + xkb
-    wvnom = numpy.abs(wvno - xkb)
-    rb = numpy.sqrt(wvnop * wvnom)
+    wvnom = np.abs(wvno - xkb)
+    rb = np.sqrt(wvnop * wvnom)
     e1 = rho1 * rb
     e2 = 1.0 / (beta1 * beta1)
 
@@ -167,21 +167,21 @@ def dltar1(wvno, omega, d, a, b, rho, llw):
         xmu = rho1 * beta1 * beta1
         xkb = omega / beta1
         wvnop = wvno + xkb
-        wvnom = numpy.abs(wvno - xkb)
-        rb = numpy.sqrt(wvnop * wvnom)
+        wvnom = np.abs(wvno - xkb)
+        rb = np.sqrt(wvnop * wvnom)
         q = d[m] * rb
 
         if wvno < xkb:
-            sinq = numpy.sin(q)
+            sinq = np.sin(q)
             y = sinq / rb
             z = -rb * sinq
-            cosq = numpy.cos(q)
+            cosq = np.cos(q)
         elif wvno == xkb:
             cosq = 1.0
             y = d[m]
             z = 0.0
         else:
-            fac = numpy.exp(-2.0 * q) if q < 16.0 else 0.0
+            fac = np.exp(-2.0 * q) if q < 16.0 else 0.0
             cosq = (1.0 + fac) * 0.5
             sinq = (1.0 - fac) * 0.5
             y = sinq / rb
@@ -189,8 +189,8 @@ def dltar1(wvno, omega, d, a, b, rho, llw):
 
         e10 = e1 * cosq + e2 * xmu * z
         e20 = e1 * y / xmu + e2 * cosq
-        xnor = numpy.abs(e10)
-        ynor = numpy.abs(e20)
+        xnor = np.abs(e10)
+        ynor = np.abs(e20)
         xnor = max(xnor, ynor)
         if xnor < 1.0e-40:
             xnor = 1.0
@@ -203,19 +203,19 @@ def dltar1(wvno, omega, d, a, b, rho, llw):
 @jitted
 def dltar4(wvno, omega, d, a, b, rho, llw, ca):
     """Rayleigh-wave period equation."""
-    e = numpy.zeros(5, dtype=numpy.float64)
-    ee = numpy.zeros(5, dtype=numpy.float64)
+    e = np.zeros(5, dtype=np.float64)
+    ee = np.zeros(5, dtype=np.float64)
 
     omega = max(omega, 1.0e-4)
     wvno2 = wvno * wvno
     xka = omega / a[-1]
     xkb = omega / b[-1]
     wvnop = wvno + xka
-    wvnom = numpy.abs(wvno - xka)
-    ra = numpy.sqrt(wvnop * wvnom)
+    wvnom = np.abs(wvno - xka)
+    ra = np.sqrt(wvnop * wvnom)
     wvnop = wvno + xkb
-    wvnom = numpy.abs(wvno - xkb)
-    rb = numpy.sqrt(wvnop * wvnom)
+    wvnom = np.abs(wvno - xkb)
+    rb = np.sqrt(wvnop * wvnom)
     t = b[-1] / omega
 
     # E matrix for the bottom half-space
@@ -237,11 +237,11 @@ def dltar4(wvno, omega, d, a, b, rho, llw, ca):
         gammk = 2.0 * t * t
         gam = gammk * wvno2
         wvnop = wvno + xka
-        wvnom = numpy.abs(wvno - xka)
-        ra = numpy.sqrt(wvnop * wvnom)
+        wvnom = np.abs(wvno - xka)
+        ra = np.sqrt(wvnop * wvnom)
         wvnop = wvno + xkb
-        wvnom = numpy.abs(wvno - xkb)
-        rb = numpy.sqrt(wvnop * wvnom)
+        wvnom = np.abs(wvno - xkb)
+        rb = np.sqrt(wvnop * wvnom)
 
         dpth = d[m]
         rho1 = rho[m]
@@ -270,8 +270,8 @@ def dltar4(wvno, omega, d, a, b, rho, llw, ca):
     if llw == 0:
         xka = omega / a[0]
         wvnop = wvno + xka
-        wvnom = numpy.abs(wvno - xka)
-        ra = numpy.sqrt(wvnop * wvnom)
+        wvnom = np.abs(wvno - xka)
+        ra = np.sqrt(wvnop * wvnom)
         dpth = d[0]
         rho1 = rho[0]
         p = ra * dpth
@@ -309,7 +309,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
     mu0 = rho[0] * beta[0] ** 2.0
     t0 = 2.0 - c2 / beta[0] ** 2.0
 
-    X = numpy.zeros(5, dtype=numpy.complex_)
+    X = np.zeros(5, dtype=np.complex_)
     X[0] = 2.0 * t0
     X[1] = -t0 * t0
     X[4] = -4.0
@@ -328,33 +328,33 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
         gam0 = gam1
 
         r = (
-            numpy.sqrt(1.0 - c2 / alpha[i] ** 2.0)
+            np.sqrt(1.0 - c2 / alpha[i] ** 2.0)
             if c < alpha[i]
-            else numpy.sqrt(c2 / alpha[i] ** 2.0 - 1.0) * 1j
+            else np.sqrt(c2 / alpha[i] ** 2.0 - 1.0) * 1j
             if c > alpha[i]
             else 0.0
         )
         s = (
-            numpy.sqrt(1.0 - c2 / beta[i] ** 2.0)
+            np.sqrt(1.0 - c2 / beta[i] ** 2.0)
             if c < beta[i]
-            else numpy.sqrt(c2 / beta[i] ** 2.0 - 1.0) * 1j
+            else np.sqrt(c2 / beta[i] ** 2.0 - 1.0) * 1j
             if c > beta[i]
             else 0.0
         )
 
         if c < alpha[i]:
-            Ca = numpy.cosh(wvno * r * d[i])
-            Sa = numpy.sinh(wvno * r * d[i])
+            Ca = np.cosh(wvno * r * d[i])
+            Sa = np.sinh(wvno * r * d[i])
         elif c > alpha[i]:
-            Ca = numpy.cos(wvno * r.imag * d[i])
-            Sa = numpy.sin(wvno * r.imag * d[i]) * 1j
+            Ca = np.cos(wvno * r.imag * d[i])
+            Sa = np.sin(wvno * r.imag * d[i]) * 1j
         else:
             Ca = 1.0
             Sa = 0.0
 
         if c < beta[i]:
-            Cb = numpy.cosh(wvno * s * d[i])
-            Sb = numpy.sinh(wvno * s * d[i])
+            Cb = np.cosh(wvno * s * d[i])
+            Sb = np.sinh(wvno * s * d[i])
 
             # Handle hyperbolic overflow
             if wvno * s.real * d[i] > 80.0:
@@ -363,8 +363,8 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
                 Sb /= Ca
 
         elif c > beta[i]:
-            Cb = numpy.cos(wvno * s.imag * d[i])
-            Sb = numpy.sin(wvno * s.imag * d[i]) * 1j
+            Cb = np.cos(wvno * s.imag * d[i])
+            Sb = np.sin(wvno * s.imag * d[i]) * 1j
 
         else:
             Cb = 1.0
@@ -423,21 +423,21 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
         X, _ = normc(X, 5)
 
     r = (
-        numpy.sqrt(1.0 - c2 / alpha[-1] ** 2)
+        np.sqrt(1.0 - c2 / alpha[-1] ** 2)
         if c < alpha[-1]
-        else numpy.sqrt(c2 / alpha[-1] ** 2 - 1.0) * 1j
+        else np.sqrt(c2 / alpha[-1] ** 2 - 1.0) * 1j
         if c > alpha[-1]
         else 0.0
     )
     s = (
-        numpy.sqrt(1.0 - c2 / beta[-1] ** 2)
+        np.sqrt(1.0 - c2 / beta[-1] ** 2)
         if c < beta[-1]
-        else numpy.sqrt(c2 / beta[-1] ** 2 - 1.0) * 1j
+        else np.sqrt(c2 / beta[-1] ** 2 - 1.0) * 1j
         if c > beta[-1]
         else 0.0
     )
 
-    return numpy.real(X[1] + s * X[3] - r * (X[3] + s * X[4]))
+    return np.real(X[1] + s * X[3] - r * (X[3] + s * X[4]))
 
 
 @jitted
@@ -454,8 +454,8 @@ def dltar(wvno, omega, d, a, b, rho, ifunc, llw, ca):
 @jitted
 def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw, ca):
     """Hybrid method for refining root once it has been bracketted."""
-    x = numpy.zeros(20, dtype=numpy.float64)
-    y = numpy.zeros(20, dtype=numpy.float64)
+    x = np.zeros(20, dtype=np.float64)
+    y = np.zeros(20, dtype=np.float64)
 
     # Initial guess
     omega = twopi / t
@@ -480,7 +480,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw, ca):
         s32 = del3 - del2
 
         # Define new bounds according to the sign of the period equation
-        if numpy.sign(del3) * numpy.sign(del1) < 0.0:
+        if np.sign(del3) * np.sign(del1) < 0.0:
             c2 = c3
             del2 = del3
         else:
@@ -488,19 +488,19 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw, ca):
             del1 = del3
 
         # Check for convergence
-        if numpy.abs(c1 - c2) <= 1.0e-6 * c1:
+        if np.abs(c1 - c2) <= 1.0e-6 * c1:
             break
 
         # If the slopes are not the same between c1, c2 and c3
         # Do not use Neville iteration
-        if numpy.sign(s13) != numpy.sign(s32):
+        if np.sign(s13) != np.sign(s32):
             nev = 0
 
         # If the period equation differs by more than a factor of 10
         # Use interval halving to avoid poor behavior of polynomial fit
-        ss1 = numpy.abs(del1)
+        ss1 = np.abs(del1)
         s1 = 0.01 * ss1
-        ss2 = numpy.abs(del2)
+        ss2 = np.abs(del2)
         s2 = 0.01 * ss2
         if s1 > ss2 or s2 > ss1 or nev == 0:
             c3 = 0.5 * (c1 + c2)
@@ -523,7 +523,7 @@ def nevill(t, c1, c2, del1, del2, d, a, b, rho, ifunc, llw, ca):
             for kk in range(m):
                 j = m - kk
                 denom = y[m] - y[j]
-                if numpy.abs(denom) < 1.0e-10 * numpy.abs(y[m]):
+                if np.abs(denom) < 1.0e-10 * np.abs(y[m]):
                     flag = 0
                     break
                 else:
@@ -551,7 +551,7 @@ def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw
     omega = twopi / t1
     del1 = dltar(omega / c1, omega, d, a, b, rho, ifunc, llw, ca)
     del1st = del1 if ifirst else del1st
-    idir = -1.0 if not ifirst and numpy.sign(del1st) * numpy.sign(del1) < 0.0 else 1.0
+    idir = -1.0 if not ifirst and np.sign(del1st) * np.sign(del1) < 0.0 else 1.0
 
     # idir indicates the direction of the search for the true phase velocity from the initial estimate
     while True:
@@ -564,7 +564,7 @@ def getsol(t1, c1, clow, dc, cm, betmx, ifirst, del1st, d, a, b, rho, ifunc, llw
             omega = twopi / t1
             del2 = dltar(omega / c2, omega, d, a, b, rho, ifunc, llw, ca)
 
-            if numpy.sign(del1) != numpy.sign(del2):
+            if np.sign(del1) != np.sign(del2):
                 c1 = nevill(t1, c1, c2, del1, del2, d, a, b, rho, ifunc, llw, ca)
                 iret = c1 > betmx
                 break
@@ -589,8 +589,8 @@ def gtsolh(a, b):
         kappa = c / b
         k2 = kappa ** 2
         gk2 = (gamma * kappa) ** 2
-        fac1 = numpy.sqrt(1.0 - gk2)
-        fac2 = numpy.sqrt(1.0 - k2)
+        fac1 = np.sqrt(1.0 - gk2)
+        fac2 = np.sqrt(1.0 - k2)
         fr = (2.0 - k2) ** 2 - 4.0 * fac1 * fac2
         frp = -4.0 * (2.0 - k2) * kappa
         frp += 4.0 * fac2 * gamma * gamma * kappa / fac1
@@ -606,11 +606,11 @@ def getc(t, d, a, b, rho, mode, ifunc, dc):
     """Get phase velocity dispersion curve."""
     # Initialize arrays
     kmax = len(t)
-    c = numpy.zeros(kmax, dtype=numpy.float64)
-    cg = numpy.zeros(kmax, dtype=numpy.float64)
+    c = np.zeros(kmax, dtype=np.float64)
+    cg = np.zeros(kmax, dtype=np.float64)
 
     # Preallocate Dunkin's matrix
-    ca = numpy.empty((5, 5), dtype=numpy.float64)
+    ca = np.empty((5, 5), dtype=np.float64)
 
     # Check for water layer
     llw = 0 if b[0] <= 0.0 else -1
@@ -740,7 +740,7 @@ def surf96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, dc=0.005, dt=0.025):
 
     """
     nt = len(t)
-    t1 = numpy.empty(nt, dtype=numpy.float64)
+    t1 = np.empty(nt, dtype=np.float64)
 
     if itype == 1:
         fac = 1.0 + dt
@@ -753,7 +753,7 @@ def surf96(t, d, a, b, rho, mode=0, itype=0, ifunc=2, dc=0.005, dt=0.025):
     c1 = getc(t1, d, a, b, rho, mode, ifunc, dc)
 
     if itype == 1:
-        t2 = numpy.empty(nt, dtype=numpy.float64)
+        t2 = np.empty(nt, dtype=np.float64)
         fac = 1.0 - dt
         for i in range(nt):
             t2[i] = t[i] / fac

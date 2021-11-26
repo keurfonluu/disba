@@ -21,7 +21,7 @@ Only the computation of eigenfunctions is implemented.
 
 """
 
-import numpy
+import numpy as np
 
 from .._common import jitted
 from .._exception import DispersionError
@@ -36,15 +36,15 @@ __all__ = [
 @jitted
 def evalg(m, d, a, b, rho, wvno, om):
     """Layered half space problem for Rayleigh-wave."""
-    gbr = numpy.zeros(5, dtype=numpy.complex_)
+    gbr = np.zeros(5, dtype=np.complex_)
     wvno2 = wvno * wvno
     om2 = om * om
 
     # Set up halfspace conditions
     xka = om / a[m]
     xkb = om / b[m] if b[m] > 0.01 else 0.0
-    ra = numpy.sqrt(wvno2 - xka * xka + 0.0 * 1j)
-    rb = numpy.sqrt(wvno2 - xkb * xkb + 0.0 * 1j)
+    ra = np.sqrt(wvno2 - xka * xka + 0.0 * 1j)
+    rb = np.sqrt(wvno2 - xkb * xkb + 0.0 * 1j)
     gam = b[m] * wvno / om
     gam = 2.0 * gam * gam
     gamm1 = gam - (1.0 + 0.0 * 1j)
@@ -65,7 +65,7 @@ def evalg(m, d, a, b, rho, wvno, om):
 
     else:
         # All fluid
-        if numpy.all(b < 0.01):
+        if np.all(b < 0.01):
             gbr[0] = 0.5 / ra
             gbr[1] = (0.5 + 0.0 * 1j) / (-rho[m] * om2)
             gbr[2] = 0.0 + 0.0 * 1j
@@ -78,7 +78,7 @@ def evalg(m, d, a, b, rho, wvno, om):
             gbr[3] = 0.5 * rho[m] * om2 / ra
             gbr[4] = -0.5 + 0.0 * 1j
 
-    return numpy.real(gbr)
+    return np.real(gbr)
 
 
 @jitted
@@ -89,9 +89,9 @@ def varl(m, omega, wvno, dpth, b, rho):
 
     # Define the vertical wavenumber for the given wvno
     wvnop = wvno + xkb
-    wvnom = numpy.abs(wvno - xkb)
+    wvnom = np.abs(wvno - xkb)
     fac = wvnop * wvnom
-    rb = numpy.sqrt(wvnop * wvnom)
+    rb = np.sqrt(wvnop * wvnom)
     q = rb * dpth
     mu = rho[m] * b[m] * b[m]
 
@@ -99,17 +99,17 @@ def varl(m, omega, wvno, dpth, b, rho):
     # Checking whether c > vs, c = vs or c < vs
     eexl = 0.0
     if wvno < xkb:
-        sinq = numpy.sin(q)
+        sinq = np.sin(q)
         y = sinq / rb
         z = -rb * sinq
-        cosq = numpy.cos(q)
+        cosq = np.cos(q)
     elif wvno == xkb:
         cosq = 1.0
         y = dpth
         z = 0.0
     else:
         eexl = q
-        fac = numpy.exp(-2.0 * q) if q < 18.0 else 0.0
+        fac = np.exp(-2.0 * q) if q < 18.0 else 0.0
         cosq = (1.0 + fac) * 0.5
         sinq = (1.0 - fac) * 0.5
         y = sinq / rb
@@ -121,21 +121,21 @@ def varl(m, omega, wvno, dpth, b, rho):
 @jitted
 def varsv(p, q, rp, rsv, d, iwat):
     """Find variables cosP, cosQ, sinP, sinQ for Rayleigh-wave."""
-    pr = numpy.real(p)
-    pi = numpy.imag(p)
-    qr = numpy.real(q)
-    qi = numpy.imag(q)
+    pr = np.real(p)
+    pi = np.imag(p)
+    qr = np.real(q)
+    qi = np.imag(q)
 
     pex = pr
     svex = 0.0
 
-    epp = 0.5 * (numpy.cos(pi) + numpy.sin(pi) * 1j)
-    epm = numpy.conj(epp)
-    pfac = numpy.exp(-2.0 * pr) if pr < 30.0 else 0.0
-    cosp = numpy.real(epp + pfac * epm)
+    epp = 0.5 * (np.cos(pi) + np.sin(pi) * 1j)
+    epm = np.conj(epp)
+    pfac = np.exp(-2.0 * pr) if pr < 30.0 else 0.0
+    cosp = np.real(epp + pfac * epm)
     sinp = epp - pfac * epm
-    rsinp = numpy.real(rp * sinp)
-    sinpr = d if numpy.abs(pr) < 1.0e-5 and numpy.abs(rp) < 1.0e-5 else sinp / rp
+    rsinp = np.real(rp * sinp)
+    sinpr = d if np.abs(pr) < 1.0e-5 and np.abs(rp) < 1.0e-5 else sinp / rp
 
     # Fluid layer
     if iwat == 1:
@@ -146,13 +146,13 @@ def varsv(p, q, rp, rsv, d, iwat):
     # Elastic layer
     else:
         svex = qr
-        eqp = 0.5 * (numpy.cos(qi) + numpy.sin(qi) * 1j)
-        eqm = numpy.conj(eqp)
-        svfac = numpy.exp(-2.0 * qr) if qr < 30.0 else 0.0
-        cosq = numpy.real(eqp + svfac * eqm)
+        eqp = 0.5 * (np.cos(qi) + np.sin(qi) * 1j)
+        eqm = np.conj(eqp)
+        svfac = np.exp(-2.0 * qr) if qr < 30.0 else 0.0
+        cosq = np.real(eqp + svfac * eqm)
         sinq = eqp - svfac * eqm
-        rsinq = numpy.real(rsv * sinq)
-        sinqr = d if numpy.abs(qr) < 1.0e-5 and numpy.abs(rsv) < 1.0e-5 else sinq / rsv
+        rsinq = np.real(rsv * sinq)
+        sinqr = d if np.abs(qr) < 1.0e-5 and np.abs(rsv) < 1.0e-5 else sinq / rsv
 
     return cosp, cosq, rsinp, rsinq, sinpr, sinqr, pex, svex
 
@@ -160,7 +160,7 @@ def varsv(p, q, rp, rsv, d, iwat):
 @jitted
 def hskl(m, b, mu, cosq, y, z):
     """Thomson-Haskell's matrix for Love-wave."""
-    hl = numpy.zeros((2, 2), dtype=numpy.float64)
+    hl = np.zeros((2, 2), dtype=np.float64)
 
     if b[m] > 0.01:
         hl[0, 0] = cosq
@@ -181,13 +181,13 @@ def hska(
     omega, wvno, b, rho, cosp, rsinp, sinpr, tcossv, trsinsv, tsinsvr, pex, svex, iwat
 ):
     """Thomson-Haskell's matrix for Rayleigh-wave."""
-    aa = numpy.zeros((4, 4), dtype=numpy.complex_)
+    aa = np.zeros((4, 4), dtype=np.complex_)
     wvno2 = wvno * wvno
     om2 = omega * omega
 
     if iwat == 1:
         # Fluid layer
-        dfac = numpy.exp(-pex) if pex < 35.0 else 0.0
+        dfac = np.exp(-pex) if pex < 35.0 else 0.0
         aa[0, 0] = dfac
         aa[3, 3] = dfac
         aa[1, 1] = cosp
@@ -196,7 +196,7 @@ def hska(
         aa[2, 1] = -rho * om2 * sinpr
     else:
         # Elastic layer
-        dfac = numpy.exp(svex - pex) if pex - svex < 70.0 else 0.0
+        dfac = np.exp(svex - pex) if pex - svex < 70.0 else 0.0
         cossv = dfac * tcossv
         rsinsv = dfac * trsinsv
         sinsvr = dfac * tsinsvr
@@ -220,19 +220,19 @@ def hska(
         aa[3, 2] = -aa[1, 0]
         aa[3, 3] = aa[0, 0]
 
-    return numpy.real(aa)
+    return np.real(aa)
 
 
 @jitted
 def dnka(omega, wvno, b, rho, cosp, rsinp, sinpr, cossv, rsinsv, sinsvr, ex, exa, iwat):
     """Dunkin's matrix for Rayleigh-wave."""
-    ca = numpy.zeros((5, 5), dtype=numpy.complex_)
+    ca = np.zeros((5, 5), dtype=np.complex_)
     wvno2 = wvno * wvno
     om2 = omega * omega
 
     if iwat == 1:
         # Fluid layer
-        dfac = numpy.exp(-ex) if ex < 35.0 else 0.0
+        dfac = np.exp(-ex) if ex < 35.0 else 0.0
         ca[2, 2] = dfac
         ca[0, 0] = cosp
         ca[4, 4] = cosp
@@ -243,7 +243,7 @@ def dnka(omega, wvno, b, rho, cosp, rsinp, sinpr, cossv, rsinsv, sinsvr, ex, exa
         ca[3, 4] = ca[0, 1]
         ca[4, 3] = ca[1, 0]
     else:
-        a0 = numpy.exp(-exa) if exa < 60.0 else 0.0
+        a0 = np.exp(-exa) if exa < 60.0 else 0.0
         cpcq = cosp * cossv
         cpy = cosp * sinsvr
         cpz = cosp * rsinsv
@@ -310,7 +310,7 @@ def dnka(omega, wvno, b, rho, cosp, rsinp, sinpr, cossv, rsinsv, sinsvr, ex, exa
         ca[4, 3] = ca[1, 0]
         ca[4, 4] = ca[0, 0]
 
-    return numpy.real(ca)
+    return np.real(ca)
 
 
 @jitted
@@ -318,9 +318,9 @@ def shup(omega, wvno, d, a, b, rho):
     """Find the elements of the Haskell matrix for Love-wave."""
     mmax = len(d)
 
-    uu = numpy.zeros(mmax, dtype=numpy.float64)
-    tt = numpy.zeros(mmax, dtype=numpy.float64)
-    exl = numpy.zeros(mmax, dtype=numpy.float64)
+    uu = np.zeros(mmax, dtype=np.float64)
+    tt = np.zeros(mmax, dtype=np.float64)
+    exl = np.zeros(mmax, dtype=np.float64)
 
     # Kludge for fluid core
     if b[-1] > 0.01:
@@ -344,12 +344,12 @@ def shup(omega, wvno, d, a, b, rho):
             str0 = -hl[1, 0] * uu[i1] + hl[1, 1] * tt[i1]
 
             # Normalize
-            rr = numpy.abs(amp0)
-            ss = numpy.abs(str0)
+            rr = np.abs(amp0)
+            ss = np.abs(str0)
             rr = max(rr, ss)
             if rr < 1.0e-30:
                 rr = 1.0
-            exl[i] = numpy.log(rr) + eexl
+            exl[i] = np.log(rr) + eexl
             uu[i] = amp0 / rr
             tt[i] = str0 / rr
 
@@ -366,9 +366,9 @@ def svup(omega, wvno, d, a, b, rho):
     """
     mmax = len(d)
 
-    ee = numpy.zeros(5, dtype=numpy.float64)
-    cd = numpy.zeros((mmax, 5), dtype=numpy.float64)
-    exe = numpy.zeros(mmax, dtype=numpy.float64)
+    ee = np.zeros(5, dtype=np.float64)
+    cd = np.zeros((mmax, 5), dtype=np.float64)
+    exe = np.zeros(mmax, dtype=np.float64)
 
     # Set up starting values for bottom halfspace
     gbr = evalg(mmax - 1, d, a, b, rho, wvno, omega)
@@ -382,8 +382,8 @@ def svup(omega, wvno, d, a, b, rho):
     for m in range(mmax - 2, -1, -1):
         xka = omega / a[m]
         xkb = omega / b[m] if b[m] > 0.01 else 0.0
-        rp = numpy.sqrt(wvno2 - xka * xka + 0.0 * 1j)
-        rsv = numpy.sqrt(wvno2 - xkb * xkb + 0.0 * 1j)
+        rp = np.sqrt(wvno2 - xka * xka + 0.0 * 1j)
+        rsv = np.sqrt(wvno2 - xkb * xkb + 0.0 * 1j)
         p = rp * d[m]
         q = rsv * d[m]
 
@@ -432,9 +432,9 @@ def svdown(omega, wvno, d, a, b, rho):
     """
     mmax = len(d)
 
-    aa0 = numpy.zeros(4, dtype=numpy.float64)
-    vv = numpy.zeros((mmax, 4), dtype=numpy.float64)
-    exa = numpy.zeros(mmax, dtype=numpy.float64)
+    aa0 = np.zeros(4, dtype=np.float64)
+    vv = np.zeros((mmax, 4), dtype=np.float64)
+    exa = np.zeros(mmax, dtype=np.float64)
     wvno2 = wvno * wvno
 
     # Initialize the top surface for the first column of the Haskell propagator
@@ -446,8 +446,8 @@ def svdown(omega, wvno, d, a, b, rho):
     for m in range(mmax - 1):
         xka = omega / a[m]
         xkb = omega / b[m] if b[m] > 0.01 else 0.0
-        rp = numpy.sqrt(wvno2 - xka * xka + 0.0 * 1j)
-        rsv = numpy.sqrt(wvno2 - xkb * xkb + 0.0 * 1j)
+        rp = np.sqrt(wvno2 - xka * xka + 0.0 * 1j)
+        rsv = np.sqrt(wvno2 - xkb * xkb + 0.0 * 1j)
         p = rp * d[m]
         q = rsv * d[m]
 
@@ -505,20 +505,20 @@ def shfunc(omega, wvno, d, a, b, rho):
     for i in range(1, mmax):
         if b[i] > 0.01:
             ext += exl[i - 1]
-            fac = 1.0 / numpy.exp(ext) if ext < 80.0 else 0.0
+            fac = 1.0 / np.exp(ext) if ext < 80.0 else 0.0
             uu[i] *= fac
             tt[i] *= fac
         else:
             uu[i] = 0.0
             tt[i] = 0.0
 
-        if numpy.abs(uu[i]) > numpy.abs(umax):
+        if np.abs(uu[i]) > np.abs(umax):
             umax = uu[i]
 
     if uu[0] != 0.0:
         umax = uu[0]
 
-    if numpy.abs(umax) > 0.0:
+    if np.abs(umax) > 0.0:
         for i in range(mmax):
             if b[i] > 0.0:
                 uu[i] /= umax
@@ -537,10 +537,10 @@ def svfunc(omega, wvno, d, a, b, rho):
     """
     mmax = len(d)
 
-    ur = numpy.zeros(mmax, dtype=numpy.float64)
-    uz = numpy.zeros(mmax, dtype=numpy.float64)
-    tz = numpy.zeros(mmax, dtype=numpy.float64)
-    tr = numpy.zeros(mmax, dtype=numpy.float64)
+    ur = np.zeros(mmax, dtype=np.float64)
+    uz = np.zeros(mmax, dtype=np.float64)
+    tz = np.zeros(mmax, dtype=np.float64)
+    tr = np.zeros(mmax, dtype=np.float64)
 
     # Get compound matrix from bottom to top
     cd, exe = svup(omega, wvno, d, a, b, rho)
@@ -572,7 +572,7 @@ def svfunc(omega, wvno, d, a, b, rho):
             tz[i] = tz1 * cd5 - tz2 * cd3 + tz4 * cd1
             tr[i] = -tz1 * cd4 + tz2 * cd2 - tz3 * cd1
 
-            fac = numpy.exp(ext) / f1213
+            fac = np.exp(ext) / f1213
             ur[i] *= fac
             uz[i] *= fac
             tz[i] *= fac
@@ -584,7 +584,7 @@ def svfunc(omega, wvno, d, a, b, rho):
             tr[i] = 0.0
 
     # Correction for fluid layers on top if not all fluid
-    if numpy.any(b > 0.01):
+    if np.any(b > 0.01):
         jwat = 0
         for i in range(mmax):
             if b[i] < 0.01:
@@ -636,10 +636,10 @@ def swegn96(t, d, a, b, rho, mode, ifunc=2, dc=0.005):
     mmax = len(d)
 
     # Compute eigenvalue (phase velocity)
-    period = numpy.empty(1, dtype=numpy.float64)
+    period = np.empty(1, dtype=np.float64)
     period[0] = t
     c = surf96(period, d, a, b, rho, mode, 0, ifunc, dc)
-    omega = 2.0 * numpy.pi / t
+    omega = 2.0 * np.pi / t
 
     if c[0] > 0.0:
         wvno = omega / c[0]
@@ -650,7 +650,7 @@ def swegn96(t, d, a, b, rho, mode, ifunc=2, dc=0.005):
     if ifunc == 1:
         uu, tt = shfunc(omega, wvno, d, a, b, rho)
 
-        egn = numpy.empty((mmax, 2), dtype=numpy.float64)
+        egn = np.empty((mmax, 2), dtype=np.float64)
         for i in range(mmax):
             egn[i, 0] = uu[i]
             egn[i, 1] = tt[i]
@@ -658,7 +658,7 @@ def swegn96(t, d, a, b, rho, mode, ifunc=2, dc=0.005):
     else:
         ur, uz, tz, tr = svfunc(omega, wvno, d, a, b, rho)
 
-        egn = numpy.empty((mmax, 4), dtype=numpy.float64)
+        egn = np.empty((mmax, 4), dtype=np.float64)
         for i in range(mmax):
             egn[i, 0] = ur[i]
             egn[i, 1] = uz[i]

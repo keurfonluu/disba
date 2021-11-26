@@ -1,6 +1,6 @@
 from abc import ABC
 
-import numpy
+import numpy as np
 
 from ._helpers import resample
 
@@ -9,7 +9,7 @@ algorithms = {"dunkin", "fast-delta"}
 
 def is_arraylike(arr, size):
     """Check input array."""
-    return isinstance(arr, (list, tuple, numpy.ndarray)) and numpy.size(arr) == size
+    return isinstance(arr, (list, tuple, np.ndarray)) and np.size(arr) == size
 
 
 class Base(ABC):
@@ -29,10 +29,10 @@ class Base(ABC):
         if not isinstance(dc, float):
             raise TypeError()
 
-        self._thickness = numpy.asarray(thickness)
-        self._velocity_p = numpy.asarray(velocity_p)
-        self._velocity_s = numpy.asarray(velocity_s)
-        self._density = numpy.asarray(density)
+        self._thickness = np.asarray(thickness)
+        self._velocity_p = np.asarray(velocity_p)
+        self._velocity_s = np.asarray(velocity_s)
+        self._density = np.asarray(density)
         self._algorithm = algorithm
         self._dc = dc
 
@@ -50,7 +50,7 @@ class Base(ABC):
             raise ValueError()
 
         d, par = resample(
-            self._thickness, numpy.column_stack((self._velocity_p, self._velocity_s, self._density)), dz,
+            self._thickness, np.column_stack((self._velocity_p, self._velocity_s, self._density)), dz,
         )
         self._thickness = d
         self._velocity_p = par[:, 0]

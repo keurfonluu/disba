@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 
 from .._common import jitted
 from ._surf96 import surf96
@@ -58,18 +58,18 @@ def srfker96(
 
     """
     # Reference velocity
-    period = numpy.empty(1, dtype=numpy.float64)
+    period = np.empty(1, dtype=np.float64)
     period[0] = t
     c1 = surf96(period, d, a, b, rho, mode, itype, ifunc, dc, dt)
 
     # Initialize kernel
     mmax = len(d)
-    kernel = numpy.zeros(mmax, dtype=numpy.float64)
+    kernel = np.zeros(mmax, dtype=np.float64)
 
     # Love-waves are not sensitive to P-wave
     if not (ipar == 1 and ifunc == 1):
         # Copy parameter array
-        par = numpy.empty(mmax, dtype=numpy.float64)
+        par = np.empty(mmax, dtype=np.float64)
         if ipar == 0:
             for i in range(mmax):
                 par[i] = d[i]

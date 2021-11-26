@@ -1,5 +1,5 @@
 import helpers
-import numpy
+import numpy as np
 import pytest
 
 import disba
@@ -24,7 +24,7 @@ def test_phase(wave, parameter, kref, atol):
     ps = disba.PhaseSensitivity(*velocity_model, dp=0.005, algorithm="dunkin")
     kp = ps(10.0, 0, wave, parameter)
 
-    assert numpy.allclose(kref, kp.kernel.sum(), atol=atol)
+    assert np.allclose(kref, kp.kernel.sum(), atol=atol)
 
 
 @pytest.mark.parametrize(
@@ -46,7 +46,7 @@ def test_group(wave, parameter, kref, atol):
     gs = disba.GroupSensitivity(*velocity_model, dt=0.005, dp=0.005, algorithm="dunkin")
     kg = gs(10.0, 0, wave, parameter)
 
-    assert numpy.allclose(kref, kg.kernel.sum(), atol=atol)
+    assert np.allclose(kref, kg.kernel.sum(), atol=atol)
 
 
 @pytest.mark.parametrize(
@@ -64,4 +64,4 @@ def test_ellipticity(parameter, kref, atol):
     es = disba.EllipticitySensitivity(*velocity_model, dp=0.005, algorithm="dunkin")
     ke = es(10.0, 0, parameter)
 
-    assert numpy.allclose(kref, ke.kernel.sum(), atol=atol)
+    assert np.allclose(kref, ke.kernel.sum(), atol=atol)

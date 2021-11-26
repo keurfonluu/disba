@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 
 from ._common import jitted
 
@@ -39,19 +39,19 @@ def resample(thickness, parameters, dz):
         Resampled parameters.
 
     """
-    thickness = numpy.asarray(thickness)
-    sizes = numpy.where(
+    thickness = np.asarray(thickness)
+    sizes = np.where(
         thickness > dz,
-        numpy.ceil(thickness / dz),
+        np.ceil(thickness / dz),
         1.0,
     ).astype(int)
 
     size = sizes.sum()
-    d = numpy.empty(size, dtype=numpy.float64)
+    d = np.empty(size, dtype=np.float64)
     par = (
-        numpy.empty(size, dtype=numpy.float64)
-        if numpy.ndim(parameters) == 1
-        else numpy.empty((size, numpy.shape(parameters)[1]), dtype=numpy.float64)
+        np.empty(size, dtype=np.float64)
+        if np.ndim(parameters) == 1
+        else np.empty((size, np.shape(parameters)[1]), dtype=np.float64)
     )
 
     _resample(thickness, parameters, sizes, d, par)
@@ -97,7 +97,7 @@ def depthplot(thickness, parameter, zmax=None, plot_args=None, ax=None):
         raise ImportError("depthplot requires matplotlib to be installed")
 
     x = parameter
-    z = numpy.cumsum(thickness)
+    z = np.cumsum(thickness)
     n = z.size
 
     if len(parameter) != n:
@@ -113,17 +113,17 @@ def depthplot(thickness, parameter, zmax=None, plot_args=None, ax=None):
 
     # Determine zmax
     if zmax is None:
-        tmp = numpy.array(thickness)
+        tmp = np.array(thickness)
         tmp[-1] = tmp[:-1].min()
         zmax = tmp.sum()
 
     # Build layered model
-    xin = numpy.empty(2 * n)
+    xin = np.empty(2 * n)
     xin[1::2] = x
     xin[2::2] = x[1:]
     xin[0] = xin[1]
 
-    zin = numpy.zeros_like(xin)
+    zin = np.zeros_like(xin)
     zin[1:-1:2] = z[:-1]
     zin[2::2] = z[:-1]
     zin[-1] = max(z[-1], zmax)

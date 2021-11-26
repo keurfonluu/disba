@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-import numpy
+import numpy as np
 
 from ._base import BaseSensitivity
 from ._common import ifunc, ipar
@@ -92,7 +92,7 @@ class PhaseSensitivity(BaseSensitivity):
         )
 
         return SensitivityKernel(
-            numpy.insert(self._thickness.cumsum()[:-1], 0, 0.0),
+            np.insert(self._thickness.cumsum()[:-1], 0, 0.0),
             kernel,
             t,
             c1,
@@ -184,7 +184,7 @@ class GroupSensitivity(BaseSensitivity):
         )
 
         return SensitivityKernel(
-            numpy.insert(self._thickness.cumsum()[:-1], 0, 0.0),
+            np.insert(self._thickness.cumsum()[:-1], 0, 0.0),
             kernel,
             t,
             c1,
@@ -261,7 +261,7 @@ class EllipticitySensitivity(BaseSensitivity):
 
         # Initialize kernel
         mmax = len(self._thickness)
-        kernel = numpy.empty(mmax)
+        kernel = np.empty(mmax)
 
         # Loop over layers
         fac = 1.0 + self._dp
@@ -274,7 +274,7 @@ class EllipticitySensitivity(BaseSensitivity):
             par[i] *= fac
 
         return SensitivityKernel(
-            numpy.insert(self._thickness.cumsum()[:-1], 0, 0.0),
+            np.insert(self._thickness.cumsum()[:-1], 0, 0.0),
             kernel,
             t,
             None,

@@ -5,7 +5,7 @@ disba
 
 **disba** is a computationally efficient Python library for the modeling of surface wave dispersion that implements a subset of codes from `Computer Programs in Seismology (CPS) <http://www.eas.slu.edu/eqc/eqccps.html>`__ in Python compiled `just-in-time <https://en.wikipedia.org/wiki/Just-in-time_compilation>`__ with `numba <https://numba.pydata.org/>`__. Such implementation alleviates the usual prerequisite for a Fortran compiler needed by other libraries also based on CPS (e.g., `pysurf96 <https://github.com/miili/pysurf96>`__, `srfpython <https://github.com/obsmax/srfpython>`__ and `PyLayeredModel <https://github.com/harrymd/PyLayeredModel>`__) which often leads to further installation troubleshooting, especially on Windows platform.
 
-**disba** aims to be lightweight and portable without compromising on the performance. For both Rayleigh-wave and Love-wave, it is significantly faster than CPS's *surf96* program compiled with `f2py <https://numpy.org/devdocs/f2py/index.html>`__, noticeably for large number of layers.
+**disba** aims to be lightweight and portable without compromising on the performance. For both Rayleigh-wave and Love-wave, it is significantly faster than CPS's *surf96* program compiled with `f2py <https://np.org/devdocs/f2py/index.html>`__, noticeably for large number of layers.
 
 .. list-table::
 
@@ -66,13 +66,13 @@ The following example computes the Rayleigh- and Love- wave phase velocity dispe
 
 .. code:: python
 
-   import numpy
+   import numpy as np
    from disba import PhaseDispersion
 
    # Velocity model
    # thickness, Vp, Vs, density
    # km, km/s, km/s, g/cm3
-   velocity_model = numpy.array([
+   velocity_model = np.array([
       [10.0, 7.00, 3.50, 2.00],
       [10.0, 6.80, 3.40, 2.00],
       [10.0, 7.00, 3.50, 2.00],
@@ -85,7 +85,7 @@ The following example computes the Rayleigh- and Love- wave phase velocity dispe
    ])
 
    # Periods must be sorted starting with low periods
-   t = numpy.logspace(0.0, 3.0, 100)
+   t = np.logspace(0.0, 3.0, 100)
 
    # Compute the 3 first Rayleigh- and Love- wave modal dispersion curves
    # Fundamental mode corresponds to mode 0

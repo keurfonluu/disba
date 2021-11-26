@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 import perfplot
 
 from disba import PhaseDispersion
@@ -6,10 +6,10 @@ from pysurf96 import surf96
 
 
 def velocity_model(n):
-    thickness = numpy.full(n, 0.5)
-    velocity_p = 1.0 + 0.1 * numpy.arange(n)
+    thickness = np.full(n, 0.5)
+    velocity_p = 1.0 + 0.1 * np.arange(n)
     velocity_s = velocity_p / 1.73
-    density = numpy.full(n, 2.0)
+    density = np.full(n, 2.0)
 
     return thickness, velocity_p, velocity_s, density
 
@@ -42,13 +42,13 @@ config = {
         "title": "Love-wave",
     },
 }
-periods = numpy.logspace(0.0, 1.0, 60)
+periods = np.logspace(0.0, 1.0, 60)
 
 for k, v in config.items():
     out = perfplot.bench(
         setup=lambda n: n,
-        n_range=numpy.arange(19) + 2,
-        equality_check=lambda a, b: numpy.allclose(a, b, atol=0.02),
+        n_range=np.arange(19) + 2,
+        equality_check=lambda a, b: np.allclose(a, b, atol=0.02),
         xlabel="Number of layers",
         **v,
     )
