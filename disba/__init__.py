@@ -4,7 +4,7 @@ from ._dispersion import DispersionCurve, GroupDispersion, PhaseDispersion
 from ._eigen import EigenFunction, LoveEigen, RayleighEigen
 from ._ellipticity import Ellipticity, RayleighEllipticity
 from ._exception import DispersionError
-from ._helpers import depthplot
+from ._helpers import depthplot, resample
 from ._sensitivity import (
     EllipticitySensitivity,
     GroupSensitivity,
@@ -30,5 +30,6 @@ __all__ = [
     "RayleighEllipticity",
     "Ellipticity",
     "depthplot",
+    "resample",
     "__version__",
 ]

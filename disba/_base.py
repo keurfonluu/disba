@@ -49,13 +49,13 @@ class Base(ABC):
         if dz <= 0.0:
             raise ValueError()
 
-        d, a, b, rho = resample(
-            self._thickness, self._velocity_p, self._velocity_s, self._density, dz,
+        d, par = resample(
+            self._thickness, numpy.column_stack((self._velocity_p, self._velocity_s, self._density)), dz,
         )
         self._thickness = d
-        self._velocity_p = a
-        self._velocity_s = b
-        self._density = rho
+        self._velocity_p = par[:, 0]
+        self._velocity_s = par[:, 1]
+        self._density = par[:, 2]
 
     @property
     def thickness(self):

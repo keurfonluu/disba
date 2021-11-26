@@ -3,6 +3,7 @@ import numpy
 from ._common import jitted
 
 __all__ = [
+    "resample",
     "depthplot",
 ]
 
@@ -17,32 +18,59 @@ def is_sorted(t):
     return True
 
 
-@jitted
-def resample(thickness, velocity_p, velocity_s, density, dz):
-    """Resample velocity model."""
-    mmax = len(thickness)
+def resample(thickness, parameters, dz):
+    """
+    Resample parameters.
+    
+    Parameters
+    ----------
+    thickness : array_like
+        Layer thickness (in km).
+    parameters : array_like
+        Parameters to resample.
+    dz : scalar
+        Maximum layer thickness (in km).
+    
+    Returns
+    -------
+    array_like
+        Resampled thickness.
+    array_like
+        Resampled parameters.
 
-    sizes = numpy.empty(mmax, dtype=numpy.int32)
-    for i in range(mmax):
-        sizes[i] = numpy.ceil(thickness[i] / dz) if thickness[i] > dz else 1
+    """
+    thickness = numpy.asarray(thickness)
+    sizes = numpy.where(
+        thickness > dz,
+        numpy.ceil(thickness / dz),
+        1.0,
+    ).astype(int)
 
     size = sizes.sum()
     d = numpy.empty(size, dtype=numpy.float64)
-    a = numpy.empty(size, dtype=numpy.float64)
-    b = numpy.empty(size, dtype=numpy.float64)
-    rho = numpy.empty(size, dtype=numpy.float64)
+    par = (
+        numpy.empty(size, dtype=numpy.float64)
+        if numpy.ndim(parameters) == 1
+        else numpy.empty((size, numpy.shape(parameters)[1]), dtype=numpy.float64)
+    )
+
+    _resample(thickness, parameters, sizes, d, par)
+
+    return d, par
+
+
+@jitted
+def _resample(thickness, parameters, sizes, d, par):
+    """Compile loop in :func:resample."""
+    mmax = len(thickness)
 
     j = 0
     for i in range(mmax):
         dzi = thickness[i] / sizes[i]
         for _ in range(sizes[i]):
             d[j] = dzi
-            a[j] = velocity_p[i]
-            b[j] = velocity_s[i]
-            rho[j] = density[i]
+            par[j] = parameters[i]
             j += 1
-
-    return d, a, b, rho
 
 
 def depthplot(thickness, parameter, zmax=None, plot_args=None, ax=None):
