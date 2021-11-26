@@ -21,7 +21,7 @@ def is_sorted(t):
 def resample(thickness, parameters, dz):
     """
     Resample parameters.
-    
+
     Parameters
     ----------
     thickness : array_like
@@ -30,7 +30,7 @@ def resample(thickness, parameters, dz):
         Parameters to resample.
     dz : scalar
         Maximum layer thickness (in km).
-    
+
     Returns
     -------
     array_like
@@ -40,11 +40,7 @@ def resample(thickness, parameters, dz):
 
     """
     thickness = np.asarray(thickness)
-    sizes = np.where(
-        thickness > dz,
-        np.ceil(thickness / dz),
-        1.0,
-    ).astype(int)
+    sizes = np.where(thickness > dz, np.ceil(thickness / dz), 1.0,).astype(int)
 
     size = sizes.sum()
     d = np.empty(size, dtype=np.float64)

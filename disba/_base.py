@@ -50,7 +50,9 @@ class Base(ABC):
             raise ValueError()
 
         d, par = resample(
-            self._thickness, np.column_stack((self._velocity_p, self._velocity_s, self._density)), dz,
+            self._thickness,
+            np.column_stack((self._velocity_p, self._velocity_s, self._density)),
+            dz,
         )
         self._thickness = d
         self._velocity_p = par[:, 0]
