@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Dispersion &#8212; disba 0.6.0 documentation</title>
+    <title>Dispersion &#8212; disba 0.6.1 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -150,9 +150,24 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#phasedispersion">
+   PhaseDispersion
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#groupdispersion">
+   GroupDispersion
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -174,6 +189,44 @@
                 
   <section id="dispersion">
 <h1>Dispersion<a class="headerlink" href="#dispersion" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="disba.DispersionCurve">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">DispersionCurve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.DispersionCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of DispersionCurve(period, velocity, mode, wave, type)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.DispersionCurve.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.DispersionCurve.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.DispersionCurve.period">
+<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.DispersionCurve.period" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.DispersionCurve.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#disba.DispersionCurve.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.DispersionCurve.velocity">
+<span class="sig-name descname"><span class="pre">velocity</span></span><a class="headerlink" href="#disba.DispersionCurve.velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.DispersionCurve.wave">
+<span class="sig-name descname"><span class="pre">wave</span></span><a class="headerlink" href="#disba.DispersionCurve.wave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+</dd></dl>
+
+<section id="phasedispersion">
+<h2>PhaseDispersion<a class="headerlink" href="#phasedispersion" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="disba.PhaseDispersion">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">PhaseDispersion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dunkin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_dispersion.html#PhaseDispersion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.PhaseDispersion" title="Permalink to this definition">¶</a></dt>
@@ -267,6 +320,9 @@
 
 </dd></dl>
 
+</section>
+<section id="groupdispersion">
+<h2>GroupDispersion<a class="headerlink" href="#groupdispersion" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="disba.GroupDispersion">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">GroupDispersion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dunkin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_dispersion.html#GroupDispersion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.GroupDispersion" title="Permalink to this definition">¶</a></dt>
@@ -367,42 +423,7 @@
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="disba.DispersionCurve">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">DispersionCurve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.DispersionCurve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of DispersionCurve(period, velocity, mode, wave, type)</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.DispersionCurve.mode">
-<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.DispersionCurve.mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.DispersionCurve.period">
-<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.DispersionCurve.period" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.DispersionCurve.type">
-<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#disba.DispersionCurve.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.DispersionCurve.velocity">
-<span class="sig-name descname"><span class="pre">velocity</span></span><a class="headerlink" href="#disba.DispersionCurve.velocity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.DispersionCurve.wave">
-<span class="sig-name descname"><span class="pre">wave</span></span><a class="headerlink" href="#disba.DispersionCurve.wave" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
-
-</dd></dl>
-
+</section>
 </section>
 
 

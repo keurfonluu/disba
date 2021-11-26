@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>disba._ellipticity &#8212; disba 0.6.0 documentation</title>
+    <title>disba._ellipticity &#8212; disba 0.6.1 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -126,7 +126,7 @@
   <h1>Source code for disba._ellipticity</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">._base</span> <span class="kn">import</span> <span class="n">Base</span>
 <span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">ifunc</span>
@@ -206,7 +206,7 @@
                 <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
                 <span class="k">break</span>
 
-        <span class="k">return</span> <span class="n">RayleighEllipticity</span><span class="p">(</span><span class="n">t</span><span class="p">[:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ell</span><span class="p">),</span> <span class="n">mode</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">RayleighEllipticity</span><span class="p">(</span><span class="n">t</span><span class="p">[:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ell</span><span class="p">),</span> <span class="n">mode</span><span class="p">)</span></div></div>
 </pre></div>
 
               </div>

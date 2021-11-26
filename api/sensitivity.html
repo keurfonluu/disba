@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Sensitivity kernel &#8212; disba 0.6.0 documentation</title>
+    <title>Sensitivity kernel &#8212; disba 0.6.1 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -150,9 +150,29 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#phasesensitivity">
+   PhaseSensitivity
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#groupsensitivity">
+   GroupSensitivity
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ellipticitysensitivity">
+   EllipticitySensitivity
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -174,6 +194,62 @@
                 
   <section id="sensitivity-kernel">
 <h1>Sensitivity kernel<a class="headerlink" href="#sensitivity-kernel" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="disba.SensitivityKernel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">SensitivityKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.SensitivityKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of SensitivityKernel(depth, kernel, period, velocity, mode, wave, type, parameter)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.SensitivityKernel.depth">
+<span class="sig-name descname"><span class="pre">depth</span></span><a class="headerlink" href="#disba.SensitivityKernel.depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.SensitivityKernel.kernel">
+<span class="sig-name descname"><span class="pre">kernel</span></span><a class="headerlink" href="#disba.SensitivityKernel.kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.SensitivityKernel.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.SensitivityKernel.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.SensitivityKernel.parameter">
+<span class="sig-name descname"><span class="pre">parameter</span></span><a class="headerlink" href="#disba.SensitivityKernel.parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 7</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.SensitivityKernel.period">
+<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.SensitivityKernel.period" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.SensitivityKernel.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#disba.SensitivityKernel.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.SensitivityKernel.velocity">
+<span class="sig-name descname"><span class="pre">velocity</span></span><a class="headerlink" href="#disba.SensitivityKernel.velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.SensitivityKernel.wave">
+<span class="sig-name descname"><span class="pre">wave</span></span><a class="headerlink" href="#disba.SensitivityKernel.wave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+</dd></dl>
+
+<section id="phasesensitivity">
+<h2>PhaseSensitivity<a class="headerlink" href="#phasesensitivity" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="disba.PhaseSensitivity">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">PhaseSensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dunkin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_sensitivity.html#PhaseSensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.PhaseSensitivity" title="Permalink to this definition">¶</a></dt>
@@ -275,6 +351,9 @@
 
 </dd></dl>
 
+</section>
+<section id="groupsensitivity">
+<h2>GroupSensitivity<a class="headerlink" href="#groupsensitivity" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="disba.GroupSensitivity">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">GroupSensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dunkin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_sensitivity.html#GroupSensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.GroupSensitivity" title="Permalink to this definition">¶</a></dt>
@@ -383,6 +462,9 @@
 
 </dd></dl>
 
+</section>
+<section id="ellipticitysensitivity">
+<h2>EllipticitySensitivity<a class="headerlink" href="#ellipticitysensitivity" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="disba.EllipticitySensitivity">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">EllipticitySensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dunkin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_sensitivity.html#EllipticitySensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.EllipticitySensitivity" title="Permalink to this definition">¶</a></dt>
@@ -484,60 +566,7 @@ parameter.</p>
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="disba.SensitivityKernel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">SensitivityKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.SensitivityKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of SensitivityKernel(depth, kernel, period, velocity, mode, wave, type, parameter)</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.SensitivityKernel.depth">
-<span class="sig-name descname"><span class="pre">depth</span></span><a class="headerlink" href="#disba.SensitivityKernel.depth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.SensitivityKernel.kernel">
-<span class="sig-name descname"><span class="pre">kernel</span></span><a class="headerlink" href="#disba.SensitivityKernel.kernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.SensitivityKernel.mode">
-<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.SensitivityKernel.mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.SensitivityKernel.parameter">
-<span class="sig-name descname"><span class="pre">parameter</span></span><a class="headerlink" href="#disba.SensitivityKernel.parameter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 7</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.SensitivityKernel.period">
-<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.SensitivityKernel.period" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.SensitivityKernel.type">
-<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#disba.SensitivityKernel.type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 6</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.SensitivityKernel.velocity">
-<span class="sig-name descname"><span class="pre">velocity</span></span><a class="headerlink" href="#disba.SensitivityKernel.velocity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.SensitivityKernel.wave">
-<span class="sig-name descname"><span class="pre">wave</span></span><a class="headerlink" href="#disba.SensitivityKernel.wave" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 5</p>
-</dd></dl>
-
-</dd></dl>
-
+</section>
 </section>
 
 

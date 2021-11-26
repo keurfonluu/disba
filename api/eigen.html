@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Eigenfunction &#8212; disba 0.6.0 documentation</title>
+    <title>Eigenfunction &#8212; disba 0.6.1 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -150,9 +150,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   EigenFunction
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -174,6 +184,92 @@
                 
   <section id="eigenfunction">
 <h1>Eigenfunction<a class="headerlink" href="#eigenfunction" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="disba.RayleighEigen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">RayleighEigen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ur</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.RayleighEigen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of RayleighEigen(depth, ur, uz, tz, tr, period, mode)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEigen.depth">
+<span class="sig-name descname"><span class="pre">depth</span></span><a class="headerlink" href="#disba.RayleighEigen.depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEigen.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.RayleighEigen.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEigen.period">
+<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.RayleighEigen.period" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEigen.tr">
+<span class="sig-name descname"><span class="pre">tr</span></span><a class="headerlink" href="#disba.RayleighEigen.tr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEigen.tz">
+<span class="sig-name descname"><span class="pre">tz</span></span><a class="headerlink" href="#disba.RayleighEigen.tz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEigen.ur">
+<span class="sig-name descname"><span class="pre">ur</span></span><a class="headerlink" href="#disba.RayleighEigen.ur" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEigen.uz">
+<span class="sig-name descname"><span class="pre">uz</span></span><a class="headerlink" href="#disba.RayleighEigen.uz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="disba.LoveEigen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">LoveEigen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.LoveEigen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of LoveEigen(depth, uu, tt, period, mode)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.LoveEigen.depth">
+<span class="sig-name descname"><span class="pre">depth</span></span><a class="headerlink" href="#disba.LoveEigen.depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.LoveEigen.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.LoveEigen.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.LoveEigen.period">
+<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.LoveEigen.period" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.LoveEigen.tt">
+<span class="sig-name descname"><span class="pre">tt</span></span><a class="headerlink" href="#disba.LoveEigen.tt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.LoveEigen.uu">
+<span class="sig-name descname"><span class="pre">uu</span></span><a class="headerlink" href="#disba.LoveEigen.uu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<section id="id1">
+<h2>EigenFunction<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="disba.EigenFunction">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">EigenFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dunkin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_eigen.html#EigenFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.EigenFunction" title="Permalink to this definition">¶</a></dt>
@@ -274,90 +370,7 @@
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="disba.RayleighEigen">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">RayleighEigen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ur</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.RayleighEigen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of RayleighEigen(depth, ur, uz, tz, tr, period, mode)</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEigen.depth">
-<span class="sig-name descname"><span class="pre">depth</span></span><a class="headerlink" href="#disba.RayleighEigen.depth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEigen.mode">
-<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.RayleighEigen.mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 6</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEigen.period">
-<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.RayleighEigen.period" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 5</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEigen.tr">
-<span class="sig-name descname"><span class="pre">tr</span></span><a class="headerlink" href="#disba.RayleighEigen.tr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEigen.tz">
-<span class="sig-name descname"><span class="pre">tz</span></span><a class="headerlink" href="#disba.RayleighEigen.tz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEigen.ur">
-<span class="sig-name descname"><span class="pre">ur</span></span><a class="headerlink" href="#disba.RayleighEigen.ur" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEigen.uz">
-<span class="sig-name descname"><span class="pre">uz</span></span><a class="headerlink" href="#disba.RayleighEigen.uz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="disba.LoveEigen">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">LoveEigen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.LoveEigen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of LoveEigen(depth, uu, tt, period, mode)</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.LoveEigen.depth">
-<span class="sig-name descname"><span class="pre">depth</span></span><a class="headerlink" href="#disba.LoveEigen.depth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.LoveEigen.mode">
-<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.LoveEigen.mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 4</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.LoveEigen.period">
-<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.LoveEigen.period" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 3</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.LoveEigen.tt">
-<span class="sig-name descname"><span class="pre">tt</span></span><a class="headerlink" href="#disba.LoveEigen.tt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.LoveEigen.uu">
-<span class="sig-name descname"><span class="pre">uu</span></span><a class="headerlink" href="#disba.LoveEigen.uu" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-</dd></dl>
-
+</section>
 </section>
 
 

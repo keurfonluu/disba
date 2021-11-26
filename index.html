@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>disba’s documentation &#8212; disba 0.6.0 documentation</title>
+    <title>disba’s documentation &#8212; disba 0.6.1 documentation</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -188,7 +188,7 @@
 <h1>disba<a class="headerlink" href="#disba" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://github.com/keurfonluu/disba/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/keurfonluu/disba" /></a> <a class="reference external" href="https://github.com/keurfonluu/disba"><img alt="Stars" src="https://img.shields.io/github/stars/keurfonluu/disba?logo=github" /></a> <a class="reference external" href="https://pypi.org/pypi/disba/"><img alt="Pyversions" src="https://img.shields.io/pypi/pyversions/disba.svg?style=flat" /></a> <a class="reference external" href="https://pypi.org/project/disba"><img alt="Version" src="https://img.shields.io/pypi/v/disba.svg?style=flat" /></a> <a class="reference external" href="https://pepy.tech/project/disba"><img alt="Downloads" src="https://pepy.tech/badge/disba" /></a> <a class="reference external" href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg?style=flat" /></a> <a class="reference external" href="https://www.codacy.com/manual/keurfonluu/disba?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=keurfonluu/disba&amp;utm_campaign=Badge_Grade"><img alt="Codacy Badge" src="https://img.shields.io/codacy/grade/1d2218bb7d0e4e0fb2dec26fa32fe92e.svg?style=flat" /></a> <a class="reference external" href="https://codecov.io/gh/keurfonluu/disba"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/keurfonluu/disba.svg?style=flat" /></a> <a class="reference external" href="https://github.com/keurfonluu/disba"><img alt="Build" src="https://img.shields.io/github/workflow/status/keurfonluu/disba/Python%20package" /></a> <a class="reference external" href="https://keurfonluu.github.io/disba/"><img alt="Travis" src="https://img.shields.io/travis/com/keurfonluu/disba/master?label=docs" /></a> <a class="reference external" href="https://github.com/softwareunderground/awesome-open-geoscience"><img alt="Awesome" src="https://img.shields.io/badge/awesome-yes-C6A4BF" /></a> <a class="reference external" href="https://doi.org/10.5281/zenodo.3987395"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.3987395.svg?style=flat" /></a></p>
 <p><strong>disba</strong> is a computationally efficient Python library for the modeling of surface wave dispersion that implements a subset of codes from <a class="reference external" href="http://www.eas.slu.edu/eqc/eqccps.html">Computer Programs in Seismology (CPS)</a> in Python compiled <a class="reference external" href="https://en.wikipedia.org/wiki/Just-in-time_compilation">just-in-time</a> with <a class="reference external" href="https://numba.pydata.org/">numba</a>. Such implementation alleviates the usual prerequisite for a Fortran compiler needed by other libraries also based on CPS (e.g., <a class="reference external" href="https://github.com/miili/pysurf96">pysurf96</a>, <a class="reference external" href="https://github.com/obsmax/srfpython">srfpython</a> and <a class="reference external" href="https://github.com/harrymd/PyLayeredModel">PyLayeredModel</a>) which often leads to further installation troubleshooting, especially on Windows platform.</p>
-<p><strong>disba</strong> aims to be lightweight and portable without compromising on the performance. For both Rayleigh-wave and Love-wave, it is significantly faster than CPS’s <em>surf96</em> program compiled with <a class="reference external" href="https://numpy.org/devdocs/f2py/index.html">f2py</a>, noticeably for large number of layers.</p>
+<p><strong>disba</strong> aims to be lightweight and portable without compromising on the performance. For both Rayleigh-wave and Love-wave, it is significantly faster than CPS’s <em>surf96</em> program compiled with <a class="reference external" href="https://np.org/devdocs/f2py/index.html">f2py</a>, noticeably for large number of layers.</p>
 <table class="table">
 <colgroup>
 <col style="width: 50%" />
@@ -241,13 +241,13 @@ sphinx-build -b html doc/source doc/build
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The following example computes the Rayleigh- and Love- wave phase velocity dispersion curves for the 3 first modes.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">disba</span> <span class="kn">import</span> <span class="n">PhaseDispersion</span>
 
 <span class="c1"># Velocity model</span>
 <span class="c1"># thickness, Vp, Vs, density</span>
 <span class="c1"># km, km/s, km/s, g/cm3</span>
-<span class="n">velocity_model</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="n">velocity_model</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
    <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">7.00</span><span class="p">,</span> <span class="mf">3.50</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
    <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">6.80</span><span class="p">,</span> <span class="mf">3.40</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
    <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">7.00</span><span class="p">,</span> <span class="mf">3.50</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">],</span>
@@ -260,7 +260,7 @@ sphinx-build -b html doc/source doc/build
 <span class="p">])</span>
 
 <span class="c1"># Periods must be sorted starting with low periods</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 
 <span class="c1"># Compute the 3 first Rayleigh- and Love- wave modal dispersion curves</span>
 <span class="c1"># Fundamental mode corresponds to mode 0</span>

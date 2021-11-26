@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Ellipticity &#8212; disba 0.6.0 documentation</title>
+    <title>Ellipticity &#8212; disba 0.6.1 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -150,9 +150,19 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   Ellipticity
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -174,6 +184,32 @@
                 
   <section id="ellipticity">
 <h1>Ellipticity<a class="headerlink" href="#ellipticity" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="disba.RayleighEllipticity">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">RayleighEllipticity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ellipticity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.RayleighEllipticity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of RayleighEllipticity(period, ellipticity, mode)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEllipticity.ellipticity">
+<span class="sig-name descname"><span class="pre">ellipticity</span></span><a class="headerlink" href="#disba.RayleighEllipticity.ellipticity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEllipticity.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.RayleighEllipticity.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="disba.RayleighEllipticity.period">
+<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.RayleighEllipticity.period" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<section id="id1">
+<h2>Ellipticity<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="disba.Ellipticity">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">Ellipticity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dunkin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disba/_ellipticity.html#Ellipticity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#disba.Ellipticity" title="Permalink to this definition">¶</a></dt>
@@ -266,30 +302,7 @@
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="disba.RayleighEllipticity">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">disba.</span></span><span class="sig-name descname"><span class="pre">RayleighEllipticity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ellipticity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#disba.RayleighEllipticity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of RayleighEllipticity(period, ellipticity, mode)</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEllipticity.ellipticity">
-<span class="sig-name descname"><span class="pre">ellipticity</span></span><a class="headerlink" href="#disba.RayleighEllipticity.ellipticity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEllipticity.mode">
-<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#disba.RayleighEllipticity.mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="disba.RayleighEllipticity.period">
-<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#disba.RayleighEllipticity.period" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-</dd></dl>
-
+</section>
 </section>
 
 

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>disba._sensitivity &#8212; disba 0.6.0 documentation</title>
+    <title>disba._sensitivity &#8212; disba 0.6.1 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -126,7 +126,7 @@
   <h1>Source code for disba._sensitivity</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">._base</span> <span class="kn">import</span> <span class="n">BaseSensitivity</span>
 <span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">ifunc</span><span class="p">,</span> <span class="n">ipar</span>
@@ -218,7 +218,7 @@
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">SensitivityKernel</span><span class="p">(</span>
-            <span class="n">numpy</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
             <span class="n">kernel</span><span class="p">,</span>
             <span class="n">t</span><span class="p">,</span>
             <span class="n">c1</span><span class="p">,</span>
@@ -310,7 +310,7 @@
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">SensitivityKernel</span><span class="p">(</span>
-            <span class="n">numpy</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
             <span class="n">kernel</span><span class="p">,</span>
             <span class="n">t</span><span class="p">,</span>
             <span class="n">c1</span><span class="p">,</span>
@@ -387,7 +387,7 @@
 
         <span class="c1"># Initialize kernel</span>
         <span class="n">mmax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">)</span>
-        <span class="n">kernel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">mmax</span><span class="p">)</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">mmax</span><span class="p">)</span>
 
         <span class="c1"># Loop over layers</span>
         <span class="n">fac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dp</span>
@@ -400,7 +400,7 @@
             <span class="n">par</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*=</span> <span class="n">fac</span>
 
         <span class="k">return</span> <span class="n">SensitivityKernel</span><span class="p">(</span>
-            <span class="n">numpy</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
             <span class="n">kernel</span><span class="p">,</span>
             <span class="n">t</span><span class="p">,</span>
             <span class="kc">None</span><span class="p">,</span>
