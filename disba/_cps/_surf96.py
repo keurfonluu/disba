@@ -309,7 +309,7 @@ def fast_delta(wvno, omega, d, alpha, beta, rho, llw):
     mu0 = rho[0] * beta[0] ** 2.0
     t0 = 2.0 - c2 / beta[0] ** 2.0
 
-    X = np.zeros(5, dtype=np.complex_)
+    X = np.zeros(5, dtype=np.complex128)
     X[0] = 2.0 * t0
     X[1] = -t0 * t0
     X[4] = -4.0
