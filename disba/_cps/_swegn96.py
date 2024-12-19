@@ -36,7 +36,7 @@ __all__ = [
 @jitted
 def evalg(m, d, a, b, rho, wvno, om):
     """Layered half space problem for Rayleigh-wave."""
-    gbr = np.zeros(5, dtype=np.complex_)
+    gbr = np.zeros(5, dtype=np.complex128)
     wvno2 = wvno * wvno
     om2 = om * om
 
@@ -181,7 +181,7 @@ def hska(
     omega, wvno, b, rho, cosp, rsinp, sinpr, tcossv, trsinsv, tsinsvr, pex, svex, iwat
 ):
     """Thomson-Haskell's matrix for Rayleigh-wave."""
-    aa = np.zeros((4, 4), dtype=np.complex_)
+    aa = np.zeros((4, 4), dtype=np.complex128)
     wvno2 = wvno * wvno
     om2 = omega * omega
 
@@ -226,7 +226,7 @@ def hska(
 @jitted
 def dnka(omega, wvno, b, rho, cosp, rsinp, sinpr, cossv, rsinsv, sinsvr, ex, exa, iwat):
     """Dunkin's matrix for Rayleigh-wave."""
-    ca = np.zeros((5, 5), dtype=np.complex_)
+    ca = np.zeros((5, 5), dtype=np.complex128)
     wvno2 = wvno * wvno
     om2 = omega * omega
 
